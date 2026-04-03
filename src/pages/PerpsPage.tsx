@@ -11,20 +11,26 @@ export function PerpsPage() {
       <TickerBar />
       <MarketHeader />
 
-      <div className="perps-grid">
-        <div className="perps-chart-area">
-          <PriceChart />
+      <div className="perps-main">
+        {/* Left side: chart + orderbook + bottom panel */}
+        <div className="perps-left">
+          <div className="perps-top-row">
+            <div className="perps-chart-area">
+              <PriceChart />
+            </div>
+            <div className="perps-book-area">
+              <OrderBookPanel />
+            </div>
+          </div>
+          <div className="perps-bottom">
+            <Positions />
+          </div>
         </div>
-        <div className="perps-book-area">
-          <OrderBookPanel />
-        </div>
+
+        {/* Right side: trade panel (full height) */}
         <div className="perps-trade-area">
           <TradePanel />
         </div>
-      </div>
-
-      <div className="perps-bottom">
-        <Positions />
       </div>
     </div>
   )

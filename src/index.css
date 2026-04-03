@@ -447,29 +447,40 @@ body {
 
 /* ─── Perps Layout ─── */
 .perps-page {
-  display: grid;
-  grid-template-rows: auto auto 1fr 200px;
+  display: flex;
+  flex-direction: column;
   flex: 1;
   min-height: 0;
-  height: 0; /* Force flex shrink — critical for preventing overflow */
+  height: 0;
   overflow: hidden;
 }
 
-.perps-grid {
-  display: grid;
-  grid-template-columns: 1fr 240px 280px;
-  grid-template-rows: 1fr;
+/* Main area: left (chart+book+bottom) + right (trade panel) */
+.perps-main {
+  display: flex;
+  flex: 1;
   min-height: 0;
-  max-height: 100%;
   overflow: hidden;
 }
-/* Force all grid children to respect container bounds */
-.perps-grid > * {
+
+/* Left side: chart + orderbook row, then bottom panel */
+.perps-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   min-height: 0;
-  max-height: 100%;
+  min-width: 0;
+}
+
+/* Top row: chart + orderbook side by side */
+.perps-top-row {
+  display: flex;
+  flex: 1;
+  min-height: 0;
 }
 
 .perps-chart-area {
+  flex: 1;
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -480,24 +491,30 @@ body {
 }
 
 .perps-book-area {
-  border-right: 1px solid var(--border);
+  width: 240px;
+  flex-shrink: 0;
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--bg-1);
-  min-width: 0;
+  min-height: 0;
 }
 
+/* Trade panel: full height on right side */
 .perps-trade-area {
+  width: 280px;
+  flex-shrink: 0;
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--bg-1);
-  min-width: 0;
+  border-left: 1px solid var(--border);
+  min-height: 0;
 }
 
+/* Bottom panel: only under chart + orderbook */
 .perps-bottom {
   border-top: 1px solid var(--border);
   height: 200px;
-  min-height: 0;
+  flex-shrink: 0;
   overflow: hidden;
   background: var(--bg-1);
   display: flex;
@@ -1896,16 +1913,9 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--bg-4); }
 
 /* ─── Responsive ─── */
-/* Medium screens: orderbook collapses under chart, trade panel stays right */
+/* Medium screens: orderbook hides */
 @media (max-width: 1100px) {
-  .perps-grid {
-    grid-template-columns: 1fr 260px;
-    grid-template-rows: 1fr;
-  }
-  .perps-book-area {
-    display: none;
-  }
-  .perps-chart-area { border-right: 1px solid var(--border); }
+  .perps-book-area { display: none; }
   .pos-row-full { grid-template-columns: repeat(7, 1fr); }
   .pos-row-full > :nth-child(n+8) { display: none; }
 }
@@ -1913,20 +1923,16 @@ body {
 /* Small screens: everything stacks */
 @media (max-width: 768px) {
   .perps-page { height: auto; min-height: calc(100vh - 48px); overflow: auto; }
-  .perps-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: 400px auto;
-    overflow: visible;
-  }
-  .perps-chart-area { border-right: none; border-bottom: 1px solid var(--border); }
+  .perps-main { flex-direction: column; }
+  .perps-top-row { flex-direction: column; min-height: 350px; }
+  .perps-chart-area { border-right: none; border-bottom: 1px solid var(--border); min-height: 300px; }
   .perps-book-area { display: none; }
-  .perps-trade-area { max-height: none; border-top: 1px solid var(--border); }
-  .perps-bottom { max-height: none; min-height: auto; overflow-x: auto; }
+  .perps-trade-area { width: 100%; max-height: none; border-left: none; border-top: 1px solid var(--border); }
+  .perps-bottom { max-height: none; min-height: auto; overflow-x: auto; height: auto; }
   .market-header { flex-wrap: wrap; gap: 12px; }
   .market-stats { gap: 12px; }
   .pos-row-full { grid-template-columns: repeat(5, 1fr); font-size: 11px; }
   .pos-row-full > :nth-child(n+6) { display: none; }
-  .positions-table { min-width: 400px; }
 }
 
 @media (max-width: 600px) {
