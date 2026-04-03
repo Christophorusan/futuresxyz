@@ -630,6 +630,42 @@ body {
 }
 .ob-mid-spread { font-size: 11px; color: var(--text-3); font-weight: 500; }
 
+/* Orderbook toolbar */
+.ob-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.ob-grouping { display: flex; gap: 2px; }
+.ob-grp-btn {
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 500;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: var(--text-3);
+  cursor: pointer;
+  font-family: var(--font);
+}
+.ob-grp-btn:hover { color: var(--text-1); }
+.ob-grp-btn.active { color: var(--text-0); background: var(--bg-3); border-color: var(--border); }
+.ob-view-modes { display: flex; gap: 2px; }
+.ob-vm-btn {
+  padding: 3px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.ob-vm-btn:hover { background: var(--bg-2); }
+.ob-vm-btn.active { background: var(--bg-3); border-color: var(--border); }
+
 /* ─── Trade Panel ─── */
 .trade-panel { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
 
