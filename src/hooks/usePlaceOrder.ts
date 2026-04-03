@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { useHyperliquid } from '../contexts/HyperliquidContext'
 import { useMarketMeta } from './useMarketMeta'
-import { BUILDER_ADDRESS, BUILDER_FEE } from '../config/hyperliquid'
+// import { BUILDER_ADDRESS, BUILDER_FEE } from '../config/hyperliquid' // Re-enable when builder funded
 
 export type OrderSide = 'buy' | 'sell'
 export type OrderType = 'market' | 'limit'
