@@ -2,7 +2,6 @@ import { createContext, useContext, useMemo, type ReactNode } from 'react'
 import { useAccount, useWalletClient, useSwitchChain } from 'wagmi'
 import { HttpTransport, InfoClient, ExchangeClient } from '@nktkas/hyperliquid'
 import { USE_TESTNET } from '../config/hyperliquid'
-import { useAgentWallet } from '../hooks/useAgentWallet'
 import { arbitrum } from 'wagmi/chains'
 
 interface HyperliquidContextValue {
@@ -22,25 +21,22 @@ const HyperliquidContext = createContext<HyperliquidContextValue | null>(null)
 const transport = new HttpTransport({ isTestnet: USE_TESTNET })
 
 export function HyperliquidProvider({ children }: { children: ReactNode }) {
-  const { chainId } = useAccount()
+  const { address, isConnected, chainId } = useAccount()
   const { data: walletClient } = useWalletClient()
   const { switchChain } = useSwitchChain()
-  const agent = useAgentWallet()
 
   const info = useMemo(() => new InfoClient({ transport }), [])
 
-  // Direct browser wallet exchange (fallback)
-  const directExchange = useMemo(() => {
+  // Direct browser wallet — SDK handles signing internally
+  const exchange = useMemo(() => {
     if (!walletClient) return null
     try {
       return new ExchangeClient({ wallet: walletClient, transport })
-    } catch { return null }
+    } catch (e) {
+      console.error('Failed to create ExchangeClient:', e)
+      return null
+    }
   }, [walletClient])
-
-  // Use agent exchange if approved, otherwise try direct
-  const exchange = agent.agentApproved && agent.exchange
-    ? agent.exchange
-    : directExchange
 
   const switchToArbitrum = () => {
     if (chainId !== arbitrum.id) {
@@ -52,12 +48,12 @@ export function HyperliquidProvider({ children }: { children: ReactNode }) {
     <HyperliquidContext.Provider value={{
       info,
       exchange,
-      isConnected: agent.isConnected,
-      address: agent.address,
-      agentApproved: agent.agentApproved,
-      approving: agent.approving,
-      approvalError: agent.error,
-      approveAgent: agent.approveAgent,
+      isConnected,
+      address,
+      agentApproved: true, // Skip agent — use direct signing
+      approving: false,
+      approvalError: null,
+      approveAgent: async () => {},
       switchToArbitrum,
     }}>
       {children}

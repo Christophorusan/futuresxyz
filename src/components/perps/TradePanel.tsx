@@ -296,17 +296,6 @@ export function TradePanel() {
       {error && <div className="trade-error">{error}</div>}
       {approvalError && <div className="trade-error">{approvalError}</div>}
 
-      {/* Agent setup for instant trading (optional) */}
-      {isConnected && !agentApproved && (
-        <button
-          className="tp-agent-btn"
-          onClick={async () => { switchToArbitrum(); setTimeout(approveAgent, 1500) }}
-          disabled={approving}
-          style={{ marginTop: 6, width: '100%', padding: 8, background: 'none', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text-3)', fontSize: 11, cursor: 'pointer', fontFamily: 'var(--font)' }}
-        >
-          {approving ? 'Setting up...' : 'Enable instant trading (optional)'}
-        </button>
-      )}
 
       {/* Order Confirmation Modal */}
       {showConfirm && (
