@@ -21,7 +21,7 @@ export function TradePanel() {
   const [orderType, setOrderType] = useState<OrderType>('market')
   const [size, setSize] = useState('')
   const [price, setPrice] = useState('')
-  const [tif, setTif] = useState<Tif>('Gtc')
+  const [tif] = useState<Tif>('Gtc')
   const [leverage, setLeverage] = useState(20)
   const [reduceOnly, setReduceOnly] = useState(false)
   const [showTpSl, setShowTpSl] = useState(false)
@@ -39,7 +39,7 @@ export function TradePanel() {
 
   const market = markets.find(m => m.name === selectedMarket)
   const midPrice = market ? parseFloat(market.midPrice) : 0
-  const maxLev = market?.maxLeverage ?? 50
+  // const maxLev = market?.maxLeverage ?? 50
   const coin = selectedMarket.replace('-PERP', '')
 
   // Unified balance (spot USDC + perps withdrawable)
@@ -266,13 +266,13 @@ export function TradePanel() {
       {/* Deposit / Withdraw — like Hyperliquid */}
       {isConnected && (
         <div className="tp-deposit-section">
-          <button className="tp-deposit-btn">Deposit</button>
+          <button className="tp-deposit-btn" onClick={() => window.open('https://app.hyperliquid.xyz', '_blank')}>Deposit</button>
           <div className="tp-perps-spot-toggle">
             <span className="tp-toggle-active">Perps</span>
             <span className="tp-toggle-divider">|</span>
             <span>Spot</span>
           </div>
-          <button className="tp-withdraw-btn">Withdraw</button>
+          <button className="tp-withdraw-btn" onClick={() => window.open('https://app.hyperliquid.xyz', '_blank')}>Withdraw</button>
         </div>
       )}
 
