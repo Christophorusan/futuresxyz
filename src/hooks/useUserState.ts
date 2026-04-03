@@ -36,7 +36,7 @@ export function useUserState() {
   addressRef.current = address
 
   const fetchState = useCallback(async () => {
-    const addr = addressRef.current
+    const addr = addressRef.current?.toLowerCase() as `0x${string}` | undefined
     if (!addr) {
       setState(null)
       return

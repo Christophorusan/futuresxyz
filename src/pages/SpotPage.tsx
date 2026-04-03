@@ -101,17 +101,18 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
 function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
   const { isConnected, exchange } = useHyperliquid()
   const [side, setSide] = useState<'buy' | 'sell'>('buy')
-  const [amount, setAmount] = useState('')
+  const [usdcAmount, setUsdcAmount] = useState('')  // Input in USDC
   const [placing, setPlacing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
 
   const price = market ? parseFloat(market.markPx) : 0
-  const amountNum = parseFloat(amount) || 0
-  const total = amountNum * price
+  const usdcNum = parseFloat(usdcAmount) || 0
+  // Convert USDC input to token amount
+  const tokenAmount = price > 0 ? usdcNum / price : 0
 
   const handleSpotOrder = async () => {
-    if (!market || amountNum <= 0 || price <= 0) return
+    if (!market || tokenAmount <= 0 || price <= 0) return
 
     if (!exchange) {
       setError('Wallet not connected. Switch to Arbitrum chain and reconnect.')
@@ -137,8 +138,8 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
       else if (slippedPx >= 0.001) limitPx = slippedPx.toFixed(5)
       else limitPx = slippedPx.toFixed(8)
 
-      // Round size — spot tokens have varying decimals
-      const roundedSize = parseFloat(amount).toFixed(0) // Spot sizes are usually whole numbers
+      // Convert USDC to token amount and round
+      const roundedSize = Math.floor(tokenAmount).toString()
 
       await exchange.order({
         orders: [{
@@ -153,7 +154,7 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
       })
 
       setSuccess(`${isBuy ? 'Bought' : 'Sold'} ${roundedSize} ${market.baseToken}`)
-      setAmount('')
+      setUsdcAmount('')
     } catch (e) {
       console.error('Spot order failed:', e)
       const msg = e instanceof Error ? e.message : String(e)
@@ -188,24 +189,27 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
           <span>Price</span>
           <span>${price > 0 ? formatPrice(price.toString()) : '--'}</span>
         </div>
-        <div className="tp-info-row">
-          <span>Total Cost</span>
-          <span>{total > 0 ? `$${total.toFixed(2)}` : '--'}</span>
-        </div>
       </div>
 
       <div className="trade-input-group">
         <div className="tp-input-header">
-          <span className="trade-label">Amount</span>
+          <span className="trade-label">Size</span>
+          <span className="trade-label" style={{ color: 'var(--text-3)' }}>USDC</span>
         </div>
         <div className="trade-input-wrapper">
-          <input type="number" className="trade-input" placeholder="0.00" value={amount} onChange={e => setAmount(e.target.value)} step="any" />
-          <span className="trade-input-unit">{market?.baseToken ?? '--'}</span>
+          <input type="number" className="trade-input" placeholder="0.00" value={usdcAmount} onChange={e => setUsdcAmount(e.target.value)} step="any" />
+          <span className="trade-input-unit">USDC</span>
         </div>
+        {tokenAmount > 0 && (
+          <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 4 }}>
+            = {tokenAmount.toFixed(tokenAmount >= 100 ? 0 : tokenAmount >= 1 ? 2 : 4)} {market?.baseToken}
+          </div>
+        )}
       </div>
 
       <div className="tp-summary">
-        <div className="tp-summary-row"><span>Order Value</span><span>{total > 0 ? `$${total.toFixed(2)}` : 'N/A'}</span></div>
+        <div className="tp-summary-row"><span>Order Value</span><span>{usdcNum > 0 ? `$${usdcNum.toFixed(2)}` : 'N/A'}</span></div>
+        <div className="tp-summary-row"><span>You {side === 'buy' ? 'receive' : 'sell'}</span><span>{tokenAmount > 0 ? `${tokenAmount.toFixed(tokenAmount >= 100 ? 0 : 2)} ${market?.baseToken ?? ''}` : 'N/A'}</span></div>
         <div className="tp-summary-row"><span>Fee</span><span>0.0560% / 0.0400%</span></div>
       </div>
 
@@ -214,7 +218,7 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
       ) : (
         <button
           className={`trade-submit ${side}`}
-          disabled={placing || amountNum <= 0}
+          disabled={placing || tokenAmount <= 0}
           onClick={handleSpotOrder}
         >
           {placing ? 'Placing...' : `${side === 'buy' ? 'Buy' : 'Sell'} ${market?.baseToken ?? ''}`}
