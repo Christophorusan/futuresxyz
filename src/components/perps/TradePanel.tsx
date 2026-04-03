@@ -82,82 +82,56 @@ export function TradePanel() {
 
   return (
     <div className="trade-panel">
-      {/* Cross / Leverage — top of sidebar like Hyperliquid */}
-      <div className="tp-mode-row">
+      {/* Cross / Leverage / Classic — like Hyperliquid */}
+      <div className="tp-mode-row" style={{ gap: 4 }}>
         <button className="tp-mode-btn">Cross</button>
-        <button className="tp-mode-btn tp-lev-btn">{leverage}x</button>
+        <button className="tp-mode-btn tp-lev-btn" onClick={() => {
+          const presets = [1, 2, 3, 5, 10, 20, 50]
+          const next = presets.find(l => l > leverage) ?? presets[0]
+          setLeverage(next)
+        }}>{leverage}x</button>
+        <button className="tp-mode-btn">Classic</button>
       </div>
 
-      {/* Order Type */}
+      {/* Market / Limit / Pro */}
       <div className="trade-type-toggle">
-        <button className={`trade-type-btn ${orderType === 'market' ? 'active' : ''}`} onClick={() => setOrderType('market')}>
-          Market
-        </button>
-        <button className={`trade-type-btn ${orderType === 'limit' ? 'active' : ''}`} onClick={() => setOrderType('limit')}>
-          Limit
-        </button>
+        <button className={`trade-type-btn ${orderType === 'market' ? 'active' : ''}`} onClick={() => setOrderType('market')}>Market</button>
+        <button className={`trade-type-btn ${orderType === 'limit' ? 'active' : ''}`} onClick={() => setOrderType('limit')}>Limit</button>
+        <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text-3)' }}>Pro ▾</span>
       </div>
 
-      {/* Side Toggle */}
+      {/* Buy / Long | Sell / Short */}
       <div className="trade-side-toggle">
-        <button className={`trade-side-btn ${side === 'buy' ? 'active buy' : ''}`} onClick={() => setSide('buy')}>
-          Long
-        </button>
-        <button className={`trade-side-btn ${side === 'sell' ? 'active sell' : ''}`} onClick={() => setSide('sell')}>
-          Short
-        </button>
+        <button className={`trade-side-btn ${side === 'buy' ? 'active buy' : ''}`} onClick={() => setSide('buy')}>Buy / Long</button>
+        <button className={`trade-side-btn ${side === 'sell' ? 'active sell' : ''}`} onClick={() => setSide('sell')}>Sell / Short</button>
       </div>
 
-      {/* Available + Position */}
+      {/* Available to Trade + Current Position */}
       <div className="tp-info-rows">
         <div className="tp-info-row">
           <span>Available to Trade</span>
-          <span>{formatUsd(available)}</span>
+          <span>{available > 0 ? `${available.toFixed(2)} USDC` : '0.00 USDC'}</span>
         </div>
         <div className="tp-info-row">
           <span>Current Position</span>
-          <span>{posSize !== 0 ? `${posSize > 0 ? '+' : ''}${posSize} ${coin}` : '$0'}</span>
+          <span>{posSize !== 0 ? `${posSize.toFixed(5)} ${coin}` : `0.00000 ${coin}`}</span>
         </div>
       </div>
 
-      {/* Limit price with MID | BID */}
+      {/* Limit price */}
       {orderType === 'limit' && (
         <div className="trade-input-group">
-          <div className="tp-input-header">
-            <span className="trade-label">Limit price (USDC)</span>
-            <div className="tp-midbid">
-              <button onClick={() => setPrice(midPrice.toFixed(2))}>MID</button>
-              <span>|</span>
-              <button onClick={() => {
-                const bid = midPrice * 0.999
-                setPrice(bid.toFixed(2))
-              }}>BID</button>
-            </div>
-          </div>
           <div className="trade-input-wrapper">
             <input type="number" className="trade-input" placeholder={formatPrice(midPrice)} value={price} onChange={e => setPrice(e.target.value)} step="any" />
-          </div>
-          <div className="trade-tif">
-            <label className="tp-checkbox" style={{ marginRight: 'auto' }}>
-              <input type="checkbox" />
-              <span>Post only</span>
-            </label>
-            <select className="tp-tif-select" value={tif} onChange={e => setTif(e.target.value as Tif)}>
-              <option value="Gtc">GTC</option>
-              <option value="Ioc">IOC</option>
-              <option value="Alo">ALO</option>
-            </select>
+            <span className="trade-input-unit">USDC</span>
           </div>
         </div>
       )}
 
-      {/* Amount */}
+      {/* Size in USDC — like Hyperliquid */}
       <div className="trade-input-group">
-        <div className="tp-input-header">
-          <span className="trade-label">Amount</span>
-          <span className="trade-label" style={{ color: 'var(--text-3)' }}>USDC ↻</span>
-        </div>
         <div className="trade-input-wrapper">
+          <span style={{ fontSize: 12, color: 'var(--text-3)', marginRight: 8 }}>Size</span>
           <input
             type="number"
             className="trade-input"
@@ -170,44 +144,23 @@ export function TradePanel() {
             }}
             step="any"
           />
-          <span className="trade-input-unit">≈ {sizeNum > 0 ? `${(sizeNum * priceNum).toFixed(0)} USDC` : `0 ${coin}`}</span>
+          <span className="trade-input-unit">USDC ▾</span>
         </div>
       </div>
 
-      {/* Slider with dots */}
-      <div className="tp-slider-wrapper">
-        <div className="tp-slider-dots">
-          {SIZE_MARKS.map(pct => (
-            <button
-              key={pct}
-              className={`tp-slider-dot ${sizePct >= pct ? 'active' : ''}`}
-              onClick={() => handleSizePct(pct)}
-            />
-          ))}
+      {/* Slider with % input */}
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <div className="tp-slider-wrapper" style={{ flex: 1 }}>
+          <div className="tp-slider-dots">
+            {SIZE_MARKS.map(pct => (
+              <button key={pct} className={`tp-slider-dot ${sizePct >= pct ? 'active' : ''}`} onClick={() => handleSizePct(pct)} />
+            ))}
+          </div>
+          <input type="range" className="tp-slider" min={0} max={100} value={sizePct} onChange={e => handleSizePct(parseInt(e.target.value))} />
         </div>
-        <input
-          type="range"
-          className="tp-slider"
-          min={0}
-          max={100}
-          value={sizePct}
-          onChange={e => handleSizePct(parseInt(e.target.value))}
-        />
-      </div>
-
-      {/* Leverage slider */}
-      <div className="tp-lev-slider-section">
-        <input
-          type="range"
-          className="tp-slider"
-          min={1}
-          max={maxLev}
-          value={leverage}
-          onChange={e => setLeverage(parseInt(e.target.value))}
-        />
-        <div className="trade-leverage-labels">
-          <span>1x</span>
-          <span>{maxLev}x</span>
+        <div className="trade-input-wrapper" style={{ width: 70, padding: '6px 8px' }}>
+          <input type="number" className="trade-input" style={{ fontSize: 13 }} value={sizePct || ''} onChange={e => handleSizePct(parseInt(e.target.value) || 0)} />
+          <span style={{ fontSize: 11, color: 'var(--text-3)' }}>%</span>
         </div>
       </div>
 
@@ -219,7 +172,7 @@ export function TradePanel() {
         </label>
         <label className="tp-checkbox">
           <input type="checkbox" checked={showTpSl} onChange={e => setShowTpSl(e.target.checked)} />
-          <span>Take profit / Stop loss</span>
+          <span>Take Profit / Stop Loss</span>
         </label>
       </div>
 
@@ -228,17 +181,11 @@ export function TradePanel() {
         <div className="tp-tpsl-grid">
           <div className="tp-tpsl-row">
             <input type="number" className="trade-input" placeholder="Take profit" value={tpPrice} onChange={e => setTpPrice(e.target.value)} step="any" />
-            <div className="tp-tpsl-gain">
-              <span>Gain</span>
-              <span className="tp-tpsl-unit">$ ▾</span>
-            </div>
+            <div className="tp-tpsl-gain"><span>Gain</span><span className="tp-tpsl-unit">$ ▾</span></div>
           </div>
           <div className="tp-tpsl-row">
             <input type="number" className="trade-input" placeholder="Stop loss" value={slPrice} onChange={e => setSlPrice(e.target.value)} step="any" />
-            <div className="tp-tpsl-gain">
-              <span>Loss</span>
-              <span className="tp-tpsl-unit">$ ▾</span>
-            </div>
+            <div className="tp-tpsl-gain"><span>Loss</span><span className="tp-tpsl-unit">$ ▾</span></div>
           </div>
         </div>
       )}
