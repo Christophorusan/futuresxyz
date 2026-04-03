@@ -174,26 +174,38 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
     }
   }
 
+  const spotBalance = state ? parseFloat(state.spotUSDC) : 0
+  const [sizePct, setSizePct] = useState(0)
+  const [orderType, setOrderType] = useState<'market' | 'limit'>('market')
+  const [limitPrice, setLimitPrice] = useState('')
+
+  const handleSizePct = (pct: number) => {
+    setSizePct(pct)
+    if (spotBalance > 0) {
+      const usd = (spotBalance * pct / 100)
+      setUsdcAmount(usd > 0 ? usd.toFixed(2) : '')
+    }
+  }
+
   return (
     <div className="trade-panel">
-      <div className="tp-balance-header">
-        <span className="tp-balance-label">Spot Trading</span>
+      {/* Market / Limit */}
+      <div className="trade-type-toggle">
+        <button className={`trade-type-btn ${orderType === 'market' ? 'active' : ''}`} onClick={() => setOrderType('market')}>Market</button>
+        <button className={`trade-type-btn ${orderType === 'limit' ? 'active' : ''}`} onClick={() => setOrderType('limit')}>Limit</button>
       </div>
 
+      {/* Buy / Sell */}
       <div className="trade-side-toggle">
         <button className={`trade-side-btn ${side === 'buy' ? 'active buy' : ''}`} onClick={() => setSide('buy')}>Buy</button>
         <button className={`trade-side-btn ${side === 'sell' ? 'active sell' : ''}`} onClick={() => setSide('sell')}>Sell</button>
       </div>
 
-      {/* Swap label */}
-      <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--text-3)', margin: '-4px 0 4px' }}>
-        {side === 'buy' ? `USDC -> ${market?.baseToken ?? ''}` : `${market?.baseToken ?? ''} -> USDC`}
-      </div>
-
+      {/* Available + Price */}
       <div className="tp-info-rows">
         <div className="tp-info-row">
           <span>Available to Trade</span>
-          <span>{state ? `${parseFloat(state.spotUSDC).toFixed(2)} USDC` : '--'}</span>
+          <span>{spotBalance > 0 ? `${spotBalance.toFixed(2)} USDC` : '0.00 USDC'}</span>
         </div>
         <div className="tp-info-row">
           <span>Price</span>
@@ -201,14 +213,26 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
         </div>
       </div>
 
-      <div className="trade-input-group">
-        <div className="tp-input-header">
-          <span className="trade-label">Size</span>
-          <span className="trade-label" style={{ color: 'var(--text-3)' }}>USDC</span>
+      {/* Limit price input */}
+      {orderType === 'limit' && (
+        <div className="trade-input-group">
+          <div className="trade-input-wrapper">
+            <input type="number" className="trade-input" placeholder={formatPrice(price.toString())} value={limitPrice} onChange={e => setLimitPrice(e.target.value)} step="any" />
+            <span className="trade-input-unit">USDC</span>
+          </div>
         </div>
+      )}
+
+      {/* Size in USDC */}
+      <div className="trade-input-group">
         <div className="trade-input-wrapper">
-          <input type="number" className="trade-input" placeholder="0.00" value={usdcAmount} onChange={e => setUsdcAmount(e.target.value)} step="any" />
-          <span className="trade-input-unit">USDC</span>
+          <span style={{ fontSize: 12, color: 'var(--text-3)', marginRight: 8 }}>Size</span>
+          <input type="number" className="trade-input" placeholder="0.00" value={usdcAmount} onChange={e => {
+            setUsdcAmount(e.target.value)
+            const val = parseFloat(e.target.value) || 0
+            if (spotBalance > 0) setSizePct(Math.min(100, Math.round((val / spotBalance) * 100)))
+          }} step="any" />
+          <span className="trade-input-unit">USDC ▾</span>
         </div>
         {tokenAmount > 0 && (
           <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 4 }}>
@@ -217,29 +241,39 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
         )}
       </div>
 
+      {/* Slider with % input */}
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <div className="tp-slider-wrapper" style={{ flex: 1 }}>
+          <div className="tp-slider-dots">
+            {[0, 25, 50, 75, 100].map(pct => (
+              <button key={pct} className={`tp-slider-dot ${sizePct >= pct ? 'active' : ''}`} onClick={() => handleSizePct(pct)} />
+            ))}
+          </div>
+          <input type="range" className="tp-slider" min={0} max={100} value={sizePct} onChange={e => handleSizePct(parseInt(e.target.value))} />
+        </div>
+        <div className="trade-input-wrapper" style={{ width: 70, padding: '6px 8px' }}>
+          <input type="number" className="trade-input" style={{ fontSize: 13 }} value={sizePct || ''} onChange={e => handleSizePct(parseInt(e.target.value) || 0)} />
+          <span style={{ fontSize: 11, color: 'var(--text-3)' }}>%</span>
+        </div>
+      </div>
+
+      {/* Order summary */}
       <div className="tp-summary">
         <div className="tp-summary-row"><span>Order Value</span><span>{usdcNum > 0 ? `$${usdcNum.toFixed(2)}` : 'N/A'}</span></div>
         <div className="tp-summary-row"><span>You {side === 'buy' ? 'receive' : 'sell'}</span><span>{tokenAmount > 0 ? `${tokenAmount.toFixed(tokenAmount >= 100 ? 0 : 2)} ${market?.baseToken ?? ''}` : 'N/A'}</span></div>
         <div className="tp-summary-row"><span>Fee</span><span>0.0560% / 0.0400%</span></div>
       </div>
 
+      {/* Submit */}
       {!isConnected ? (
-        <div className="connect-prompt">Connect wallet to swap</div>
+        <div className="connect-prompt">Connect wallet to trade</div>
       ) : !agentApproved ? (
-        <button
-          className="trade-submit transfer"
-          onClick={async () => { switchToArbitrum(); setTimeout(approveAgent, 1500) }}
-          disabled={approving}
-        >
+        <button className="trade-submit transfer" onClick={async () => { switchToArbitrum(); setTimeout(approveAgent, 1500) }} disabled={approving}>
           {approving ? 'Setting up...' : 'Enable Trading'}
         </button>
       ) : (
-        <button
-          className={`trade-submit ${side}`}
-          disabled={placing || tokenAmount <= 0}
-          onClick={handleSpotOrder}
-        >
-          {placing ? 'Swapping...' : `Swap ${side === 'buy' ? `USDC -> ${market?.baseToken ?? ''}` : `${market?.baseToken ?? ''} -> USDC`}`}
+        <button className={`trade-submit ${side}`} disabled={placing || tokenAmount <= 0} onClick={handleSpotOrder}>
+          {placing ? 'Placing...' : side === 'buy' ? `Buy ${market?.baseToken ?? ''}` : `Sell ${market?.baseToken ?? ''}`}
         </button>
       )}
 
