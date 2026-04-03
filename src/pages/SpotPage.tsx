@@ -101,11 +101,65 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
 // ── Spot Trade Panel ──
 function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
   const { isConnected } = useAccount()
+  const { exchange } = useHyperliquid()
   const [side, setSide] = useState<'buy' | 'sell'>('buy')
   const [amount, setAmount] = useState('')
+  const [placing, setPlacing] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
+
   const price = market ? parseFloat(market.markPx) : 0
   const amountNum = parseFloat(amount) || 0
   const total = amountNum * price
+
+  const handleSpotOrder = async () => {
+    if (!exchange || !market || amountNum <= 0 || price <= 0) return
+
+    try {
+      setPlacing(true)
+      setError(null)
+      setSuccess(null)
+
+      const isBuy = side === 'buy'
+      // Spot asset index = 10000 + pair index
+      const assetIndex = 10000 + market.index
+
+      // For market orders: use 3% slippage
+      const slippedPx = isBuy ? price * 1.03 : price * 0.97
+      // Round price based on magnitude
+      let limitPx: string
+      if (slippedPx >= 10000) limitPx = slippedPx.toFixed(0)
+      else if (slippedPx >= 100) limitPx = slippedPx.toFixed(1)
+      else if (slippedPx >= 1) limitPx = slippedPx.toFixed(2)
+      else if (slippedPx >= 0.01) limitPx = slippedPx.toFixed(4)
+      else limitPx = slippedPx.toFixed(6)
+
+      await exchange.order({
+        orders: [{
+          a: assetIndex,
+          b: isBuy,
+          p: limitPx,
+          s: amount,
+          r: false,
+          t: { limit: { tif: 'FrontendMarket' } },
+        }],
+        grouping: 'na',
+      })
+
+      setSuccess(`${isBuy ? 'Bought' : 'Sold'} ${amount} ${market.baseToken}`)
+      setAmount('')
+    } catch (e) {
+      console.error('Spot order failed:', e)
+      const msg = e instanceof Error ? e.message : String(e)
+      if (msg.includes('Not enough')) {
+        setError('Not enough balance. You need USDC to buy or tokens to sell.')
+      } else {
+        setError(msg.slice(0, 120))
+      }
+    } finally {
+      setPlacing(false)
+    }
+  }
 
   return (
     <div className="trade-panel">
@@ -124,6 +178,10 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
           <span>Price</span>
           <span>${price > 0 ? formatPrice(price.toString()) : '--'}</span>
         </div>
+        <div className="tp-info-row">
+          <span>Total Cost</span>
+          <span>{total > 0 ? `$${total.toFixed(2)}` : '--'}</span>
+        </div>
       </div>
 
       <div className="trade-input-group">
@@ -137,17 +195,24 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
       </div>
 
       <div className="tp-summary">
-        <div className="tp-summary-row"><span>Total</span><span>{total > 0 ? `$${total.toFixed(2)}` : '--'}</span></div>
-        <div className="tp-summary-row"><span>Fee</span><span>{total > 0 ? `$${(total * 0.0005).toFixed(4)}` : '--'}</span></div>
+        <div className="tp-summary-row"><span>Order Value</span><span>{total > 0 ? `$${total.toFixed(2)}` : 'N/A'}</span></div>
+        <div className="tp-summary-row"><span>Fee</span><span>0.0560% / 0.0400%</span></div>
       </div>
 
       {!isConnected ? (
         <div className="connect-prompt">Connect wallet to trade</div>
       ) : (
-        <button className={`trade-submit ${side}`} disabled={amountNum <= 0}>
-          {side === 'buy' ? 'Buy' : 'Sell'} {market?.baseToken ?? ''}
+        <button
+          className={`trade-submit ${side}`}
+          disabled={placing || amountNum <= 0}
+          onClick={handleSpotOrder}
+        >
+          {placing ? 'Placing...' : `${side === 'buy' ? 'Buy' : 'Sell'} ${market?.baseToken ?? ''}`}
         </button>
       )}
+
+      {error && <div className="trade-error">{error}</div>}
+      {success && <div className="dw-success">{success}</div>}
     </div>
   )
 }
