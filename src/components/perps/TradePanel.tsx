@@ -1,11 +1,9 @@
 import { useState, useCallback } from 'react'
-import { useAccount } from 'wagmi'
 import { useMarket } from '../../contexts/MarketContext'
 import { useHyperliquid } from '../../contexts/HyperliquidContext'
 import { useMarketMeta } from '../../hooks/useMarketMeta'
 import { useUserState } from '../../hooks/useUserState'
 import { usePlaceOrder, type OrderSide, type OrderType, type Tif } from '../../hooks/usePlaceOrder'
-import { useBuilderApproval } from '../../hooks/useBuilderApproval'
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts'
 import { OrderConfirmModal } from './OrderConfirmModal'
 import { formatPrice, formatUsd } from '../../lib/format'
@@ -13,13 +11,11 @@ import { formatPrice, formatUsd } from '../../lib/format'
 const SIZE_MARKS = [0, 25, 50, 75, 100]
 
 export function TradePanel() {
-  const { isConnected } = useAccount()
   const { selectedMarket } = useMarket()
   const { markets } = useMarketMeta()
   const { state } = useUserState()
   const { placeOrder, placing, error, clearError } = usePlaceOrder()
-  const { isApproved, approving, approve, error: approvalError } = useBuilderApproval()
-  const { switchToArbitrum } = useHyperliquid()
+  const { isConnected, agentApproved, approving, approvalError, approveAgent, switchToArbitrum } = useHyperliquid()
 
   const [side, setSide] = useState<OrderSide>('buy')
   const [orderType, setOrderType] = useState<OrderType>('market')
@@ -256,10 +252,10 @@ export function TradePanel() {
       {/* Submit */}
       {!isConnected ? (
         <div className="connect-prompt">Connect wallet to trade</div>
-      ) : !isApproved ? (
+      ) : !agentApproved ? (
         <button
           className="trade-submit transfer"
-          onClick={async () => { switchToArbitrum(); setTimeout(approve, 1000) }}
+          onClick={async () => { switchToArbitrum(); setTimeout(approveAgent, 1500) }}
           disabled={approving}
         >
           {approving ? 'Approving...' : 'Enable Trading (one-time signature)'}

@@ -4,7 +4,6 @@ import { useSpotMarkets, type SpotMarket } from '../hooks/useSpotMarkets'
 import { formatPrice } from '../lib/format'
 import { createChart, CandlestickSeries, HistogramSeries, type IChartApi, type ISeriesApi, type CandlestickData, type HistogramData, type Time } from 'lightweight-charts'
 import { useTheme } from '../contexts/ThemeContext'
-import { useAccount } from 'wagmi'
 import { Positions } from '../components/perps/Positions'
 
 // ── Spot Chart ──
@@ -100,8 +99,7 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
 
 // ── Spot Trade Panel ──
 function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
-  const { isConnected, chainId } = useAccount()
-  const { exchange, switchToArbitrum } = useHyperliquid()
+  const { isConnected, exchange, agentApproved, approving, approveAgent, switchToArbitrum, approvalError } = useHyperliquid()
   const [side, setSide] = useState<'buy' | 'sell'>('buy')
   const [amount, setAmount] = useState('')
   const [placing, setPlacing] = useState(false)
@@ -213,9 +211,13 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
 
       {!isConnected ? (
         <div className="connect-prompt">Connect wallet to trade</div>
-      ) : !exchange ? (
-        <button className="trade-submit transfer" onClick={switchToArbitrum}>
-          Switch to Arbitrum to trade
+      ) : !agentApproved ? (
+        <button
+          className="trade-submit transfer"
+          onClick={async () => { switchToArbitrum(); setTimeout(approveAgent, 1500) }}
+          disabled={approving}
+        >
+          {approving ? 'Approving...' : 'Enable Trading (one-time)'}
         </button>
       ) : (
         <button
@@ -228,10 +230,8 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
       )}
 
       {error && <div className="trade-error">{error}</div>}
+      {approvalError && <div className="trade-error">{approvalError}</div>}
       {success && <div className="dw-success">{success}</div>}
-      <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 4 }}>
-        Chain: {chainId ?? '?'} | {exchange ? 'Ready' : 'Switch to Arbitrum'}
-      </div>
     </div>
   )
 }
