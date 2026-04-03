@@ -1,167 +1,212 @@
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import { useHyperliquid } from '../contexts/HyperliquidContext'
 import { useSpotMarkets, type SpotMarket } from '../hooks/useSpotMarkets'
 import { formatPrice } from '../lib/format'
+import { createChart, CandlestickSeries, HistogramSeries, type IChartApi, type ISeriesApi, type CandlestickData, type HistogramData, type Time } from 'lightweight-charts'
+import { useTheme } from '../contexts/ThemeContext'
+import { useAccount } from 'wagmi'
 
-function formatVol(v: number): string {
-  if (v >= 1e9) return `$${(v / 1e9).toFixed(1)}B`
-  if (v >= 1e6) return `$${Math.round(v / 1e6)}M`
-  if (v >= 1e3) return `$${Math.round(v / 1e3)}K`
-  if (v > 0) return `$${v.toFixed(0)}`
-  return '$0'
-}
+// ── Spot Chart ──
+function SpotChart({ coin, theme }: { coin: string; theme: 'dark' | 'light' }) {
+  const { info } = useHyperliquid()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const chartRef = useRef<IChartApi | null>(null)
+  const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
+  const volRef = useRef<ISeriesApi<'Histogram'> | null>(null)
+  const [interval, setInterval] = useState<'1h' | '4h' | '1d'>('1h')
 
-function SpotMarketList({ markets, selected, onSelect, search, setSearch }: {
-  markets: SpotMarket[]; selected: string; onSelect: (name: string) => void
-  search: string; setSearch: (s: string) => void
-}) {
+  useEffect(() => {
+    if (!containerRef.current) return
+    const isDark = theme === 'dark'
+    const chart = createChart(containerRef.current, {
+      layout: { background: { color: isDark ? '#13141a' : '#fafafa' }, textColor: isDark ? '#5c5e69' : '#9ca3af', fontFamily: "'Inter', sans-serif", fontSize: 11 },
+      grid: { vertLines: { color: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.04)' }, horzLines: { color: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.04)' } },
+      rightPriceScale: { borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)', scaleMargins: { top: 0.1, bottom: 0.25 } },
+      timeScale: { borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)', timeVisible: true },
+      handleScroll: { mouseWheel: true, pressedMouseMove: true },
+      handleScale: { mouseWheel: true, pinch: true },
+    })
+    const up = isDark ? '#2dd4bf' : '#14b8a6'
+    const down = isDark ? '#ef4444' : '#dc2626'
+    const series = chart.addSeries(CandlestickSeries, { upColor: up, downColor: down, borderUpColor: up, borderDownColor: down, wickUpColor: up, wickDownColor: down })
+    const vol = chart.addSeries(HistogramSeries, { priceFormat: { type: 'volume' }, priceScaleId: 'vol' })
+    chart.priceScale('vol').applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } })
+
+    chartRef.current = chart
+    seriesRef.current = series
+    volRef.current = vol
+
+    const obs = new ResizeObserver(e => { const { width, height } = e[0].contentRect; chart.resize(width, height) })
+    obs.observe(containerRef.current)
+    return () => { obs.disconnect(); chart.remove(); chartRef.current = null }
+  }, [theme])
+
+  useEffect(() => {
+    if (!seriesRef.current || !volRef.current) return
+    const isDark = theme === 'dark'
+    const now = Date.now()
+    info.candleSnapshot({ coin, interval, startTime: now - 7 * 86400000, endTime: now }).then((raw: unknown) => {
+      const candles = raw as Array<{ t: number; o: string; h: string; l: string; c: string; v: string }>
+      const cd: CandlestickData<Time>[] = candles.map(c => ({ time: Math.floor(c.t / 1000) as Time, open: parseFloat(c.o), high: parseFloat(c.h), low: parseFloat(c.l), close: parseFloat(c.c) }))
+      const vd: HistogramData<Time>[] = candles.map(c => ({ time: Math.floor(c.t / 1000) as Time, value: parseFloat(c.v), color: parseFloat(c.c) >= parseFloat(c.o) ? (isDark ? 'rgba(45,212,191,0.25)' : 'rgba(20,184,166,0.25)') : (isDark ? 'rgba(239,68,68,0.25)' : 'rgba(220,38,38,0.25)') }))
+      seriesRef.current?.setData(cd)
+      volRef.current?.setData(vd)
+      chartRef.current?.timeScale().fitContent()
+    }).catch(() => {})
+  }, [coin, interval, info, theme])
+
   return (
-    <div className="spot-sidebar">
-      <div className="spot-search-bar">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input className="spot-search" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} />
-      </div>
-      <div className="spot-list-header">
-        <span>Token</span>
-        <span>Price</span>
-        <span>24h</span>
-      </div>
-      <div className="spot-list-body">
-        {markets.map(m => (
-          <button
-            key={m.name}
-            className={`spot-list-row ${m.baseToken === selected ? 'active' : ''}`}
-            onClick={() => onSelect(m.baseToken)}
-          >
-            <span className="spot-list-name">{m.baseToken}</span>
-            <span className="spot-list-price">${formatPrice(m.markPx)}</span>
-            <span className={m.change24h >= 0 ? 'green' : 'red'}>
-              {m.change24h >= 0 ? '+' : ''}{m.change24h.toFixed(1)}%
-            </span>
-          </button>
+    <div className="chart-container">
+      <div className="chart-controls">
+        {(['1h', '4h', '1d'] as const).map(i => (
+          <button key={i} className={`chart-interval ${interval === i ? 'active' : ''}`} onClick={() => setInterval(i)}>{i}</button>
         ))}
       </div>
+      <div className="chart-wrapper" ref={containerRef} />
     </div>
   )
 }
 
+// ── Spot Market Selector (inline) ──
+function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; selected: string; onSelect: (name: string) => void }) {
+  const [search, setSearch] = useState('')
+  const [open, setOpen] = useState(false)
+  const filtered = useMemo(() => markets.filter(m => m.baseToken.toLowerCase().includes(search.toLowerCase()) || m.pairName.toLowerCase().includes(search.toLowerCase())).sort((a, b) => parseFloat(b.volume24h) - parseFloat(a.volume24h)), [markets, search])
+
+  return (
+    <div className="spot-selector">
+      <button className="market-selector-btn" onClick={() => setOpen(!open)}>
+        <span className="market-name">{selected}</span>
+        <span className="market-arrow">{open ? '▲' : '▼'}</span>
+      </button>
+      {open && (
+        <div className="spot-dropdown">
+          <input className="spot-dd-search" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} autoFocus />
+          <div className="spot-dd-list">
+            {filtered.slice(0, 50).map(m => (
+              <button key={m.name} className={`spot-dd-item ${m.pairName === selected ? 'active' : ''}`} onClick={() => { onSelect(m.pairName); setOpen(false); setSearch('') }}>
+                <span className="spot-dd-name">{m.pairName}</span>
+                <span className="spot-dd-price">${formatPrice(m.markPx)}</span>
+                <span className={m.change24h >= 0 ? 'green' : 'red'}>{m.change24h >= 0 ? '+' : ''}{m.change24h.toFixed(1)}%</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Spot Trade Panel ──
+function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
+  const { isConnected } = useAccount()
+  const [side, setSide] = useState<'buy' | 'sell'>('buy')
+  const [amount, setAmount] = useState('')
+  const price = market ? parseFloat(market.markPx) : 0
+  const amountNum = parseFloat(amount) || 0
+  const total = amountNum * price
+
+  return (
+    <div className="trade-panel">
+      <div className="tp-balance-header">
+        <span className="tp-balance-label">Spot Trading</span>
+        <span className="tp-balance-value" style={{ fontSize: 12, color: 'var(--text-3)' }}>No leverage</span>
+      </div>
+
+      <div className="trade-side-toggle">
+        <button className={`trade-side-btn ${side === 'buy' ? 'active buy' : ''}`} onClick={() => setSide('buy')}>Buy</button>
+        <button className={`trade-side-btn ${side === 'sell' ? 'active sell' : ''}`} onClick={() => setSide('sell')}>Sell</button>
+      </div>
+
+      <div className="tp-info-rows">
+        <div className="tp-info-row">
+          <span>Price</span>
+          <span>${price > 0 ? formatPrice(price.toString()) : '--'}</span>
+        </div>
+      </div>
+
+      <div className="trade-input-group">
+        <div className="tp-input-header">
+          <span className="trade-label">Amount</span>
+        </div>
+        <div className="trade-input-wrapper">
+          <input type="number" className="trade-input" placeholder="0.00" value={amount} onChange={e => setAmount(e.target.value)} step="any" />
+          <span className="trade-input-unit">{market?.baseToken ?? '--'}</span>
+        </div>
+      </div>
+
+      <div className="tp-summary">
+        <div className="tp-summary-row"><span>Total</span><span>{total > 0 ? `$${total.toFixed(2)}` : '--'}</span></div>
+        <div className="tp-summary-row"><span>Fee</span><span>{total > 0 ? `$${(total * 0.0005).toFixed(4)}` : '--'}</span></div>
+      </div>
+
+      {!isConnected ? (
+        <div className="connect-prompt">Connect wallet to trade</div>
+      ) : (
+        <button className={`trade-submit ${side}`} disabled={amountNum <= 0}>
+          {side === 'buy' ? 'Buy' : 'Sell'} {market?.baseToken ?? ''}
+        </button>
+      )}
+    </div>
+  )
+}
+
+// ── Main Page ──
 export function SpotPage() {
   const { markets, loading } = useSpotMarkets()
-  const [search, setSearch] = useState('')
-  const [selectedToken, setSelectedToken] = useState('HYPE')
+  const { theme } = useTheme()
+  const [selectedPair, setSelectedPair] = useState('PURR/USDC')
 
-  const filtered = useMemo(() => {
-    return markets
-      .filter(m => {
-        const q = search.toLowerCase()
-        return m.baseToken.toLowerCase().includes(q) || m.name.toLowerCase().includes(q)
-      })
-      .sort((a, b) => parseFloat(b.volume24h) - parseFloat(a.volume24h))
-  }, [markets, search])
+  const selected = markets.find(m => m.pairName === selectedPair) ?? markets[0]
+  // For chart candles, use the spot pair name (e.g., "@1" format) which is what the API expects
+  const chartCoin = selected?.name ?? '@1'
 
-  const selected = markets.find(m => m.baseToken === selectedToken) ?? filtered[0]
-
-  if (loading) {
-    return <div className="spot-page"><div className="spot-loading">Loading spot markets...</div></div>
+  if (loading && markets.length === 0) {
+    return <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-3)' }}>Loading spot markets...</div>
   }
 
   return (
-    <div className="spot-page">
-      {/* Left sidebar: market list */}
-      <SpotMarketList
-        markets={filtered}
-        selected={selectedToken}
-        onSelect={setSelectedToken}
-        search={search}
-        setSearch={setSearch}
-      />
-
-      {/* Main content */}
-      <div className="spot-main">
-        {/* Market header */}
+    <div className="perps-page">
+      {/* Market header */}
+      <div className="market-header">
+        <SpotSelector markets={markets} selected={selectedPair} onSelect={setSelectedPair} />
         {selected && (
-          <div className="spot-market-header">
-            <div className="spot-market-name-lg">
-              <span className="spot-market-base">{selected.baseToken}</span>
-              <span className="spot-market-quote">/{selected.quoteToken}</span>
+          <div className="market-stats">
+            <div className="market-stat">
+              <span className="market-stat-label">Price</span>
+              <span className="market-stat-value">${formatPrice(selected.markPx)}</span>
             </div>
-            <div className="spot-market-stats">
-              <div className="spot-stat">
-                <span className="spot-stat-label">Price</span>
-                <span className="spot-stat-value">${formatPrice(selected.markPx)}</span>
-              </div>
-              <div className="spot-stat">
-                <span className="spot-stat-label">24h Change</span>
-                <span className={`spot-stat-value ${selected.change24h >= 0 ? 'green' : 'red'}`}>
-                  {selected.change24h >= 0 ? '+' : ''}{selected.change24h.toFixed(2)}%
+            <div className="market-stat">
+              <span className="market-stat-label">24h Change</span>
+              <span className={`market-stat-value ${selected.change24h >= 0 ? 'green' : 'red'}`}>
+                {selected.change24h >= 0 ? '+' : ''}{selected.change24h.toFixed(2)}%
+              </span>
+            </div>
+            <div className="market-stat">
+              <span className="market-stat-label">24h Volume</span>
+              <span className="market-stat-value">
+                {parseFloat(selected.volume24h) >= 1e6 ? `$${(parseFloat(selected.volume24h) / 1e6).toFixed(1)}M` : `$${Math.round(parseFloat(selected.volume24h)).toLocaleString()}`}
+              </span>
+            </div>
+            {selected.evmContract && (
+              <div className="market-stat">
+                <span className="market-stat-label">Contract</span>
+                <span className="market-stat-value" style={{ fontSize: 11, fontFamily: "'Inter', monospace" }}>
+                  {selected.evmContract.slice(0, 6)}...{selected.evmContract.slice(-4)}
                 </span>
               </div>
-              <div className="spot-stat">
-                <span className="spot-stat-label">24h Volume</span>
-                <span className="spot-stat-value">{formatVol(parseFloat(selected.volume24h))}</span>
-              </div>
-            </div>
+            )}
           </div>
         )}
+      </div>
 
-        {/* Top movers */}
-        <div className="spot-section">
-          <h3 className="spot-section-title">Top Movers</h3>
-          <div className="spot-movers">
-            {markets
-              .filter(m => parseFloat(m.volume24h) > 1000)
-              .sort((a, b) => Math.abs(b.change24h) - Math.abs(a.change24h))
-              .slice(0, 8)
-              .map(m => (
-                <button
-                  key={m.name}
-                  className="spot-mover-card"
-                  onClick={() => setSelectedToken(m.baseToken)}
-                >
-                  <span className="spot-mover-name">{m.baseToken}</span>
-                  <span className="spot-mover-price">${formatPrice(m.markPx)}</span>
-                  <span className={`spot-mover-change ${m.change24h >= 0 ? 'green' : 'red'}`}>
-                    {m.change24h >= 0 ? '+' : ''}{m.change24h.toFixed(1)}%
-                  </span>
-                </button>
-              ))}
-          </div>
+      {/* Trading grid — same layout as perps */}
+      <div className="perps-grid" style={{ gridTemplateColumns: '1fr 280px' }}>
+        <div className="perps-chart-area">
+          <SpotChart coin={chartCoin} theme={theme} />
         </div>
-
-        {/* Volume leaders table */}
-        <div className="spot-section">
-          <h3 className="spot-section-title">Volume Leaders</h3>
-          <div className="spot-table">
-            <div className="spot-row spot-row-header">
-              <span className="spot-col">Token</span>
-              <span className="spot-col spot-col-right">Price</span>
-              <span className="spot-col spot-col-right">24h Change</span>
-              <span className="spot-col spot-col-right">24h Volume</span>
-            </div>
-            <div className="spot-table-body">
-              {markets
-                .sort((a, b) => parseFloat(b.volume24h) - parseFloat(a.volume24h))
-                .slice(0, 30)
-                .map(m => (
-                  <button
-                    key={m.name}
-                    className={`spot-row spot-row-clickable ${m.baseToken === selectedToken ? 'spot-row-active' : ''}`}
-                    onClick={() => setSelectedToken(m.baseToken)}
-                  >
-                    <span className="spot-token">
-                      <span className="spot-token-name">{m.baseToken}</span>
-                      <span className="spot-token-pair">/{m.quoteToken}</span>
-                    </span>
-                    <span className="spot-col-right spot-price">${formatPrice(m.markPx)}</span>
-                    <span className={`spot-col-right ${m.change24h >= 0 ? 'green' : 'red'}`}>
-                      {m.change24h >= 0 ? '+' : ''}{m.change24h.toFixed(2)}%
-                    </span>
-                    <span className="spot-col-right spot-volume">{formatVol(parseFloat(m.volume24h))}</span>
-                  </button>
-                ))}
-            </div>
-          </div>
+        <div className="perps-trade-area">
+          <SpotTradePanel market={selected} />
         </div>
       </div>
     </div>

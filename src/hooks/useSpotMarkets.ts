@@ -2,14 +2,17 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useHyperliquid } from '../contexts/HyperliquidContext'
 
 export interface SpotMarket {
-  name: string
+  name: string        // pair name like "@107" or "PURR/USDC"
+  pairName: string    // display name like "HYPE/USDC"
   index: number
   baseToken: string
   quoteToken: string
+  baseIndex: number
   markPx: string
   volume24h: string
   change24h: number
   prevDayPx: string
+  evmContract: string | null
 }
 
 let cachedSpot: SpotMarket[] = []
@@ -22,7 +25,7 @@ export function useSpotMarkets() {
   const infoRef = useRef(info)
   infoRef.current = info
 
-  const fetch = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     const now = Date.now()
     if (now - lastFetch < 15000 && cachedSpot.length > 0) {
       setMarkets(cachedSpot)
@@ -34,7 +37,7 @@ export function useSpotMarkets() {
       const data = await infoRef.current.spotMetaAndAssetCtxs()
       const meta = (data as unknown[])[0] as {
         universe: Array<{ name: string; tokens: number[]; index: number }>
-        tokens: Array<{ name: string; index: number }>
+        tokens: Array<{ name: string; index: number; evmContract: { address: string } | null }>
       }
       const ctxs = (data as unknown[])[1] as Array<{
         markPx: string
@@ -42,13 +45,21 @@ export function useSpotMarkets() {
         prevDayPx: string
       }>
 
-      const tokenNames = meta.tokens.reduce((acc, t) => {
-        acc[t.index] = t.name
-        return acc
-      }, {} as Record<number, string>)
+      // Build token lookup
+      const tokenMap = new Map<number, { name: string; evmContract: string | null }>()
+      for (const t of meta.tokens) {
+        tokenMap.set(t.index, {
+          name: t.name,
+          evmContract: t.evmContract?.address ?? null,
+        })
+      }
 
       const spotList: SpotMarket[] = meta.universe.map((pair, i) => {
         const ctx = ctxs[i]
+        const baseInfo = tokenMap.get(pair.tokens[0])
+        const quoteInfo = tokenMap.get(pair.tokens[1])
+        const baseName = baseInfo?.name ?? `Token${pair.tokens[0]}`
+        const quoteName = quoteInfo?.name ?? 'USDC'
         const markPx = ctx?.markPx ?? '0'
         const prevDay = parseFloat(ctx?.prevDayPx ?? '0')
         const current = parseFloat(markPx)
@@ -56,13 +67,16 @@ export function useSpotMarkets() {
 
         return {
           name: pair.name,
+          pairName: `${baseName}/${quoteName}`,
           index: pair.index ?? i,
-          baseToken: tokenNames[pair.tokens[0]] ?? `@${pair.tokens[0]}`,
-          quoteToken: tokenNames[pair.tokens[1]] ?? 'USDC',
+          baseToken: baseName,
+          quoteToken: quoteName,
+          baseIndex: pair.tokens[0],
           markPx,
           volume24h: ctx?.dayNtlVlm ?? '0',
           change24h: change,
           prevDayPx: ctx?.prevDayPx ?? '0',
+          evmContract: baseInfo?.evmContract ?? null,
         }
       })
 
@@ -77,10 +91,10 @@ export function useSpotMarkets() {
   }, [])
 
   useEffect(() => {
-    fetch()
-    const interval = setInterval(fetch, 30000)
+    fetchData()
+    const interval = setInterval(fetchData, 30000)
     return () => clearInterval(interval)
-  }, [fetch])
+  }, [fetchData])
 
   return { markets, loading }
 }
