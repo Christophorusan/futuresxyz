@@ -45,9 +45,9 @@ function MarketRow({ market, isActive, isFav, onSelect, onToggleFav }: {
       <span className={`mkt-cell ${change >= 0 ? 'green' : 'red'}`}>
         {change >= 0 ? '+' : ''}{changeDollar.toFixed(changeDollar > 100 ? 0 : Math.abs(changeDollar) < 0.01 ? 5 : 2)} / {change >= 0 ? '+' : ''}{change.toFixed(2)}%
       </span>
-      <span className="mkt-cell">--</span>
+      <span className="mkt-cell">{(parseFloat(market.funding) * 100).toFixed(4)}%</span>
       <span className="mkt-cell">{formatVol(vol)}</span>
-      <span className="mkt-cell">--</span>
+      <span className="mkt-cell">{parseFloat(market.openInterest) > 0 ? `$${formatVol(parseFloat(market.openInterest) * parseFloat(market.midPrice))}`.replace('$$','$') : '--'}</span>
     </button>
   )
 }

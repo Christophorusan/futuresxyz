@@ -14,7 +14,7 @@ function SpotChart({ coin, theme }: { coin: string; theme: 'dark' | 'light' }) {
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const volRef = useRef<ISeriesApi<'Histogram'> | null>(null)
-  const [interval, setInterval] = useState<'1h' | '4h' | '1d'>('1h')
+  const [chartInterval, setChartInterval] = useState<'1h' | '4h' | '1d'>('1h')
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -46,7 +46,7 @@ function SpotChart({ coin, theme }: { coin: string; theme: 'dark' | 'light' }) {
     if (!seriesRef.current || !volRef.current) return
     const isDark = theme === 'dark'
     const now = Date.now()
-    info.candleSnapshot({ coin, interval, startTime: now - 7 * 86400000, endTime: now }).then((raw: unknown) => {
+    info.candleSnapshot({ coin, interval: chartInterval, startTime: now - 7 * 86400000, endTime: now }).then((raw: unknown) => {
       const candles = raw as Array<{ t: number; o: string; h: string; l: string; c: string; v: string }>
       const cd: CandlestickData<Time>[] = candles.map(c => ({ time: Math.floor(c.t / 1000) as Time, open: parseFloat(c.o), high: parseFloat(c.h), low: parseFloat(c.l), close: parseFloat(c.c) }))
       const vd: HistogramData<Time>[] = candles.map(c => ({ time: Math.floor(c.t / 1000) as Time, value: parseFloat(c.v), color: parseFloat(c.c) >= parseFloat(c.o) ? (isDark ? 'rgba(45,212,191,0.25)' : 'rgba(20,184,166,0.25)') : (isDark ? 'rgba(239,68,68,0.25)' : 'rgba(220,38,38,0.25)') }))
@@ -54,13 +54,13 @@ function SpotChart({ coin, theme }: { coin: string; theme: 'dark' | 'light' }) {
       volRef.current?.setData(vd)
       chartRef.current?.timeScale().fitContent()
     }).catch(() => {})
-  }, [coin, interval, info, theme])
+  }, [coin, chartInterval, info, theme])
 
   return (
     <div className="chart-container">
       <div className="chart-controls">
         {(['1h', '4h', '1d'] as const).map(i => (
-          <button key={i} className={`chart-interval ${interval === i ? 'active' : ''}`} onClick={() => setInterval(i)}>{i}</button>
+          <button key={i} className={`chart-interval ${chartInterval === i ? 'active' : ''}`} onClick={() => setChartInterval(i)}>{i}</button>
         ))}
       </div>
       <div className="chart-wrapper" ref={containerRef} />

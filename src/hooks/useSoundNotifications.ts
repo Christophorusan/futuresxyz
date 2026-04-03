@@ -1,10 +1,16 @@
 import { useEffect, useRef } from 'react'
 import { useAccountData } from './useAccountData'
 
-// Simple beep using Web Audio API
+// Singleton AudioContext
+let audioCtx: AudioContext | null = null
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new AudioContext()
+  return audioCtx
+}
+
 function playSound(type: 'fill' | 'cancel') {
   try {
-    const ctx = new AudioContext()
+    const ctx = getAudioCtx()
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
     osc.connect(gain)

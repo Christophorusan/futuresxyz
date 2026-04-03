@@ -76,13 +76,15 @@ export function useCandles(market: string, interval: CandleInterval = '1h') {
 
         const existing = candlesRef.current
         const lastIdx = existing.findIndex(c => c.time === newCandle.time)
+        let updated: Candle[]
         if (lastIdx >= 0) {
-          existing[lastIdx] = newCandle
+          updated = [...existing]
+          updated[lastIdx] = newCandle
         } else {
-          existing.push(newCandle)
+          updated = [...existing, newCandle]
         }
-        candlesRef.current = [...existing]
-        setCandles(candlesRef.current)
+        candlesRef.current = updated
+        setCandles(updated)
       }
     )
 

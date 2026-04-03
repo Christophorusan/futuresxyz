@@ -86,9 +86,9 @@ export function TradePanel() {
     <div className="trade-panel">
       {/* Cross / Leverage / Classic — like Hyperliquid */}
       <div className="tp-mode-row" style={{ gap: 4 }}>
-        <button className="tp-mode-btn">Cross</button>
+        <button className="tp-mode-btn" style={{ background: 'var(--bg-3)', color: 'var(--text-0)' }}>Cross</button>
         <button className="tp-mode-btn tp-lev-btn" onClick={() => { setShowLevInput(!showLevInput); setLevInput(String(leverage)) }}>{leverage}x</button>
-        <button className="tp-mode-btn">Classic</button>
+        <button className="tp-mode-btn" style={{ opacity: 0.5 }}>Classic</button>
       </div>
       {showLevInput && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -125,7 +125,7 @@ export function TradePanel() {
       <div className="trade-type-toggle">
         <button className={`trade-type-btn ${orderType === 'market' ? 'active' : ''}`} onClick={() => setOrderType('market')}>Market</button>
         <button className={`trade-type-btn ${orderType === 'limit' ? 'active' : ''}`} onClick={() => setOrderType('limit')}>Limit</button>
-        <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text-3)' }}>Pro ▾</span>
+        <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text-3)', opacity: 0.5 }}>Pro</span>
       </div>
 
       {/* Buy / Long | Sell / Short */}

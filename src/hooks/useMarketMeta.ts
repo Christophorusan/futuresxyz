@@ -8,6 +8,8 @@ export interface MarketInfo {
   midPrice: string
   volume24h: string
   change24h: number
+  funding: string
+  openInterest: string
 }
 
 // Singleton cache to prevent duplicate fetches across components
@@ -75,6 +77,8 @@ export function useMarketMeta() {
           midPrice,
           volume24h: ctx?.dayNtlVlm ?? '0',
           change24h,
+          funding: ctx?.funding ?? '0',
+          openInterest: ctx?.openInterest ?? '0',
         }
       })
 
