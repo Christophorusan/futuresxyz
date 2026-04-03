@@ -4,8 +4,8 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { HttpTransport, ExchangeClient } from '@nktkas/hyperliquid'
 import { USE_TESTNET } from '../config/hyperliquid'
 
-const AGENT_KEY_STORAGE = 'hl-agent-key-v2'
-const AGENT_APPROVED_STORAGE = 'hl-agent-approved-v2'
+const AGENT_KEY_STORAGE = 'hl-agent-key'
+const AGENT_APPROVED_STORAGE = 'hl-agent-approved'
 
 const transport = new HttpTransport({ isTestnet: USE_TESTNET })
 

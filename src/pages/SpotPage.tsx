@@ -100,7 +100,7 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
 
 // ── Spot Trade Panel ──
 function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
-  const { isConnected, exchange } = useHyperliquid()
+  const { isConnected, exchange, agentApproved, approving, approveAgent, switchToArbitrum } = useHyperliquid()
   const { state } = useUserState()
   const [side, setSide] = useState<'buy' | 'sell'>('buy')
   const [usdcAmount, setUsdcAmount] = useState('')  // Input in USDC
@@ -185,6 +185,11 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
         <button className={`trade-side-btn ${side === 'sell' ? 'active sell' : ''}`} onClick={() => setSide('sell')}>Sell</button>
       </div>
 
+      {/* Swap label */}
+      <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--text-3)', margin: '-4px 0 4px' }}>
+        {side === 'buy' ? `USDC -> ${market?.baseToken ?? ''}` : `${market?.baseToken ?? ''} -> USDC`}
+      </div>
+
       <div className="tp-info-rows">
         <div className="tp-info-row">
           <span>Available to Trade</span>
@@ -219,14 +224,22 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
       </div>
 
       {!isConnected ? (
-        <div className="connect-prompt">Connect wallet to trade</div>
+        <div className="connect-prompt">Connect wallet to swap</div>
+      ) : !agentApproved ? (
+        <button
+          className="trade-submit transfer"
+          onClick={async () => { switchToArbitrum(); setTimeout(approveAgent, 1500) }}
+          disabled={approving}
+        >
+          {approving ? 'Setting up...' : 'Enable Trading'}
+        </button>
       ) : (
         <button
           className={`trade-submit ${side}`}
           disabled={placing || tokenAmount <= 0}
           onClick={handleSpotOrder}
         >
-          {placing ? 'Placing...' : `${side === 'buy' ? 'Buy' : 'Sell'} ${market?.baseToken ?? ''}`}
+          {placing ? 'Swapping...' : `Swap ${side === 'buy' ? `USDC -> ${market?.baseToken ?? ''}` : `${market?.baseToken ?? ''} -> USDC`}`}
         </button>
       )}
 
@@ -286,18 +299,21 @@ export function SpotPage() {
         )}
       </div>
 
-      {/* Trading grid — same layout as perps */}
-      <div className="perps-grid" style={{ gridTemplateColumns: '1fr 280px' }}>
-        <div className="perps-chart-area">
-          <SpotChart coin={chartCoin} theme={theme} />
+      {/* Same layout as perps: left (chart + bottom) + right (trade) */}
+      <div className="perps-main">
+        <div className="perps-left">
+          <div className="perps-top-row">
+            <div className="perps-chart-area">
+              <SpotChart coin={chartCoin} theme={theme} />
+            </div>
+          </div>
+          <div className="perps-bottom">
+            <Positions />
+          </div>
         </div>
         <div className="perps-trade-area">
           <SpotTradePanel market={selected} />
         </div>
-      </div>
-
-      <div className="perps-bottom">
-        <Positions />
       </div>
     </div>
   )

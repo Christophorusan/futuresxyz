@@ -15,7 +15,7 @@ export function TradePanel() {
   const { markets } = useMarketMeta()
   const { state } = useUserState()
   const { placeOrder, placing, error, clearError } = usePlaceOrder()
-  const { isConnected, approvalError } = useHyperliquid()
+  const { isConnected, agentApproved, approving, approveAgent, approvalError, switchToArbitrum } = useHyperliquid()
 
   const [side, setSide] = useState<OrderSide>('buy')
   const [orderType, setOrderType] = useState<OrderType>('market')
@@ -246,6 +246,14 @@ export function TradePanel() {
       {/* Submit */}
       {!isConnected ? (
         <div className="connect-prompt">Connect wallet to trade</div>
+      ) : !agentApproved ? (
+        <button
+          className="trade-submit transfer"
+          onClick={async () => { switchToArbitrum(); setTimeout(approveAgent, 1500) }}
+          disabled={approving}
+        >
+          {approving ? 'Setting up...' : 'Enable Trading'}
+        </button>
       ) : available <= 0 ? (
         <button className="trade-submit add-funds">
           Not Enough Margin
