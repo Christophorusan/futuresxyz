@@ -18,7 +18,7 @@ export function Positions() {
   const { markets } = useMarketMeta()
   const { setSelectedMarket } = useMarket()
   const { addToast } = useToast()
-  const [tab, setTab] = useState<Tab>('positions')
+  const [tab, setTab] = useState<Tab>('assets')
   const [closingCoin, setClosingCoin] = useState<string | null>(null)
   const [cancellingOid, setCancellingOid] = useState<number | null>(null)
   const [cancellingAll, setCancellingAll] = useState(false)
@@ -49,9 +49,9 @@ export function Positions() {
   }
 
   const tabs: { id: Tab; label: string; count?: number }[] = [
+    { id: 'assets', label: 'Balances', count: spotBalances.length },
     { id: 'positions', label: 'Positions', count: state?.positions.length },
     { id: 'orders', label: 'Open Orders', count: openOrders.length },
-    { id: 'assets', label: 'Balances', count: spotBalances.length },
     { id: 'trades', label: 'Trade History' },
     { id: 'history', label: 'Funding' },
   ]
@@ -97,7 +97,7 @@ export function Positions() {
 
       {!isConnected ? (
         <div className="pos-empty-state">
-          <div className="pos-empty-icon">📋</div>
+          <div className="pos-empty-icon">—</div>
           <div className="pos-empty-text">Connect wallet to view account</div>
         </div>
       ) : (
@@ -106,7 +106,7 @@ export function Positions() {
           {tab === 'orders' && (
             openOrders.length === 0 ? (
               <div className="pos-empty-state">
-                <div className="pos-empty-icon">📋</div>
+                <div className="pos-empty-icon">—</div>
                 <div className="pos-empty-text">No orders</div>
               </div>
             ) : (
@@ -168,7 +168,7 @@ export function Positions() {
           {/* Order History */}
           {tab === 'history' && (
             <div className="pos-empty-state">
-              <div className="pos-empty-icon">📋</div>
+              <div className="pos-empty-icon">—</div>
               <div className="pos-empty-text">No order history</div>
             </div>
           )}
@@ -177,7 +177,7 @@ export function Positions() {
           {tab === 'positions' && (
             !state?.positions.length ? (
               <div className="pos-empty-state">
-                <div className="pos-empty-icon">📊</div>
+                <div className="pos-empty-icon">—</div>
                 <div className="pos-empty-text">No open positions</div>
               </div>
             ) : (
@@ -235,7 +235,7 @@ export function Positions() {
           {tab === 'assets' && (
             spotBalances.length === 0 ? (
               <div className="pos-empty-state">
-                <div className="pos-empty-icon">💰</div>
+                <div className="pos-empty-icon">—</div>
                 <div className="pos-empty-text">No assets</div>
               </div>
             ) : (
@@ -262,7 +262,7 @@ export function Positions() {
           {tab === 'trades' && (
             fills.length === 0 ? (
               <div className="pos-empty-state">
-                <div className="pos-empty-icon">📋</div>
+                <div className="pos-empty-icon">—</div>
                 <div className="pos-empty-text">No recent trades</div>
               </div>
             ) : (
