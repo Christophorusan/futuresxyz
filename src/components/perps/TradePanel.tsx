@@ -29,6 +29,8 @@ export function TradePanel() {
   const [slPrice, setSlPrice] = useState('')
   const [sizePct, setSizePct] = useState(0)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [showLevInput, setShowLevInput] = useState(false)
+  const [levInput, setLevInput] = useState('')
 
   // Keyboard shortcuts
   useKeyboardShortcuts({
@@ -85,12 +87,31 @@ export function TradePanel() {
       {/* Cross / Leverage / Classic — like Hyperliquid */}
       <div className="tp-mode-row" style={{ gap: 4 }}>
         <button className="tp-mode-btn">Cross</button>
-        <button className="tp-mode-btn tp-lev-btn" onClick={() => {
-          const val = prompt('Set leverage (1-50):', String(leverage))
-          if (val) { const n = parseInt(val); if (n >= 1 && n <= 50) setLeverage(n) }
-        }}>{leverage}x</button>
+        <button className="tp-mode-btn tp-lev-btn" onClick={() => { setShowLevInput(!showLevInput); setLevInput(String(leverage)) }}>{leverage}x</button>
         <button className="tp-mode-btn">Classic</button>
       </div>
+      {showLevInput && (
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          <input
+            type="number"
+            className="trade-input"
+            style={{ flex: 1, padding: '6px 10px', fontSize: 13, background: 'var(--bg-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xs)', color: 'var(--text-0)' }}
+            value={levInput}
+            onChange={e => setLevInput(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                const n = parseInt(levInput)
+                if (n >= 1 && n <= 50) { setLeverage(n); setShowLevInput(false) }
+              }
+            }}
+            min={1} max={50} autoFocus placeholder="1-50"
+          />
+          <button
+            style={{ padding: '6px 12px', background: 'var(--blue)', color: '#fff', border: 'none', borderRadius: 'var(--radius-xs)', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font)' }}
+            onClick={() => { const n = parseInt(levInput); if (n >= 1 && n <= 50) { setLeverage(n); setShowLevInput(false) } }}
+          >Set</button>
+        </div>
+      )}
 
       {/* Market / Limit / Pro */}
       <div className="trade-type-toggle">
