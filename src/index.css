@@ -1741,51 +1741,101 @@ body {
 .ocm-btn-confirm:hover { opacity: 0.9; }
 
 /* ─── Spot Page ─── */
-.spot-page { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-.spot-header { display: flex; align-items: center; gap: 12px; padding: 16px 20px 0; }
-.spot-title { font-size: 18px; font-weight: 700; color: var(--text-0); }
-.spot-count { font-size: 13px; color: var(--text-3); }
+.spot-page { flex: 1; display: flex; overflow: hidden; }
+.spot-loading { padding: 40px; text-align: center; color: var(--text-3); flex: 1; }
 
+/* Sidebar */
+.spot-sidebar {
+  width: 240px; border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; min-height: 0;
+  background: var(--bg-1); flex-shrink: 0;
+}
 .spot-search-bar {
-  display: flex; align-items: center; gap: 10px;
-  margin: 12px 20px; padding: 10px 14px;
-  background: var(--bg-1); border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-bottom: 1px solid var(--border);
 }
 .spot-search {
   flex: 1; background: none; border: none; outline: none;
-  color: var(--text-0); font-size: 14px; font-family: var(--font);
+  color: var(--text-0); font-size: 13px; font-family: var(--font);
 }
 .spot-search::placeholder { color: var(--text-3); }
+.spot-list-header {
+  display: grid; grid-template-columns: 1.5fr 1fr 0.8fr;
+  padding: 6px 10px; font-size: 10px; color: var(--text-3);
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;
+  border-bottom: 1px solid var(--border);
+}
+.spot-list-body { flex: 1; overflow-y: auto; }
+.spot-list-row {
+  display: grid; grid-template-columns: 1.5fr 1fr 0.8fr;
+  padding: 6px 10px; font-size: 12px; border: none; background: none;
+  width: 100%; cursor: pointer; text-align: left; font-family: var(--font);
+  border-bottom: 1px solid var(--border); transition: background 0.1s;
+}
+.spot-list-row:hover { background: var(--bg-2); }
+.spot-list-row.active { background: var(--blue-bg); }
+.spot-list-name { font-weight: 600; color: var(--text-0); }
+.spot-list-price { color: var(--text-1); font-family: 'Inter', monospace; font-size: 11px; }
 
-.spot-table { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+/* Main */
+.spot-main { flex: 1; overflow-y: auto; padding: 16px 20px; min-width: 0; }
+
+.spot-market-header {
+  display: flex; align-items: center; gap: 24px;
+  padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px;
+}
+.spot-market-name-lg { display: flex; align-items: baseline; gap: 2px; }
+.spot-market-base { font-size: 24px; font-weight: 700; color: var(--text-0); }
+.spot-market-quote { font-size: 16px; color: var(--text-3); font-weight: 500; }
+.spot-market-stats { display: flex; gap: 24px; }
+.spot-stat { display: flex; flex-direction: column; gap: 2px; }
+.spot-stat-label { font-size: 10px; color: var(--text-3); font-weight: 500; text-transform: uppercase; }
+.spot-stat-value { font-size: 14px; font-weight: 600; color: var(--text-0); font-family: 'Inter', monospace; }
+
+/* Sections */
+.spot-section { margin-bottom: 24px; }
+.spot-section-title { font-size: 14px; font-weight: 600; color: var(--text-0); margin-bottom: 10px; }
+
+/* Movers */
+.spot-movers { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.spot-mover-card {
+  flex-shrink: 0; padding: 10px 14px; background: var(--bg-1);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  cursor: pointer; display: flex; flex-direction: column; gap: 2px;
+  min-width: 100px; font-family: var(--font); transition: border-color 0.1s;
+}
+.spot-mover-card:hover { border-color: var(--border-hover); }
+.spot-mover-name { font-size: 13px; font-weight: 600; color: var(--text-0); }
+.spot-mover-price { font-size: 12px; color: var(--text-2); font-family: 'Inter', monospace; }
+.spot-mover-change { font-size: 12px; font-weight: 600; }
+
+/* Table */
+.spot-table { background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+.spot-table-body { max-height: 500px; overflow-y: auto; }
 .spot-row {
   display: grid; grid-template-columns: 2fr 1.2fr 1.2fr 1.2fr;
-  padding: 8px 20px; align-items: center; font-size: 13px;
+  padding: 8px 16px; align-items: center; font-size: 13px;
   border-bottom: 1px solid var(--border);
 }
 .spot-row-header {
   font-size: 11px; color: var(--text-3); font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.3px;
-  background: var(--bg-1); position: sticky; top: 0; z-index: 1;
-  flex-shrink: 0;
+  text-transform: uppercase; letter-spacing: 0.3px; background: var(--bg-2);
 }
-.spot-col {
-  background: none; border: none; color: var(--text-3); font-size: 11px;
-  font-weight: 600; cursor: pointer; font-family: var(--font); padding: 0;
-  text-transform: uppercase; letter-spacing: 0.3px; text-align: left;
-}
-.spot-col:hover { color: var(--text-1); }
+.spot-row-clickable { width: 100%; border: none; background: none; cursor: pointer; text-align: left; font-family: var(--font); }
+.spot-row-clickable:hover { background: var(--bg-2); }
+.spot-row-active { background: var(--blue-bg); }
+.spot-col { background: none; border: none; color: var(--text-3); font-size: 11px; font-weight: 600; padding: 0; text-align: left; text-transform: uppercase; letter-spacing: 0.3px; }
 .spot-col-right { text-align: right; }
-.spot-body { flex: 1; overflow-y: auto; }
-
 .spot-token { display: flex; align-items: center; gap: 2px; }
 .spot-token-name { font-weight: 600; color: var(--text-0); }
 .spot-token-pair { color: var(--text-3); font-size: 12px; }
 .spot-price { color: var(--text-1); font-family: 'Inter', monospace; font-weight: 500; }
 .spot-volume { color: var(--text-2); font-family: 'Inter', monospace; }
-.spot-empty { padding: 40px; text-align: center; color: var(--text-3); }
-.spot-loading { padding: 40px; text-align: center; color: var(--text-3); }
+
+@media (max-width: 768px) {
+  .spot-page { flex-direction: column; }
+  .spot-sidebar { width: 100%; max-height: 200px; border-right: none; border-bottom: 1px solid var(--border); }
+}
 
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
