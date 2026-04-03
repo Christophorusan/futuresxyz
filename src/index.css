@@ -1244,8 +1244,42 @@ body {
 /* ─── Docs Page ─── */
 .docs-page {
   padding: 48px 24px 80px;
-  max-width: 720px;
+  max-width: 780px;
   margin: 0 auto;
+  overflow-y: auto;
+  flex: 1;
+}
+.docs-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.docs-feature {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+.docs-feature h3 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-0);
+  margin: 0 0 8px;
+  padding: 0;
+  border: none;
+}
+.docs-feature ul { margin: 0; }
+.docs-feature li { font-size: 13px; padding: 2px 0 2px 14px; }
+.docs-section kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-family: var(--font);
+  font-size: 12px;
+  background: var(--bg-2);
+  color: var(--text-1);
 }
 
 .docs-content h1 {

@@ -2,149 +2,257 @@ export function DocsPage() {
   return (
     <div className="docs-page">
       <div className="docs-content">
-        <h1>Futuresxyz Documentation</h1>
-        <p className="docs-subtitle">A Hyperliquid perps trading frontend with Builder Codes revenue</p>
+        <h1>Futuresxyz</h1>
+        <p className="docs-subtitle">Perpetual futures trading on Hyperliquid L1</p>
+
+        <section className="docs-section">
+          <h2>Overview</h2>
+          <p>
+            Futuresxyz is a high-performance trading interface built on Hyperliquid — the fastest
+            on-chain order book for perpetual futures. Trade 229+ markets including crypto, indices,
+            and commodities with up to 50x leverage, sub-second execution, and zero gas fees.
+          </p>
+          <p>
+            The frontend connects directly to Hyperliquid's L1 via REST and WebSocket APIs.
+            No backend server, no custodial risk — your wallet signs every order locally
+            using EIP-712 typed data.
+          </p>
+        </section>
+
+        <section className="docs-section">
+          <h2>Features</h2>
+          <div className="docs-features">
+            <div className="docs-feature">
+              <h3>Trading</h3>
+              <ul>
+                <li>Market and limit orders</li>
+                <li>Take profit / stop loss trigger orders</li>
+                <li>Cross margin with adjustable leverage (1-50x)</li>
+                <li>One-click position close</li>
+                <li>Order confirmation modal with liquidation estimate</li>
+                <li>Cancel individual or all open orders</li>
+              </ul>
+            </div>
+            <div className="docs-feature">
+              <h3>Market Data</h3>
+              <ul>
+                <li>Real-time candlestick chart with volume bars</li>
+                <li>Live order book with grouping (0.01 to 100)</li>
+                <li>Recent trades feed</li>
+                <li>229+ perp markets with search and filtering</li>
+                <li>Market stats: mark price, funding, OI, 24h volume</li>
+                <li>Scrolling ticker bar with live prices</li>
+              </ul>
+            </div>
+            <div className="docs-feature">
+              <h3>Account</h3>
+              <ul>
+                <li>Unified balance (spot + perps)</li>
+                <li>Portfolio page with PnL tracking</li>
+                <li>Position management with close buttons</li>
+                <li>Trade history and fill tracking</li>
+                <li>Sound notifications on fills</li>
+                <li>Light / dark theme</li>
+              </ul>
+            </div>
+            <div className="docs-feature">
+              <h3>Keyboard Shortcuts</h3>
+              <ul>
+                <li><kbd>B</kbd> — Switch to Long</li>
+                <li><kbd>S</kbd> — Switch to Short</li>
+                <li><kbd>M</kbd> — Market order</li>
+                <li><kbd>L</kbd> — Limit order</li>
+                <li><kbd>Cmd+K</kbd> — Open market selector</li>
+                <li><kbd>Esc</kbd> — Close modals</li>
+              </ul>
+            </div>
+          </div>
+        </section>
 
         <section className="docs-section">
           <h2>Architecture</h2>
-          <p>
-            Futuresxyz is a client-side React application that connects directly to Hyperliquid's L1 API.
-            No backend server is needed — all trading happens through signed EIP-712 messages sent to Hyperliquid's
-            REST and WebSocket endpoints.
-          </p>
           <div className="docs-code">
             <pre>{`User Wallet (Rabby / MetaMask / Phantom)
-      ↓ signTypedData (EIP-712)
-  React Frontend
-      ↓↑
+      | signTypedData (EIP-712)
+  Futuresxyz Frontend (React)
+      |
   Hyperliquid L1 API
-  ├── POST /info     → market data, account state
-  ├── POST /exchange → orders, builder fee, leverage
-  └── WSS /ws        → live prices, orderbook, candles`}</pre>
+  |-- POST /info      -> market data, balances, positions
+  |-- POST /exchange  -> orders, cancels, transfers, leverage
+  |-- WSS /ws         -> live orderbook, candles, trades`}</pre>
           </div>
+          <p>
+            The frontend is fully client-side — no backend, no database, no server.
+            All state comes from Hyperliquid's API and the user's connected wallet.
+          </p>
+        </section>
+
+        <section className="docs-section">
+          <h2>Supported Markets</h2>
+          <p>All Hyperliquid perpetual futures are available — currently 229 markets including:</p>
+          <ul>
+            <li><strong>Major crypto</strong> — BTC, ETH, SOL, BNB, AVAX, XRP, DOT, ADA, NEAR, SUI, APT, HYPE</li>
+            <li><strong>DeFi</strong> — AAVE, UNI, MKR, CRV, DYDX, GMX, SNX, LDO, PENDLE, MORPHO, ONDO, ENA</li>
+            <li><strong>L2 / Infra</strong> — OP, ARB, STRK, ZK, ZETA, SEI, TIA, MOVE, BERA, INJ, INIT</li>
+            <li><strong>AI</strong> — AI16Z, AIXBT, FET, RENDER, TAO, VIRTUAL, GRIFFAIN, GRASS, KAITO</li>
+            <li><strong>Memes</strong> — DOGE, PEPE, SHIB, WIF, BONK, FARTCOIN, POPCAT, PNUT, TRUMP, MON</li>
+            <li><strong>Indices</strong> — SPX (S&P 500)</li>
+            <li><strong>Commodities</strong> — PAXG (gold-backed)</li>
+          </ul>
+          <p>
+            Note: Additional tradfi markets (oil, forex, custom indices) are available through
+            third-party frontends like trade.xyz that create custom HyperEVM-based instruments.
+            These are separate from Hyperliquid's native perps.
+          </p>
+        </section>
+
+        <section className="docs-section">
+          <h2>Builder Codes</h2>
+          <p>
+            Futuresxyz earns revenue through Hyperliquid's Builder Codes system. Every trade
+            placed through the frontend automatically includes a small builder fee.
+          </p>
+          <ul>
+            <li><strong>Fee rate</strong> — 0.03% per trade (configurable up to 0.1%)</li>
+            <li><strong>Revenue</strong> — Paid directly to the builder's Hyperliquid account</li>
+            <li><strong>User approval</strong> — One-time gasless signature (EIP-712)</li>
+            <li><strong>Requirement</strong> — Builder wallet needs 100+ USDC in perps account</li>
+          </ul>
+          <div className="docs-code">
+            <pre>{`// src/config/hyperliquid.ts
+export const BUILDER_ADDRESS = '0x...'  // Your wallet
+export const BUILDER_FEE = 30           // 30 = 0.03%`}</pre>
+          </div>
+        </section>
+
+        <section className="docs-section">
+          <h2>Wallet Support</h2>
+          <p>
+            Connect any EVM-compatible wallet. The app uses wagmi's injected connector
+            which auto-detects your browser wallet:
+          </p>
+          <ul>
+            <li><strong>Rabby</strong> — Full Hyperliquid support, recommended</li>
+            <li><strong>MetaMask</strong> — Works with EIP-712 signing</li>
+            <li><strong>Phantom</strong> — EVM mode</li>
+            <li><strong>Coinbase Wallet</strong> — Browser extension or mobile</li>
+            <li><strong>WalletConnect</strong> — Any mobile wallet via QR code</li>
+          </ul>
+          <p>
+            No private keys are ever exposed. Your wallet signs typed data messages
+            locally — the signature is sent to Hyperliquid, not the key.
+          </p>
         </section>
 
         <section className="docs-section">
           <h2>Tech Stack</h2>
           <ul>
-            <li><strong>Vite + React 19 + TypeScript</strong> — Build tooling and UI framework</li>
-            <li><strong>wagmi + viem</strong> — Wallet connection (auto-detects Rabby, MetaMask, Phantom, WalletConnect)</li>
-            <li><strong>@nktkas/hyperliquid SDK</strong> — Typed Hyperliquid API client (InfoClient, ExchangeClient)</li>
-            <li><strong>TradingView Lightweight Charts</strong> — Candlestick charting (Apache 2.0)</li>
-            <li><strong>react-router-dom</strong> — Client-side routing (Perps, Predictions, Protocols, Docs)</li>
+            <li><strong>Vite + React 19 + TypeScript</strong> — Build tooling and UI</li>
+            <li><strong>wagmi + viem</strong> — Wallet connection and EVM interactions</li>
+            <li><strong>@nktkas/hyperliquid</strong> — Typed SDK for Hyperliquid L1 API</li>
+            <li><strong>TradingView Lightweight Charts</strong> — Candlestick + volume charting</li>
+            <li><strong>react-router-dom</strong> — Client-side routing</li>
           </ul>
         </section>
 
         <section className="docs-section">
-          <h2>Builder Codes (Revenue)</h2>
-          <p>
-            Futuresxyz earns revenue through Hyperliquid's Builder Codes system. Every order placed through the
-            frontend includes a builder fee that goes directly to the builder's Hyperliquid perps account.
-          </p>
-          <ul>
-            <li><strong>One-time approval</strong> — User signs an <code>ApproveBuilderFee</code> message (EIP-712, no gas)</li>
-            <li><strong>Per-order fee</strong> — Each order includes <code>builder: {'{'} b: address, f: fee {'}'}</code></li>
-            <li><strong>Max fee</strong> — 0.1% on perps, configurable in <code>src/config/hyperliquid.ts</code></li>
-            <li><strong>Builder requirement</strong> — 100 USDC minimum in perps account</li>
-          </ul>
+          <h2>API Endpoints</h2>
+          <h3>REST (POST /info)</h3>
           <div className="docs-code">
-            <pre>{`// src/config/hyperliquid.ts
-export const BUILDER_ADDRESS = '0xYOUR_ADDRESS'
-export const BUILDER_FEE = 30  // 30 = 3 bps = 0.03%`}</pre>
+            <pre>{`meta()                  -> market metadata (name, decimals, maxLeverage)
+allMids()               -> current mid prices for all markets
+metaAndAssetCtxs()      -> funding rates, OI, 24h volume
+clearinghouseState()    -> user positions, margin, withdrawable
+spotClearinghouseState()-> spot balances (USDC, tokens)
+candleSnapshot()        -> historical OHLCV candle data
+recentTrades()          -> recent fills for a market
+openOrders()            -> user's open orders
+userFills()             -> user's trade history`}</pre>
           </div>
-        </section>
-
-        <section className="docs-section">
-          <h2>Wallet Connection</h2>
-          <p>
-            Uses wagmi's <code>injected()</code> connector which auto-detects the user's browser wallet:
-            Rabby, MetaMask, Phantom (EVM), Coinbase Wallet, etc. WalletConnect is also supported
-            for mobile wallets.
-          </p>
-          <p>
-            The connected wallet's <code>walletClient</code> is passed to the Hyperliquid SDK's
-            <code>ExchangeClient</code> which uses it for EIP-712 typed data signing.
-            No private keys are ever exposed — signing happens in the wallet.
-          </p>
-        </section>
-
-        <section className="docs-section">
-          <h2>Data Flow</h2>
-          <h3>Market Data (REST polling)</h3>
-          <ul>
-            <li><code>info.meta()</code> — All perp market metadata (name, szDecimals, maxLeverage)</li>
-            <li><code>info.allMids()</code> — Current mid prices for all markets</li>
-            <li><code>info.metaAndAssetCtxs()</code> — Funding rates, open interest, 24h volume</li>
-            <li><code>info.clearinghouseState()</code> — User positions, margin, balances</li>
-            <li><code>info.candleSnapshot()</code> — Historical OHLCV candle data</li>
-          </ul>
-
-          <h3>Real-time (WebSocket)</h3>
-          <ul>
-            <li><code>l2Book</code> — Order book updates (bids/asks)</li>
-            <li><code>candle</code> — Live candle updates</li>
-            <li><code>trades</code> — Trade stream (available for future use)</li>
-            <li><code>userFills</code> — User fill notifications (available for future use)</li>
-          </ul>
+          <h3>REST (POST /exchange)</h3>
+          <div className="docs-code">
+            <pre>{`order()                 -> place order (market, limit, trigger)
+cancel()                -> cancel order(s) by asset + oid
+usdClassTransfer()      -> transfer USDC between spot and perps
+updateLeverage()        -> change leverage for a market
+approveBuilderFee()     -> approve builder fee (one-time)`}</pre>
+          </div>
+          <h3>WebSocket (WSS /ws)</h3>
+          <div className="docs-code">
+            <pre>{`l2Book     -> order book updates (bids/asks with depth)
+candle     -> live candle updates (OHLCV per interval)
+trades     -> trade stream (price, size, side, time)`}</pre>
+          </div>
         </section>
 
         <section className="docs-section">
           <h2>Project Structure</h2>
           <div className="docs-code">
             <pre>{`src/
-├── config/
-│   ├── wagmi.ts           # Wallet config (chains, connectors)
-│   └── hyperliquid.ts     # Builder address, fees, API URLs
-├── contexts/
-│   ├── HyperliquidContext  # InfoClient + ExchangeClient
-│   ├── MarketContext       # Selected market state
-│   └── ThemeContext        # Light/dark theme
-├── hooks/
-│   ├── useMarketMeta      # All perp markets + prices
-│   ├── useMarketStats     # Funding, OI, volume, 24h change
-│   ├── useOrderBook       # WebSocket L2 book
-│   ├── useCandles         # Historical + live candles
-│   ├── useUserState       # Positions, balances, margin
-│   ├── useBuilderApproval # Builder fee approval flow
-│   └── usePlaceOrder      # Order submission + builder fee
-├── components/
-│   ├── shared/            # ConnectButton, BuilderBanner
-│   └── perps/             # Chart, OrderBook, TradePanel, etc.
-├── pages/                 # Perps, Predictions, Protocols, Docs
-└── lib/                   # Format utils, WS manager, constants`}</pre>
+  config/
+    wagmi.ts              # Wallet config (chains, connectors)
+    hyperliquid.ts        # Builder address, fees, API URLs
+  contexts/
+    HyperliquidContext    # InfoClient + ExchangeClient provider
+    MarketContext         # Selected market state
+    ThemeContext           # Light/dark theme
+    ToastContext           # Toast notifications
+  hooks/
+    useMarketMeta         # All perp markets + prices (cached)
+    useMarketStats        # Funding, OI, volume for a market
+    useOrderBook          # WebSocket L2 book with grouping
+    useCandles            # Historical + live OHLCV candles
+    useUserState          # Unified balance, positions, margin
+    useAccountData        # Spot balances, open orders, fills
+    usePlaceOrder         # Order, cancel, cancelAll, TP/SL
+    useModifyLeverage     # Update leverage per market
+    useKeyboardShortcuts  # B/S/M/L/Cmd+K/Esc shortcuts
+    useSoundNotifications # Audio beep on new fills
+  components/perps/
+    PriceChart            # Candlestick + volume chart
+    OrderBook             # Grouped orderbook with view modes
+    OrderBookPanel        # Order book / Recent trades tabs
+    TradePanel            # Order form + confirmation modal
+    MarketSelector        # Full market search with tabs
+    MarketHeader          # Mark, funding, volume, OI stats
+    TickerBar             # Scrolling price ticker
+    Positions             # Bottom panel (balances, positions, orders)
+  pages/
+    PerpsPage             # Main trading interface
+    PortfolioPage         # Portfolio with PnL, balances, history
+    DocsPage              # This page`}</pre>
           </div>
         </section>
 
         <section className="docs-section">
-          <h2>HIP-4 Prediction Markets</h2>
-          <p>
-            HIP-4 introduces outcome contracts — binary YES/NO prediction markets on Hyperliquid.
-            Currently on testnet, mainnet deployment is imminent. The Predictions page will be
-            activated when the <code>outcomeMeta</code> API endpoint goes live on mainnet.
-          </p>
-          <ul>
-            <li>Same L1 API, same CLOB matching engine</li>
-            <li>1x margin only (no leverage, no liquidation risk)</li>
-            <li>Builder Codes work the same way</li>
-            <li>Kalshi partnership for institutional-grade outcomes</li>
-          </ul>
-        </section>
-
-        <section className="docs-section">
-          <h2>Deployment</h2>
+          <h2>Self-Hosting</h2>
           <div className="docs-code">
-            <pre>{`# Development
-npm run dev
+            <pre>{`# Clone
+git clone https://github.com/Chrisportugal/futuresxyz.git
+cd futuresxyz
 
-# Production build
+# Install + run
+npm install
+npm run dev        # http://localhost:5173
+
+# Build + deploy
 npm run build
-
-# Deploy to Vercel (free)
-npx vercel --prod
-
-# Costs: $0 (API free, SDK free, hosting free)
-# Revenue: Builder fees on every trade`}</pre>
+npx vercel --prod  # Deploy to Vercel (free)`}</pre>
           </div>
+          <p>
+            Total cost: $0. The Hyperliquid API is free, the SDK is open source,
+            and Vercel's free tier handles the hosting.
+          </p>
+        </section>
+
+        <section className="docs-section">
+          <h2>Links</h2>
+          <ul>
+            <li><strong>GitHub</strong> — github.com/Chrisportugal/futuresxyz</li>
+            <li><strong>Hyperliquid API</strong> — hyperliquid.gitbook.io/hyperliquid-docs</li>
+            <li><strong>Hyperliquid SDK</strong> — github.com/nktkas/hyperliquid</li>
+            <li><strong>Builder Codes</strong> — hyperliquid.gitbook.io/.../builder-codes</li>
+          </ul>
         </section>
       </div>
     </div>
