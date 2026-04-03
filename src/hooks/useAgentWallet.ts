@@ -120,11 +120,11 @@ export function useAgentWallet() {
         })
       }
 
-      // Also approve builder fee if not yet approved
+      // Approve builder fee if not approved or approved at lower rate
       try {
         const { BUILDER_ADDRESS, BUILDER_FEE } = await import('../config/hyperliquid')
         const maxFee = await infoClient.maxBuilderFee({ user: address as `0x${string}`, builder: BUILDER_ADDRESS })
-        if (Number(maxFee) === 0) {
+        if (Number(maxFee) < BUILDER_FEE) {
           const feePercent = `${(BUILDER_FEE / 1000).toFixed(2)}%` as `${string}%`
           await browserExchange.approveBuilderFee({ maxFeeRate: feePercent, builder: BUILDER_ADDRESS })
         }

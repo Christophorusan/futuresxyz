@@ -61,6 +61,8 @@ export function useMarketMeta() {
         dayNtlVlm: string
         prevDayPx: string
         markPx: string
+        funding: string
+        openInterest: string
       }>
 
       const marketList: MarketInfo[] = meta.universe.map((asset, i) => {

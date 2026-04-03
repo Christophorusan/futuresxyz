@@ -2,9 +2,9 @@
 // Your builder address — must have >= 100 USDC in Hyperliquid perps account
 export const BUILDER_ADDRESS = '0xb76b5d0b58B21B8d0cca42051AA0e16066f7dd70' as const
 
-// Builder fee in tenths of basis points (30 = 3 bps = 0.03%)
-// User approved maxBuilderFee = 30. To charge more, need re-approval at higher rate.
-export const BUILDER_FEE = 30
+// Builder fee in tenths of basis points (100 = 10 bps = 0.1% max)
+// Enable Trading flow will request approval at this rate
+export const BUILDER_FEE = 100
 
 // API URLs
 export const HL_API_URL = 'https://api.hyperliquid.xyz'
