@@ -58,7 +58,7 @@ export function Positions() {
 
   return (
     <div className="positions">
-      {/* Tab bar — Coinbase style */}
+      {/* Tab bar with balance on the right — like Hyperliquid */}
       <div className="pos-tab-bar">
         <div className="pos-tabs">
           {tabs.map(t => (
@@ -71,42 +71,29 @@ export function Positions() {
             </button>
           ))}
         </div>
-        {tab === 'orders' && openOrders.length > 0 && (
-          <button
-            className="pos-cancel-all"
-            disabled={cancellingAll}
-            onClick={async () => {
-              setCancellingAll(true)
-              const success = await cancelAll(openOrders.map(o => ({ coin: o.coin, oid: o.oid })))
-              if (success) { addToast('All orders cancelled', 'success'); refetchAccount() }
-              else addToast('Failed to cancel orders', 'error')
-              setCancellingAll(false)
-            }}
-          >{cancellingAll ? 'Cancelling...' : 'Cancel all'}</button>
-        )}
-      </div>
-
-      {/* Account summary — like Hyperliquid */}
-      {isConnected && state && (
-        <div className="acct-summary">
-          <div className="acct-stat">
-            <span className="acct-stat-label">Balance</span>
-            <span className="acct-stat-value">{formatUsd(state.totalBalance)}</span>
-          </div>
-          <div className="acct-stat">
-            <span className="acct-stat-label">Equity</span>
-            <span className="acct-stat-value">{formatUsd(state.accountValue)}</span>
-          </div>
-          <div className="acct-stat">
-            <span className="acct-stat-label">Margin</span>
-            <span className="acct-stat-value">{formatUsd(state.totalMarginUsed)}</span>
-          </div>
-          <div className="acct-stat">
-            <span className="acct-stat-label">Position</span>
-            <span className="acct-stat-value">{formatUsd(state.totalNtlPos)}</span>
-          </div>
+        <div className="pos-tab-right">
+          {tab === 'orders' && openOrders.length > 0 && (
+            <button
+              className="pos-cancel-all"
+              disabled={cancellingAll}
+              onClick={async () => {
+                setCancellingAll(true)
+                const success = await cancelAll(openOrders.map(o => ({ coin: o.coin, oid: o.oid })))
+                if (success) { addToast('All orders cancelled', 'success'); refetchAccount() }
+                else addToast('Failed to cancel orders', 'error')
+                setCancellingAll(false)
+              }}
+            >{cancellingAll ? 'Cancelling...' : 'Cancel all'}</button>
+          )}
+          {isConnected && state && (
+            <div className="pos-balance-inline">
+              <span className="pos-bal-item"><span className="pos-bal-label">Balance</span> {formatUsd(state.totalBalance)}</span>
+              <span className="pos-bal-item"><span className="pos-bal-label">Equity</span> {formatUsd(state.accountValue)}</span>
+              <span className="pos-bal-item"><span className="pos-bal-label">Margin</span> {formatUsd(state.totalMarginUsed)}</span>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {!isConnected ? (
         <div className="pos-empty-state">

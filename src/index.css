@@ -1019,11 +1019,22 @@ body {
   border-bottom: 1px solid var(--border);
   padding: 0 16px;
 }
+.pos-tab-right { display: flex; align-items: center; gap: 16px; }
 .pos-cancel-all {
   background: none; border: none; color: var(--red); font-size: 12px;
   font-weight: 500; cursor: pointer; font-family: var(--font); padding: 8px 0;
 }
 .pos-cancel-all:hover { text-decoration: underline; }
+
+/* Inline balance in tab bar */
+.pos-balance-inline {
+  display: flex; gap: 14px; align-items: center;
+}
+.pos-bal-item {
+  font-size: 12px; font-weight: 600; color: var(--text-0);
+  font-family: 'Inter', monospace; display: flex; align-items: center; gap: 4px;
+}
+.pos-bal-label { font-size: 10px; color: var(--text-3); font-weight: 500; }
 
 /* Empty state — Coinbase style with icon */
 .pos-empty-state {
