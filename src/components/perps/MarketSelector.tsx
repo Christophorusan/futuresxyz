@@ -12,9 +12,10 @@ type MainTab = typeof MAIN_TABS[number]
 // Categorize markets by name
 const TRADFI = new Set(['SPX', 'PAXG'])
 const MEMES = new Set(['DOGE', 'SHIB', 'PEPE', 'BONK', 'FLOKI', 'WIF', 'PNUT', 'MOODENG', 'FARTCOIN', 'POPCAT', 'BRETT', 'MEW', 'MYRO', 'NEIRO', 'GOAT', 'CHILLGUY', 'TRUMP', 'MELANIA', 'BOME', 'kBONK', 'kDOGS', 'kFLOKI', 'kLUNC', 'kNEIRO', 'kPEPE', 'kSHIB', 'LOOM', 'HPOS', 'TURBO', 'MON', 'DOOD', 'PURR'])
-const AI_TOKENS = new Set(['AI', 'AI16Z', 'AIXBT', 'FET', 'RENDER', 'RNDR', 'GRIFFAIN', 'VIRTUAL', 'ZEREBRO', 'GRASS', 'IO', 'TAO', 'HYPER', 'KAITO'])
-const DEFI = new Set(['AAVE', 'UNI', 'COMP', 'CRV', 'MKR', 'DYDX', 'GMX', 'SNX', 'LDO', 'PENDLE', 'MORPHO', 'EIGEN', 'ENA', 'ONDO', 'USUAL', 'RESOLV', 'ETHFI', 'STG', 'SUSHI', 'JUP', 'INIT'])
-const L1L2 = new Set(['BTC', 'ETH', 'SOL', 'BNB', 'AVAX', 'DOT', 'ADA', 'NEAR', 'SUI', 'APT', 'SEI', 'TIA', 'OP', 'ARB', 'HYPE', 'MOVE', 'S', 'BERA', 'INJ', 'TRX', 'XRP', 'TON', 'FTM', 'MATIC', 'POL', 'ATOM', 'ICP', 'ALGO', 'XLM', 'LINK', 'STX', 'ZETA', 'ZK'])
+// Future use for sub-tab filtering
+// const AI_TOKENS = new Set(['AI', 'AI16Z', 'AIXBT', 'FET', 'RENDER', 'RNDR', 'GRIFFAIN', 'VIRTUAL', 'ZEREBRO', 'GRASS', 'IO', 'TAO', 'HYPER', 'KAITO'])
+// const DEFI = new Set(['AAVE', 'UNI', 'COMP', 'CRV', 'MKR', 'DYDX', 'GMX', 'SNX', 'LDO', 'PENDLE', 'MORPHO', 'EIGEN', 'ENA', 'ONDO', 'USUAL', 'RESOLV', 'ETHFI', 'STG', 'SUSHI', 'JUP', 'INIT'])
+// const L1L2 = new Set(['BTC', 'ETH', 'SOL', 'BNB', 'AVAX', 'DOT', 'ADA', 'NEAR', 'SUI', 'APT', 'SEI', 'TIA', 'OP', 'ARB', 'HYPE', 'MOVE', 'S', 'BERA', 'INJ', 'TRX', 'XRP', 'TON', 'FTM', 'MATIC', 'POL', 'ATOM', 'ICP', 'ALGO', 'XLM', 'LINK', 'STX', 'ZETA', 'ZK'])
 
 function formatVol(v: number): string {
   if (v >= 1e9) return `$${(v / 1e9).toFixed(1)}B`
@@ -65,8 +66,6 @@ export function MarketSelector() {
       return saved ? new Set(JSON.parse(saved)) : new Set<string>()
     } catch { return new Set<string>() }
   })
-
-  const currentMarket = markets.find(m => m.name === selectedMarket)
 
   // Close on Escape
   useEffect(() => {

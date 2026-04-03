@@ -49,7 +49,6 @@ export function TradePanel() {
   const sizeNum = parseFloat(size) || 0
   const priceNum = orderType === 'limit' && price ? parseFloat(price) : midPrice
   const orderValue = sizeNum * priceNum
-  const margin = leverage > 0 ? orderValue / leverage : 0
   const estFee = orderValue * 0.00035
 
   const handleSubmit = async () => {
