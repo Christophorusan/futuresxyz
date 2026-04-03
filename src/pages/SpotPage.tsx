@@ -213,6 +213,8 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
 
       {!isConnected ? (
         <div className="connect-prompt">Connect wallet to trade</div>
+      ) : !exchange ? (
+        <div className="trade-error">Wallet connected but signer unavailable. Switch to Arbitrum chain in your wallet.</div>
       ) : (
         <button
           className={`trade-submit ${side}`}
@@ -225,6 +227,9 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
 
       {error && <div className="trade-error">{error}</div>}
       {success && <div className="dw-success">{success}</div>}
+      <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 4 }}>
+        {isConnected ? 'Wallet: connected' : 'Wallet: not connected'} | {exchange ? 'Signer: ready' : 'Signer: unavailable'} | Asset: {market ? 10000 + market.index : '?'}
+      </div>
     </div>
   )
 }
