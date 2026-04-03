@@ -26,7 +26,7 @@ function processLevels(levels: WsLevel[], isBids: boolean): OrderBookLevel[] {
   )
 
   let cumulative = 0
-  return sorted.slice(0, 10).map((level) => {
+  return sorted.slice(0, 30).map((level) => {
     cumulative += parseFloat(level.sz)
     return { price: level.px, size: level.sz, total: cumulative }
   })
