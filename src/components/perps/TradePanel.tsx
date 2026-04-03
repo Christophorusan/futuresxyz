@@ -4,6 +4,7 @@ import { useMarket } from '../../contexts/MarketContext'
 import { useMarketMeta } from '../../hooks/useMarketMeta'
 import { useUserState } from '../../hooks/useUserState'
 import { usePlaceOrder, type OrderSide, type OrderType, type Tif } from '../../hooks/usePlaceOrder'
+import { useBuilderApproval } from '../../hooks/useBuilderApproval'
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts'
 import { OrderConfirmModal } from './OrderConfirmModal'
 import { formatPrice, formatUsd } from '../../lib/format'
@@ -16,6 +17,7 @@ export function TradePanel() {
   const { markets } = useMarketMeta()
   const { state } = useUserState()
   const { placeOrder, placing, error, clearError } = usePlaceOrder()
+  const { isApproved, approving, approve } = useBuilderApproval()
 
   const [side, setSide] = useState<OrderSide>('buy')
   const [orderType, setOrderType] = useState<OrderType>('market')
@@ -258,6 +260,14 @@ export function TradePanel() {
       {/* Submit */}
       {!isConnected ? (
         <div className="connect-prompt">Connect wallet to trade</div>
+      ) : !isApproved ? (
+        <button
+          className="trade-submit transfer"
+          onClick={approve}
+          disabled={approving}
+        >
+          {approving ? 'Approving...' : 'Enable Trading (one-time signature)'}
+        </button>
       ) : available <= 0 ? (
         <button className="trade-submit add-funds" disabled>
           Add funds to continue

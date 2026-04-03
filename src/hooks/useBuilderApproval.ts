@@ -45,10 +45,12 @@ export function useBuilderApproval() {
       setApproving(true)
       setError(null)
 
-      const feePercent = `${(BUILDER_FEE / 1000).toFixed(4)}%`
+      // BUILDER_FEE is in tenths of basis points (30 = 3 bps = 0.03%)
+      // maxFeeRate needs to be a string like "0.03%"
+      const feePercent = `${(BUILDER_FEE / 1000).toFixed(2)}%`
 
       await exchange.approveBuilderFee({
-        maxFeeRate: feePercent,
+        maxFeeRate: feePercent as `${string}%`,
         builder: BUILDER_ADDRESS,
       })
 
