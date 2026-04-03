@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { useHyperliquid } from '../contexts/HyperliquidContext'
+import { useUserState } from '../hooks/useUserState'
 import { useSpotMarkets, type SpotMarket } from '../hooks/useSpotMarkets'
 import { formatPrice } from '../lib/format'
 import { createChart, CandlestickSeries, HistogramSeries, type IChartApi, type ISeriesApi, type CandlestickData, type HistogramData, type Time } from 'lightweight-charts'
@@ -100,6 +101,7 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
 // ── Spot Trade Panel ──
 function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
   const { isConnected, exchange } = useHyperliquid()
+  const { state } = useUserState()
   const [side, setSide] = useState<'buy' | 'sell'>('buy')
   const [usdcAmount, setUsdcAmount] = useState('')  // Input in USDC
   const [placing, setPlacing] = useState(false)
@@ -185,6 +187,10 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
       </div>
 
       <div className="tp-info-rows">
+        <div className="tp-info-row">
+          <span>Available to Trade</span>
+          <span>{state ? `${parseFloat(state.spotUSDC).toFixed(2)} USDC` : '--'}</span>
+        </div>
         <div className="tp-info-row">
           <span>Price</span>
           <span>${price > 0 ? formatPrice(price.toString()) : '--'}</span>
