@@ -4,8 +4,8 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { HttpTransport, ExchangeClient } from '@nktkas/hyperliquid'
 import { USE_TESTNET } from '../config/hyperliquid'
 
-const AGENT_KEY_STORAGE = 'hl-agent-key'
-const AGENT_APPROVED_STORAGE = 'hl-agent-approved'
+const AGENT_KEY_STORAGE = 'hl-agent-key-v2'
+const AGENT_APPROVED_STORAGE = 'hl-agent-approved-v2'
 
 const transport = new HttpTransport({ isTestnet: USE_TESTNET })
 
@@ -86,7 +86,7 @@ export function useAgentWallet() {
 
       await browserExchange.approveAgent({
         agentAddress: agentAccount.address,
-        agentName: null,
+        agentName: 'futuresxyz',
       })
 
       // Mark as approved
