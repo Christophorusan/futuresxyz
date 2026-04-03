@@ -17,7 +17,7 @@ export function TradePanel() {
   const { markets } = useMarketMeta()
   const { state } = useUserState()
   const { placeOrder, placing, error, clearError } = usePlaceOrder()
-  const { isApproved, approving, approve } = useBuilderApproval()
+  const { isApproved, approving, approve, error: approvalError } = useBuilderApproval()
 
   const [side, setSide] = useState<OrderSide>('buy')
   const [orderType, setOrderType] = useState<OrderType>('market')
@@ -303,6 +303,7 @@ export function TradePanel() {
       </div>
 
       {error && <div className="trade-error">{error}</div>}
+      {approvalError && <div className="trade-error">{approvalError}</div>}
 
       {/* Order Confirmation Modal */}
       {showConfirm && (

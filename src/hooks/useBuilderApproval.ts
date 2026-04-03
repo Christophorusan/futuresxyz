@@ -57,7 +57,12 @@ export function useBuilderApproval() {
       setIsApproved(true)
     } catch (e) {
       console.error('Failed to approve builder fee:', e)
-      setError('Signature rejected or failed.')
+      const msg = e instanceof Error ? e.message : String(e)
+      if (msg.includes('rejected') || msg.includes('denied')) {
+        setError('Signature rejected by wallet.')
+      } else {
+        setError(`Approval failed: ${msg.slice(0, 100)}`)
+      }
     } finally {
       setApproving(false)
     }
