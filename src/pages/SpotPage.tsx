@@ -72,7 +72,13 @@ function SpotChart({ coin, theme }: { coin: string; theme: 'dark' | 'light' }) {
 function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; selected: string; onSelect: (name: string) => void }) {
   const [search, setSearch] = useState('')
   const [open, setOpen] = useState(false)
-  const filtered = useMemo(() => markets.filter(m => m.baseToken.toLowerCase().includes(search.toLowerCase()) || m.pairName.toLowerCase().includes(search.toLowerCase())).sort((a, b) => parseFloat(b.volume24h) - parseFloat(a.volume24h)), [markets, search])
+  const PINNED = new Set(['BTC', 'ETH', 'SOL', 'HYPE'])
+  const filtered = useMemo(() => {
+    const matched = markets.filter(m => m.baseToken.toLowerCase().includes(search.toLowerCase()) || m.pairName.toLowerCase().includes(search.toLowerCase()))
+    const pinned = matched.filter(m => PINNED.has(m.baseToken)).sort((a, b) => parseFloat(b.volume24h) - parseFloat(a.volume24h))
+    const rest = matched.filter(m => !PINNED.has(m.baseToken)).sort((a, b) => parseFloat(b.volume24h) - parseFloat(a.volume24h))
+    return [...pinned, ...rest]
+  }, [markets, search])
 
   return (
     <div className="spot-selector">
@@ -84,7 +90,7 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
         <div className="spot-dropdown">
           <input className="spot-dd-search" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} autoFocus />
           <div className="spot-dd-list">
-            {filtered.slice(0, 50).map(m => (
+            {filtered.map(m => (
               <button key={m.name} className={`spot-dd-item ${m.pairName === selected ? 'active' : ''}`} onClick={() => { onSelect(m.pairName); setOpen(false); setSearch('') }}>
                 <span className="spot-dd-name">{m.pairName}</span>
                 <span className="spot-dd-price">${formatPrice(m.markPx)}</span>
@@ -202,6 +208,7 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
         <button className={`trade-side-btn ${side === 'buy' ? 'active buy' : ''}`} onClick={() => setSide('buy')}>Buy</button>
         <button className={`trade-side-btn ${side === 'sell' ? 'active sell' : ''}`} onClick={() => setSide('sell')}>Sell</button>
       </div>
+      <div style={{ fontSize: 11, color: 'var(--text-3)', textAlign: 'center', marginTop: -4 }}>Swap via Hyperliquid spot order book</div>
 
       {/* Available + Price */}
       <div className="tp-info-rows">
@@ -275,7 +282,7 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
         </button>
       ) : (
         <button className={`trade-submit ${side}`} disabled={placing || tokenAmount <= 0} onClick={handleSpotOrder}>
-          {placing ? 'Placing...' : side === 'buy' ? `Buy ${market?.baseToken ?? ''}` : `Sell ${market?.baseToken ?? ''}`}
+          {placing ? 'Swapping...' : side === 'buy' ? `Swap to ${market?.baseToken ?? ''}` : `Swap ${market?.baseToken ?? ''} to USDC`}
         </button>
       )}
 

@@ -8,12 +8,11 @@ import { ThemeProvider, useTheme } from './contexts/ThemeContext'
 import { ToastProvider } from './contexts/ToastContext'
 import { ConnectButton } from './components/shared/ConnectButton'
 import { PerpsPage } from './pages/PerpsPage'
-import { PredictionsPage } from './pages/PredictionsPage'
 import { ProtocolsPage } from './pages/ProtocolsPage'
 import { PortfolioPage } from './pages/PortfolioPage'
 import { SpotPage } from './pages/SpotPage'
 import { DocsPage } from './pages/DocsPage'
-import { ComingSoonPage } from './pages/ComingSoonPage'
+import { EmbedPage, ProtocolPage } from './pages/EmbedPage'
 import { useSoundNotifications } from './hooks/useSoundNotifications'
 
 const queryClient = new QueryClient()
@@ -47,9 +46,7 @@ function AppContent() {
               <svg className="logo-icon" width="24" height="24" viewBox="0 0 32 32" fill="none">
                 <line x1="6" y1="2" x2="6" y2="30" stroke="currentColor" strokeWidth="1.5"/>
                 <rect x="2.5" y="7" width="7" height="15" rx="1" fill="currentColor"/>
-                <line x1="16" y1="4" x2="16" y2="26" stroke="currentColor" strokeWidth="1.5"/>
                 <rect x="12.5" y="9" width="7" height="9" rx="1" stroke="currentColor" strokeWidth="1.5"/>
-                <line x1="26" y1="1" x2="26" y2="22" stroke="currentColor" strokeWidth="1.5"/>
                 <rect x="22.5" y="5" width="7" height="11" rx="1" stroke="currentColor" strokeWidth="1.5"/>
               </svg>
               Futuresxyz
@@ -59,7 +56,7 @@ function AppContent() {
                 Perps
               </NavLink>
               <NavLink to="/spot" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
-                Spot
+                Swap
               </NavLink>
               <NavLink to="/predictions" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
                 Predictions
@@ -90,10 +87,10 @@ function AppContent() {
         <Routes>
           <Route path="/perps" element={<PerpsPage />} />
           <Route path="/spot" element={<SpotPage />} />
-          <Route path="/predictions" element={<PredictionsPage />} />
-          <Route path="/lending" element={<ComingSoonPage title="Lending" description="Lend and borrow on HyperEVM protocols." />} />
-          <Route path="/cdp" element={<ComingSoonPage title="CDP" description="Collateralized debt positions on HyperEVM." />} />
-          <Route path="/staking" element={<ComingSoonPage title="Staking" description="Stake HYPE and liquid staking derivatives." />} />
+          <Route path="/predictions" element={<EmbedPage title="Predictions" url="https://testnet.outcome.xyz/events" description="Powered by Outcome" />} />
+          <Route path="/lending" element={<ProtocolPage title="HyperLend" url="https://app.hyperlend.finance/dashboard" description="Lend and borrow on Hyperliquid's native lending protocol." features={['Supply assets to earn yield', 'Borrow against your collateral', 'Manage lending positions']} />} />
+          <Route path="/cdp" element={<EmbedPage title="Felix CDP" url="https://www.usefelix.xyz/portfolio" description="Powered by Felix" />} />
+          <Route path="/staking" element={<ProtocolPage title="HyperBeat" url="https://app.hyperbeat.org/staking" description="Stake HYPE and earn liquid staking rewards." features={['Stake HYPE for stHYPE', 'Earn staking rewards', 'Liquid staking derivatives']} />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/protocols" element={<ProtocolsPage />} />
           <Route path="/docs" element={<DocsPage />} />

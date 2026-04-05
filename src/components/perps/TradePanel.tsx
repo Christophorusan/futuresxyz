@@ -6,6 +6,7 @@ import { useUserState } from '../../hooks/useUserState'
 import { usePlaceOrder, type OrderSide, type OrderType, type Tif } from '../../hooks/usePlaceOrder'
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts'
 import { OrderConfirmModal } from './OrderConfirmModal'
+import { DepositWithdraw } from './DepositWithdraw'
 import { formatPrice, formatUsd } from '../../lib/format'
 
 const SIZE_MARKS = [0, 25, 50, 75, 100]
@@ -298,19 +299,21 @@ export function TradePanel() {
         />
       )}
 
-      {/* Balance Summary */}
-      {/* Deposit / Withdraw — like Hyperliquid */}
+      {/* Deposit / Withdraw via HyperUnit + Internal Transfer */}
       {isConnected && (
         <div className="tp-deposit-section">
-          <button className="tp-deposit-btn" onClick={() => window.open('https://app.hyperliquid.xyz', '_blank')}>Deposit</button>
+          <button className="tp-deposit-btn" onClick={() => window.open('https://app.hyperunit.xyz/deposit', '_blank')}>Deposit</button>
           <div className="tp-perps-spot-toggle">
             <span className="tp-toggle-active">Perps</span>
             <span className="tp-toggle-divider">|</span>
             <span>Spot</span>
           </div>
-          <button className="tp-withdraw-btn" onClick={() => window.open('https://app.hyperliquid.xyz', '_blank')}>Withdraw</button>
+          <button className="tp-withdraw-btn" onClick={() => window.open('https://app.hyperunit.xyz/withdraw', '_blank')}>Withdraw</button>
         </div>
       )}
+
+      {/* Spot ↔ Perps internal transfer */}
+      {isConnected && exchange && <DepositWithdraw />}
 
       {/* Unified Account Summary — like Hyperliquid */}
       {isConnected && state && (
