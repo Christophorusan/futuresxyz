@@ -2378,9 +2378,35 @@ body {
   .pos-row-full > :nth-child(n+8) { display: none; }
 }
 
-/* Small screens: everything stacks */
+/* Predictions mobile */
 @media (max-width: 768px) {
-  .perps-page { height: auto; min-height: calc(100vh - 48px); overflow: auto; }
+  .pred-page { overflow-y: auto; overflow-x: hidden; }
+  .pred-layout { flex-direction: column; padding: 0 8px; overflow: visible; height: auto; }
+  .pred-main { overflow: visible !important; flex: none !important; height: auto !important; }
+  .pred-sidebar { width: 100%; flex-direction: column; overflow: visible; }
+  .pred-topbar { width: calc(100% - 16px); overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap; }
+  .pred-topbar::-webkit-scrollbar { display: none; }
+  .pred-topbar-tab { padding: 6px 8px; font-size: 11px; }
+  .pred-topbar-tab svg { display: none; }
+  .featured-market { flex-direction: column; max-width: 100%; }
+  .featured-book { width: 100%; border-left: none; border-top: 1px solid var(--border); }
+  .pred-grid { grid-template-columns: 1fr 1fr; }
+  .pred-detail { flex-direction: column; overflow-y: auto; }
+  .pred-detail-side { width: 100%; }
+  .pred-detail-main { min-height: auto; overflow: visible; }
+  .pred-markets-bar { overflow-x: auto; scrollbar-width: none; }
+  .pred-markets-bar::-webkit-scrollbar { display: none; }
+  .tpsl-modal { width: 95vw; }
+}
+@media (max-width: 480px) {
+  .pred-grid { grid-template-columns: 1fr; }
+  .pred-topbar { width: calc(100% - 8px); padding: 4px 6px; }
+  .pred-page { padding: 4px; gap: 4px; }
+}
+
+/* Perps small screens: everything stacks */
+@media (max-width: 768px) {
+  .perps-page { height: auto; min-height: calc(100vh - 48px); overflow: auto; padding: 6px 8px; }
   .perps-main { flex-direction: column; }
   .perps-top-row { flex-direction: column; min-height: 350px; }
   .perps-chart-area { border-right: none; border-bottom: 1px solid var(--border); min-height: 300px; }
