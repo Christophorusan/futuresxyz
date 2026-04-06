@@ -232,6 +232,19 @@ body {
 .logo-icon { width: 20px; height: 20px; color: var(--text-0); }
 
 .nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-deposit-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--green);
+  background: var(--green-bg);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font);
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.nav-deposit-btn:hover { background: var(--green); color: #fff; }
 
 /* ─── Theme Toggle ─── */
 .theme-toggle {

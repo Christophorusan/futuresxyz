@@ -81,6 +81,7 @@ function AppContent() {
             </div>
           </div>
           <div className="nav-right">
+            <a href="https://app.hyperunit.xyz/deposit" target="_blank" rel="noopener noreferrer" className="nav-deposit-btn">Deposit</a>
             <ThemeToggle />
             <ConnectButton />
           </div>
