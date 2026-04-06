@@ -70,9 +70,9 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Light theme: glass on blue */
+/* Light theme: glass on muted blue-gray */
 [data-theme="light"] body {
-  background: linear-gradient(135deg, #1e3a5f 0%, #1a4b8c 25%, #2563eb 50%, #1d4ed8 75%, #1e3a6e 100%);
+  background: linear-gradient(135deg, #1a2332 0%, #1e2d42 25%, #243a52 50%, #1e2d42 75%, #1a2332 100%);
   background-attachment: fixed;
 }
 [data-theme="light"] body::before {
@@ -80,9 +80,9 @@ body {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse at 20% 10%, rgba(96,165,250,0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 90%, rgba(37,99,235,0.25) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(147,197,253,0.15) 0%, transparent 60%);
+    radial-gradient(ellipse at 20% 10%, rgba(59,130,246,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(45,212,191,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.06) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
