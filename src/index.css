@@ -2810,6 +2810,95 @@ body {
 .feed-item-prices { display: flex; gap: 6px; }
 .feed-item-vol { font-size: 11px; color: var(--text-3); }
 
+/* ─── Featured Market ─── */
+.featured-market {
+  display: flex;
+  gap: 1px;
+  background: var(--bg-1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.featured-left {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.featured-header { display: flex; align-items: center; gap: 8px; }
+.featured-title { font-size: 20px; font-weight: 700; color: var(--text-0); line-height: 1.3; }
+.featured-bar-wrapper { margin: 4px 0; }
+.featured-bar {
+  display: flex;
+  height: 32px;
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 700;
+}
+.featured-bar-yes {
+  background: var(--green);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.3s;
+}
+.featured-bar-no {
+  background: var(--red);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.3s;
+}
+.featured-actions { display: flex; gap: 8px; }
+
+/* Order book in featured */
+.featured-book {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  border-left: 1px solid var(--border);
+}
+.featured-book-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+.featured-book-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 0;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.featured-book-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 3px 4px;
+  position: relative;
+  color: var(--text-1);
+}
+.featured-book-depth {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  border-radius: 2px;
+  z-index: 0;
+}
+.featured-book-row span { position: relative; z-index: 1; }
+
 .pred-happening-item { padding: 8px 0; border-bottom: 1px solid var(--border); }
 .pred-happening-item:last-child { border-bottom: none; }
 .pred-happening-label { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--blue); margin-bottom: 2px; }

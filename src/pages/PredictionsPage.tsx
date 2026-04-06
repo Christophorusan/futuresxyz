@@ -42,169 +42,90 @@ const EVENTS: Market[] = [
   { id: 12, title: 'Lakers make NBA playoffs?', yesPrice: 0.55, volume: '$2.8M', volNum: 2800000, endDate: 'Apr 30', category: 'Sports', hot: false },
 ]
 
-const TOP_BY_VOLUME = [...EVENTS].sort((a, b) => b.volNum - a.volNum).slice(0, 5)
-
 const HOT_TOPICS = [
-  { title: 'Fed Rate Decision', volume: '$8.2M' },
-  { title: 'BTC Price Targets', volume: '$5.4M' },
-  { title: 'Trump Tariffs', volume: '$4.1M' },
-  { title: 'Hyperliquid TGE', volume: '$3.2M' },
-  { title: 'ETH vs SOL', volume: '$2.9M' },
+  { title: 'Fed Rate Decision', volume: '$8.2M', marketId: 3 },
+  { title: 'BTC Price Targets', volume: '$5.4M', marketId: 1 },
+  { title: 'Trump Tariffs', volume: '$4.1M', marketId: 10 },
+  { title: 'Hyperliquid TGE', volume: '$3.2M', marketId: 8 },
+  { title: 'ETH vs SOL', volume: '$2.9M', marketId: 5 },
 ]
 
-// ── Carousel ──
-function Carousel({ markets, onSelect }: { markets: Market[]; onSelect: (m: Market) => void }) {
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const scroll = (dir: number) => {
-    if (scrollRef.current) scrollRef.current.scrollBy({ left: dir * 320, behavior: 'smooth' })
-  }
-  return (
-    <div className="carousel-wrapper">
-      <button className="carousel-arrow carousel-left" onClick={() => scroll(-1)}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <div className="carousel-track" ref={scrollRef}>
-        {markets.map(m => (
-          <button key={m.id} className="carousel-card" onClick={() => onSelect(m)}>
-            <div className="carousel-badge">{m.category}</div>
-            <div className="carousel-title">{m.title}</div>
-            <div className="carousel-bar">
-              <div className="carousel-bar-fill" style={{ width: `${m.yesPrice * 100}%` }} />
-            </div>
-            <div className="carousel-prices">
-              <span className="green">Yes {Math.round(m.yesPrice * 100)}%</span>
-              <span className="red">No {Math.round((1 - m.yesPrice) * 100)}%</span>
-            </div>
-            <div className="carousel-vol">{m.volume} Vol.</div>
-          </button>
-        ))}
-      </div>
-      <button className="carousel-arrow carousel-right" onClick={() => scroll(1)}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
-    </div>
-  )
-}
+// ── Featured Market (big card with YES/NO book) ──
+function FeaturedMarket({ market, onTrade }: { market: Market; onTrade: () => void }) {
+  const yesPct = Math.round(market.yesPrice * 100)
+  const noPct = 100 - yesPct
+  // Simulate order book levels
+  const yesLevels = Array.from({ length: 5 }, (_, i) => ({
+    price: yesPct - i * 2,
+    size: Math.round(Math.random() * 500 + 100),
+  }))
+  const noLevels = Array.from({ length: 5 }, (_, i) => ({
+    price: noPct - i * 2,
+    size: Math.round(Math.random() * 500 + 100),
+  }))
 
-// ── Detail View ──
-function MarketDetail({ market, onBack }: { market: Market; onBack: () => void }) {
-  const [amount, setAmount] = useState('')
-  const outcomes = market.outcomes || [
-    { label: 'Yes', price: market.yesPrice, volume: market.volume },
-    { label: 'No', price: 1 - market.yesPrice, volume: market.volume },
-  ]
   return (
-    <div className="pred-detail">
-      <div className="pred-detail-main">
-        <div className="pred-detail-header">
-          <button className="pred-back-btn" onClick={onBack}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            Back
-          </button>
-          <div className="pred-detail-meta">
-            <span className="pred-card-badge">{market.category}</span>
-            {market.hot && <span className="pred-card-hot">Hot</span>}
-            <span className="pred-detail-vol">{market.volume} Vol.</span>
+    <div className="featured-market">
+      <div className="featured-left">
+        <div className="featured-header">
+          <span className="pred-card-badge">{market.category}</span>
+          {market.hot && <span className="pred-card-hot">Hot</span>}
+          <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-3)' }}>{market.volume} Vol.</span>
+        </div>
+        <h2 className="featured-title">{market.title}</h2>
+        <div className="featured-bar-wrapper">
+          <div className="featured-bar">
+            <div className="featured-bar-yes" style={{ width: `${yesPct}%` }}>Yes {yesPct}%</div>
+            <div className="featured-bar-no" style={{ width: `${noPct}%` }}>No {noPct}%</div>
           </div>
         </div>
-        <h2 className="pred-detail-title">{market.title}</h2>
-        <div className="pred-outcomes">
-          {outcomes.map((o, i) => {
-            const pct = Math.round(o.price * 100)
-            return (
-              <div key={i} className="pred-outcome-row">
-                <div className="pred-outcome-label">
-                  <span className="pred-outcome-name">{o.label}</span>
-                  <span className="pred-outcome-vol">{o.volume} Vol.</span>
-                </div>
-                <div className="pred-outcome-pct">
-                  <span>{pct}%</span>
-                  {o.change && <span className={o.change.startsWith('+') ? 'green' : 'red'}>{o.change}</span>}
-                </div>
-                <a href="https://testnet.outcome.xyz/events" target="_blank" rel="noopener noreferrer" className="pred-outcome-btn yes">Buy Yes {pct}c</a>
-                <a href="https://testnet.outcome.xyz/events" target="_blank" rel="noopener noreferrer" className="pred-outcome-btn no">Buy No {100 - pct}c</a>
-              </div>
-            )
-          })}
-        </div>
-        <div className="pred-rules">
-          <div className="pred-rules-title">Rules</div>
-          <p>This market resolves to "Yes" if the condition is met by {market.endDate}. Settlement is based on official data sources.</p>
+        <div className="featured-actions">
+          <a href="https://testnet.outcome.xyz/events" target="_blank" rel="noopener noreferrer" className="pred-outcome-btn yes" style={{ flex: 1, textAlign: 'center', padding: '8px 0' }}>Buy Yes {yesPct}c</a>
+          <a href="https://testnet.outcome.xyz/events" target="_blank" rel="noopener noreferrer" className="pred-outcome-btn no" style={{ flex: 1, textAlign: 'center', padding: '8px 0' }}>Buy No {noPct}c</a>
         </div>
       </div>
-      <div className="pred-detail-side">
-        <div className="pred-trade-card">
-          <div className="pred-trade-title">{market.title}</div>
-          <div className="trade-side-toggle">
-            <button className="trade-side-btn active buy">Yes {Math.round(market.yesPrice * 100)}c</button>
-            <button className="trade-side-btn">No {Math.round((1 - market.yesPrice) * 100)}c</button>
-          </div>
-          <div className="pred-amount-section">
-            <div className="pred-amount-label">Amount</div>
-            <div className="trade-input-wrapper">
-              <span className="trade-input-unit" style={{ marginRight: 4 }}>$</span>
-              <input type="number" className="trade-input" placeholder="0" value={amount} onChange={e => setAmount(e.target.value)} />
+      <div className="featured-book">
+        <div className="featured-book-side">
+          <div className="featured-book-label green">YES</div>
+          {yesLevels.map((l, i) => (
+            <div key={i} className="featured-book-row">
+              <span className="green">{l.price}c</span>
+              <span>${l.size}</span>
+              <div className="featured-book-depth" style={{ width: `${(l.size / 600) * 100}%`, background: 'var(--green-bg)' }} />
             </div>
-            <div className="pred-quick-amounts">
-              {[1, 5, 10, 100].map(v => (
-                <button key={v} className="pred-quick-btn" onClick={() => setAmount(String(v))}>+${v}</button>
-              ))}
-              <button className="pred-quick-btn" onClick={() => setAmount('1000')}>Max</button>
+          ))}
+        </div>
+        <div className="featured-book-side">
+          <div className="featured-book-label red">NO</div>
+          {noLevels.map((l, i) => (
+            <div key={i} className="featured-book-row">
+              <span className="red">{l.price}c</span>
+              <span>${l.size}</span>
+              <div className="featured-book-depth" style={{ width: `${(l.size / 600) * 100}%`, background: 'var(--red-bg)' }} />
             </div>
-          </div>
-          <a href="https://testnet.outcome.xyz/events" target="_blank" rel="noopener noreferrer" className="trade-submit buy" style={{ textAlign: 'center', textDecoration: 'none', display: 'block' }}>Trade</a>
-          <div style={{ fontSize: 10, color: 'var(--text-3)', textAlign: 'center' }}>Powered by Outcome</div>
+          ))}
         </div>
       </div>
     </div>
-  )
-}
-
-// ── Feed Item (like a tweet) ──
-function FeedItem({ market, onSelect }: { market: Market; onSelect: (m: Market) => void }) {
-  return (
-    <button className="feed-item" onClick={() => onSelect(market)}>
-      <div className="feed-item-header">
-        <span className="pred-card-badge">{market.category}</span>
-        {market.hot && <span className="pred-card-hot">Hot</span>}
-        <span className="feed-item-time">Ends {market.endDate}</span>
-      </div>
-      <div className="feed-item-title">{market.title}</div>
-      <div className="feed-item-bar">
-        <div className="feed-item-bar-fill" style={{ width: `${market.yesPrice * 100}%` }} />
-      </div>
-      <div className="feed-item-footer">
-        <div className="feed-item-prices">
-          <span className="pred-outcome-btn yes" style={{ padding: '4px 12px', fontSize: 12 }}>Yes {Math.round(market.yesPrice * 100)}c</span>
-          <span className="pred-outcome-btn no" style={{ padding: '4px 12px', fontSize: 12 }}>No {Math.round((1 - market.yesPrice) * 100)}c</span>
-        </div>
-        <span className="feed-item-vol">{market.volume} vol</span>
-      </div>
-    </button>
   )
 }
 
 // ── Main Page ──
 export function PredictionsPage() {
   const [category, setCategory] = useState<Category | 'All'>('All')
-  const [selectedMarket, setSelectedMarket] = useState<Market | null>(null)
+  const [featuredId, setFeaturedId] = useState(EVENTS[0].id)
+
+  const featured = EVENTS.find(e => e.id === featuredId) || EVENTS[0]
 
   const filtered = category === 'All' || category === 'Trending'
     ? (category === 'Trending' ? EVENTS.filter(e => e.hot) : EVENTS)
     : EVENTS.filter(e => e.category === category)
 
-  if (selectedMarket) {
-    return (
-      <div className="pred-page">
-        <div className="pred-topbar">
-          <button className={`pred-topbar-tab ${category === 'All' ? 'active' : ''}`} onClick={() => { setCategory('All'); setSelectedMarket(null) }}>All</button>
-          {CATEGORIES.map(c => (
-            <button key={c} className={`pred-topbar-tab ${category === c ? 'active' : ''}`} onClick={() => { setCategory(c); setSelectedMarket(null) }}>{c}</button>
-          ))}
-        </div>
-        <MarketDetail market={selectedMarket} onBack={() => setSelectedMarket(null)} />
-      </div>
-    )
+  const rest = filtered.filter(e => e.id !== featured.id)
+
+  const openMarket = (id: number) => {
+    setFeaturedId(id)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
@@ -218,16 +139,34 @@ export function PredictionsPage() {
       </div>
 
       <div className="pred-layout">
-        {/* Feed */}
-        <div className="pred-main" style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-          {/* Carousel */}
-          <Carousel markets={TOP_BY_VOLUME} onSelect={setSelectedMarket} />
+        <div className="pred-main" style={{ padding: 4 }}>
+          {/* Featured */}
+          <FeaturedMarket market={featured} onTrade={() => {}} />
 
-          {/* Feed items */}
-          <div className="feed-list">
-            {filtered.map(e => (
-              <FeedItem key={e.id} market={e} onSelect={setSelectedMarket} />
-            ))}
+          {/* Card grid */}
+          <div style={{ marginTop: 8 }}>
+            <div className="pred-grid">
+              {rest.map(e => (
+                <button key={e.id} className="pred-card" onClick={() => openMarket(e.id)}>
+                  <div className="pred-card-top">
+                    <span className="pred-card-badge">{e.category}</span>
+                    {e.hot && <span className="pred-card-hot">Hot</span>}
+                  </div>
+                  <div className="pred-card-title">{e.title}</div>
+                  <div className="pred-card-bar">
+                    <div className="pred-card-bar-fill" style={{ width: `${e.yesPrice * 100}%` }} />
+                  </div>
+                  <div className="pred-card-prices">
+                    <span className="pred-card-yes">Yes {Math.round(e.yesPrice * 100)}c</span>
+                    <span className="pred-card-no">No {Math.round((1 - e.yesPrice) * 100)}c</span>
+                  </div>
+                  <div className="pred-card-meta">
+                    <span>{e.volume} vol</span>
+                    <span>Ends {e.endDate}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -255,18 +194,18 @@ export function PredictionsPage() {
           <div className="pred-hot-card">
             <div className="pred-hot-title">Hot Topics</div>
             {HOT_TOPICS.map((t, i) => (
-              <div key={i} className="pred-hot-row">
+              <button key={i} className="pred-hot-row" style={{ border: 'none', background: 'none', width: '100%', cursor: 'pointer', fontFamily: 'var(--font)' }} onClick={() => openMarket(t.marketId)}>
                 <span className="pred-hot-rank">{i + 1}</span>
                 <span className="pred-hot-name">{t.title}</span>
                 <span className="pred-hot-vol">{t.volume}</span>
-              </div>
+              </button>
             ))}
           </div>
 
           <div className="pred-hot-card">
-            <div className="pred-hot-title">Top Movers</div>
-            {EVENTS.filter(e => e.hot).slice(0, 5).map(e => (
-              <button key={e.id} className="pred-mover-row" onClick={() => setSelectedMarket(e)}>
+            <div className="pred-hot-title">Top by Volume</div>
+            {[...EVENTS].sort((a, b) => b.volNum - a.volNum).slice(0, 5).map(e => (
+              <button key={e.id} className="pred-mover-row" onClick={() => openMarket(e.id)}>
                 <span className="pred-mover-name">{e.title.slice(0, 28)}{e.title.length > 28 ? '...' : ''}</span>
                 <span className={e.yesPrice >= 0.5 ? 'green' : 'red'}>{Math.round(e.yesPrice * 100)}%</span>
               </button>
