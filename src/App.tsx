@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom'
 import { WagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -33,6 +34,48 @@ function ThemeToggle() {
         </svg>
       )}
     </button>
+  )
+}
+
+function NavMore() {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  return (
+    <div ref={ref} style={{ position: 'relative' }}>
+      <button className={`nav-tab`} onClick={() => setOpen(o => !o)} style={{ cursor: 'pointer' }}>
+        More
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginLeft: 4, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      {open && (
+        <div className="nav-more-dropdown">
+          <NavLink to="/docs" className="nav-more-item" onClick={() => setOpen(false)}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M18 18h-8M18 10h-8"/></svg>
+            Docs
+          </NavLink>
+          <a href="https://github.com/Chrisportugal/futuresxyz" target="_blank" rel="noopener noreferrer" className="nav-more-item" onClick={() => setOpen(false)}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+            GitHub
+          </a>
+          <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="nav-more-item" onClick={() => setOpen(false)}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4l11.7 16h4.3M4 20L20 4"/></svg>
+            Twitter / X
+          </a>
+          <a href="https://discord.gg" target="_blank" rel="noopener noreferrer" className="nav-more-item" onClick={() => setOpen(false)}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8 12a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"/><path d="M5.5 17l-1.5 3c5 2 10 2 16 0l-1.5-3M9 7c1-1 3-2 3-2s2 1 3 2"/><path d="M7 8c-2 2-3 5-3 7s1 3 1 3m12-10c2 2 3 5 3 7s-1 3-1 3"/></svg>
+            Discord
+          </a>
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -75,9 +118,7 @@ function AppContent() {
               <NavLink to="/portfolio" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
                 Portfolio
               </NavLink>
-              <NavLink to="/docs" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
-                Docs
-              </NavLink>
+              <NavMore />
             </div>
           </div>
           <div className="nav-right">

@@ -243,6 +243,43 @@ body {
 .logo-icon { width: 20px; height: 20px; color: var(--text-0); }
 
 .nav-right { display: flex; align-items: center; gap: 10px; }
+
+/* Nav More dropdown */
+.nav-more-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  background: #0c1832;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+[data-theme="light"] .nav-more-dropdown {
+  background: #e8edf5;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+.nav-more-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  border-radius: 6px;
+  color: var(--text-1);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.nav-more-item:hover { color: var(--text-0); background: var(--bg-2); }
+.nav-more-item svg { flex-shrink: 0; color: var(--text-2); }
 .nav-deposit-btn {
   padding: 6px 14px;
   border-radius: var(--radius-xs);
