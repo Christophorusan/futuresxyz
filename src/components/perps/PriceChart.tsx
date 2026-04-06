@@ -9,7 +9,7 @@ const INTERVALS: CandleInterval[] = ['1m', '5m', '15m', '1h', '4h', '1d']
 
 function getChartColors(theme: 'dark' | 'light') {
   return theme === 'dark' ? {
-    bg: '#13141a',
+    bg: 'transparent',
     text: '#5c5e69',
     grid: 'rgba(255, 255, 255, 0.03)',
     cross: 'rgba(255, 255, 255, 0.08)',
@@ -19,15 +19,15 @@ function getChartColors(theme: 'dark' | 'light') {
     volUp: 'rgba(45, 212, 191, 0.25)',
     volDown: 'rgba(239, 68, 68, 0.25)',
   } : {
-    bg: '#fafafa',
-    text: '#9ca3af',
-    grid: 'rgba(0, 0, 0, 0.04)',
-    cross: 'rgba(0, 0, 0, 0.08)',
-    border: 'rgba(0, 0, 0, 0.06)',
-    up: '#14b8a6',
-    down: '#dc2626',
-    volUp: 'rgba(20, 184, 166, 0.25)',
-    volDown: 'rgba(220, 38, 38, 0.25)',
+    bg: 'transparent',
+    text: 'rgba(255,255,255,0.4)',
+    grid: 'rgba(255, 255, 255, 0.04)',
+    cross: 'rgba(255, 255, 255, 0.08)',
+    border: 'rgba(255, 255, 255, 0.06)',
+    up: '#34d399',
+    down: '#f87171',
+    volUp: 'rgba(52, 211, 153, 0.25)',
+    volDown: 'rgba(248, 113, 113, 0.25)',
   }
 }
 

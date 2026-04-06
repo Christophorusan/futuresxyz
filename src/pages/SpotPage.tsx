@@ -20,15 +20,15 @@ function SpotChart({ coin, theme }: { coin: string; theme: 'dark' | 'light' }) {
     if (!containerRef.current) return
     const isDark = theme === 'dark'
     const chart = createChart(containerRef.current, {
-      layout: { background: { color: isDark ? '#13141a' : '#fafafa' }, textColor: isDark ? '#5c5e69' : '#9ca3af', fontFamily: "'Inter', sans-serif", fontSize: 11 },
-      grid: { vertLines: { color: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.04)' }, horzLines: { color: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.04)' } },
-      rightPriceScale: { borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)', scaleMargins: { top: 0.1, bottom: 0.25 } },
-      timeScale: { borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)', timeVisible: true },
+      layout: { background: { color: 'transparent' }, textColor: isDark ? '#5c5e69' : 'rgba(255,255,255,0.4)', fontFamily: "'Inter', sans-serif", fontSize: 11 },
+      grid: { vertLines: { color: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.04)' }, horzLines: { color: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.04)' } },
+      rightPriceScale: { borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.06)', scaleMargins: { top: 0.1, bottom: 0.25 } },
+      timeScale: { borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.06)', timeVisible: true },
       handleScroll: { mouseWheel: true, pressedMouseMove: true },
       handleScale: { mouseWheel: true, pinch: true },
     })
-    const up = isDark ? '#2dd4bf' : '#14b8a6'
-    const down = isDark ? '#ef4444' : '#dc2626'
+    const up = isDark ? '#2dd4bf' : '#34d399'
+    const down = isDark ? '#ef4444' : '#f87171'
     const series = chart.addSeries(CandlestickSeries, { upColor: up, downColor: down, borderUpColor: up, borderDownColor: down, wickUpColor: up, wickDownColor: down })
     const vol = chart.addSeries(HistogramSeries, { priceFormat: { type: 'volume' }, priceScaleId: 'vol' })
     chart.priceScale('vol').applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } })
