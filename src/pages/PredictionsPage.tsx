@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 
 const CATEGORIES = ['Trending', 'Breaking', 'New', 'Politics', 'Sports', 'Crypto', 'Esports', 'Finance', 'Geopolitics', 'Tech', 'Culture', 'Economy', 'Weather', 'Elections'] as const
 type Category = typeof CATEGORIES[number]
@@ -139,6 +139,27 @@ const NEWS = [
   { category: 'Geopolitics', headline: 'Ukraine peace talks resume in Geneva', time: '1d ago', source: 'AP' },
 ]
 
+type SortMode = 'volume' | 'newest' | 'ending' | 'probability'
+
+const MOCK_ACTIVITY = [
+  { user: '0x8f2...4a1', side: 'YES', amount: '$250', price: '62c', time: '2m ago' },
+  { user: '0xd3e...7b2', side: 'NO', amount: '$180', price: '38c', time: '5m ago' },
+  { user: '0x1a9...c3f', side: 'YES', amount: '$500', price: '63c', time: '8m ago' },
+  { user: '0x7c4...2d8', side: 'YES', amount: '$1,200', price: '61c', time: '14m ago' },
+  { user: '0xb2f...9e1', side: 'NO', amount: '$340', price: '39c', time: '22m ago' },
+  { user: '0x5d1...8a3', side: 'YES', amount: '$90', price: '62c', time: '31m ago' },
+  { user: '0xe8c...1f7', side: 'NO', amount: '$2,100', price: '37c', time: '45m ago' },
+  { user: '0x3a7...6d4', side: 'YES', amount: '$420', price: '64c', time: '1h ago' },
+]
+
+const MOCK_HOLDERS = [
+  { user: '0x8f2...4a1', position: 'YES', amount: '$12,400', pnl: '+$2,100' },
+  { user: '0xd3e...7b2', position: 'NO', amount: '$8,900', pnl: '+$890' },
+  { user: '0x1a9...c3f', position: 'YES', amount: '$6,200', pnl: '-$310' },
+  { user: '0x7c4...2d8', position: 'YES', amount: '$4,800', pnl: '+$1,440' },
+  { user: '0xb2f...9e1', position: 'NO', amount: '$3,500', pnl: '+$420' },
+]
+
 const MOCK_COMMENTS: Record<number, Comment[]> = {
   1: [
     { user: 'degen_trader', text: 'ETF flows looking insane rn, this is hitting $72k easy', time: '5m ago', likes: 12 },
@@ -240,10 +261,16 @@ function MarketView({ market, onBack, onOpenMarket }: { market: Market; onBack: 
     <div className="pred-detail">
       {/* Main content */}
       <div className="pred-detail-main">
-        <button className="pred-back-btn" onClick={onBack}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          Back
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+          <button className="pred-back-btn" onClick={onBack}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back
+          </button>
+          <button className="pred-share-btn" onClick={() => { navigator.clipboard.writeText(window.location.href); }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>
+            Share
+          </button>
+        </div>
 
         {/* Market header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
@@ -310,10 +337,33 @@ function MarketView({ market, onBack, onOpenMarket }: { market: Market; onBack: 
           )}
 
           {commentTab === 'positions' && (
-            <div style={{ padding: 20, textAlign: 'center', color: 'var(--text-3)', fontSize: 13 }}>Connect wallet to see top holders</div>
+            <div className="pred-holders-list">
+              <div className="pred-holder-header">
+                <span>Address</span><span>Position</span><span>Value</span><span>PnL</span>
+              </div>
+              {MOCK_HOLDERS.map((h, i) => (
+                <div key={i} className="pred-holder-row">
+                  <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{h.user}</span>
+                  <span className={h.position === 'YES' ? 'green' : 'red'} style={{ fontWeight: 600 }}>{h.position}</span>
+                  <span>{h.amount}</span>
+                  <span className={h.pnl.startsWith('+') ? 'green' : 'red'}>{h.pnl}</span>
+                </div>
+              ))}
+            </div>
           )}
           {commentTab === 'activity' && (
-            <div style={{ padding: 20, textAlign: 'center', color: 'var(--text-3)', fontSize: 13 }}>Recent trades will appear here</div>
+            <div className="pred-activity-list">
+              {MOCK_ACTIVITY.map((a, i) => (
+                <div key={i} className="pred-activity-row">
+                  <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--text-3)' }}>{a.user}</span>
+                  <span className={a.side === 'YES' ? 'green' : 'red'} style={{ fontWeight: 600, fontSize: 12 }}>
+                    {a.side === 'YES' ? 'Bought' : 'Sold'} {a.side}
+                  </span>
+                  <span style={{ fontSize: 12, color: 'var(--text-1)' }}>{a.amount} @ {a.price}</span>
+                  <span style={{ fontSize: 11, color: 'var(--text-3)', marginLeft: 'auto' }}>{a.time}</span>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>
@@ -422,13 +472,44 @@ function FeaturedMarket({ market }: { market: Market }) {
 export function PredictionsPage() {
   const [category, setCategory] = useState<Category | 'All'>('All')
   const [openMarketId, setOpenMarketId] = useState<number | null>(null)
+  const [search, setSearch] = useState('')
+  const [sort, setSort] = useState<SortMode>('volume')
+  const [watchlist, setWatchlist] = useState<Set<number>>(() => {
+    try { const s = localStorage.getItem('pred-watchlist'); return s ? new Set(JSON.parse(s)) : new Set() }
+    catch { return new Set() }
+  })
 
-  const featured = EVENTS[0]
+  const toggleWatch = (id: number) => {
+    setWatchlist(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id); else next.add(id)
+      localStorage.setItem('pred-watchlist', JSON.stringify([...next]))
+      return next
+    })
+  }
+
+  // Featured: highest volume market
+  const featured = useMemo(() => [...EVENTS].sort((a, b) => b.volNum - a.volNum)[0], [])
   const openMarket = EVENTS.find(e => e.id === openMarketId)
 
-  const filtered = category === 'All' || category === 'Trending'
-    ? (category === 'Trending' ? EVENTS.filter(e => e.hot) : EVENTS)
-    : EVENTS.filter(e => e.category === category)
+  const filtered = useMemo(() => {
+    let list = category === 'All' ? [...EVENTS]
+      : category === 'Trending' ? EVENTS.filter(e => e.hot)
+      : EVENTS.filter(e => e.category === category)
+
+    // Search filter
+    if (search) list = list.filter(e => e.title.toLowerCase().includes(search.toLowerCase()))
+
+    // Sort
+    switch (sort) {
+      case 'volume': list.sort((a, b) => b.volNum - a.volNum); break
+      case 'newest': list.sort((a, b) => b.id - a.id); break
+      case 'ending': list.sort((a, b) => a.endDate.localeCompare(b.endDate)); break
+      case 'probability': list.sort((a, b) => Math.abs(b.yesPrice - 0.5) - Math.abs(a.yesPrice - 0.5)); break
+    }
+    return list
+  }, [category, search, sort])
+
   const rest = filtered.filter(e => e.id !== featured.id)
 
   const handleOpen = (id: number) => { setOpenMarketId(id) }
@@ -519,6 +600,21 @@ export function PredictionsPage() {
         <div className="pred-main" style={{ padding: 4 }}>
           <FeaturedMarket market={featured} />
 
+          {/* Search + Sort bar */}
+          <div className="pred-controls">
+            <div className="pred-search-wrap">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input className="pred-search" placeholder="Search markets..." value={search} onChange={e => setSearch(e.target.value)} />
+            </div>
+            <div className="pred-sort-wrap">
+              {(['volume', 'newest', 'ending', 'probability'] as SortMode[]).map(s => (
+                <button key={s} className={`pred-sort-btn ${sort === s ? 'active' : ''}`} onClick={() => setSort(s)}>
+                  {s === 'volume' ? 'Top Volume' : s === 'newest' ? 'Newest' : s === 'ending' ? 'Ending Soon' : 'Most Likely'}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Trending markets bar */}
           <div className="pred-markets-bar">
             <div className="pred-markets-bar-left">
@@ -533,12 +629,22 @@ export function PredictionsPage() {
             </div>
           </div>
 
+          {rest.length === 0 && search && (
+            <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-3)', fontSize: 14 }}>No markets found for "{search}"</div>
+          )}
+
           <div className="pred-grid">
             {rest.map(e => (
               <button key={e.id} className="pred-card" onClick={() => handleOpen(e.id)}>
                 <div className="pred-card-top">
                   <span className="pred-card-badge">{e.category}</span>
                   {e.hot && <span className="pred-card-hot">Hot</span>}
+                  <span
+                    className={`pred-card-star ${watchlist.has(e.id) ? 'active' : ''}`}
+                    onClick={ev => { ev.stopPropagation(); toggleWatch(e.id) }}
+                  >
+                    {watchlist.has(e.id) ? '\u2605' : '\u2606'}
+                  </span>
                 </div>
                 <div className="pred-card-title">{e.title}</div>
                 <div className="pred-card-bar">

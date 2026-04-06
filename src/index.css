@@ -3261,6 +3261,116 @@ body {
 .pred-happening-text { font-size: 12px; color: var(--text-1); line-height: 1.5; }
 .pred-happening-time { font-size: 10px; color: var(--text-3); margin-top: 2px; }
 
+/* Search + Sort controls */
+.pred-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+.pred-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  flex: 1;
+  min-width: 180px;
+}
+.pred-search {
+  border: none;
+  background: none;
+  outline: none;
+  color: var(--text-0);
+  font-size: 13px;
+  font-family: var(--font);
+  width: 100%;
+}
+.pred-search::placeholder { color: var(--text-3); }
+.pred-sort-wrap { display: flex; gap: 4px; }
+.pred-sort-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-3);
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.12s;
+}
+.pred-sort-btn:hover { color: var(--text-1); border-color: var(--border-hover); }
+.pred-sort-btn.active { color: var(--text-0); background: var(--blue-bg); border-color: var(--blue); }
+
+/* Watchlist star */
+.pred-card-star {
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: color 0.12s;
+  line-height: 1;
+}
+.pred-card-star:hover { color: #f59e0b; }
+.pred-card-star.active { color: #f59e0b; }
+
+/* Share button */
+.pred-share-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.pred-share-btn:hover { color: var(--text-0); border-color: var(--border-hover); }
+
+/* Activity feed */
+.pred-activity-list { display: flex; flex-direction: column; }
+.pred-activity-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.pred-activity-row:last-child { border-bottom: none; }
+
+/* Top holders */
+.pred-holders-list { display: flex; flex-direction: column; }
+.pred-holder-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 6px 0;
+  font-size: 11px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid var(--border);
+}
+.pred-holder-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 8px 0;
+  font-size: 12px;
+  color: var(--text-1);
+  border-bottom: 1px solid var(--border);
+}
+.pred-holder-row:last-child { border-bottom: none; }
+
 /* News items (Kalshi-style) */
 .pred-news-item { padding: 10px 0; border-bottom: 1px solid var(--border); }
 .pred-news-item:last-child { border-bottom: none; }
