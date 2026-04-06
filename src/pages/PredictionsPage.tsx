@@ -47,6 +47,22 @@ function genSparkline(id: number, price: number): number[] {
   return pts
 }
 
+// Generate deterministic trader count from market id + volume
+function genTraders(id: number, volNum: number): number {
+  return Math.round((volNum / 100) + (id * 37) % 500 + 200)
+}
+
+// Days remaining helper for urgency
+function daysUntil(endDate: string): number {
+  const months: Record<string, number> = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 }
+  const parts = endDate.split(' ')
+  const month = months[parts[0]] ?? 0
+  const day = parseInt(parts[1]) || 31
+  const target = new Date(2026, month, day)
+  const now = new Date()
+  return Math.max(0, Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
+}
+
 interface Comment {
   user: string
   text: string
@@ -472,11 +488,16 @@ function FeaturedMarket({ market }: { market: Market }) {
   const yesPct = Math.round(market.yesPrice * 100)
   const noPct = 100 - yesPct
   return (
-    <div className="featured-market">
+    <div className="featured-market featured-glow">
       <div className="featured-left">
         <div className="featured-header">
+          <span className="pred-live-dot" />
           <span className="pred-card-badge">{market.category}</span>
           {market.hot && <span className="pred-card-hot">Hot</span>}
+          <span className="featured-social">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            {genTraders(market.id, market.volNum).toLocaleString()} traders
+          </span>
           <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-3)' }}>{market.volume} Vol.</span>
         </div>
         <h2 className="featured-title">{market.title}</h2>
@@ -485,8 +506,8 @@ function FeaturedMarket({ market }: { market: Market }) {
           <div className="featured-bar-no" style={{ width: `${noPct}%` }}>No {noPct}%</div>
         </div>
         <div className="featured-actions">
-          <a href="https://testnet.outcome.xyz/events" target="_blank" rel="noopener noreferrer" className="pred-outcome-btn yes" style={{ flex: 1, textAlign: 'center', padding: '8px 0' }}>Buy Yes {yesPct}c</a>
-          <a href="https://testnet.outcome.xyz/events" target="_blank" rel="noopener noreferrer" className="pred-outcome-btn no" style={{ flex: 1, textAlign: 'center', padding: '8px 0' }}>Buy No {noPct}c</a>
+          <a href="https://testnet.outcome.xyz/events" target="_blank" rel="noopener noreferrer" className="pred-outcome-btn yes featured-cta" style={{ flex: 1, textAlign: 'center', padding: '10px 0' }}>Buy Yes {yesPct}c</a>
+          <a href="https://testnet.outcome.xyz/events" target="_blank" rel="noopener noreferrer" className="pred-outcome-btn no featured-cta" style={{ flex: 1, textAlign: 'center', padding: '10px 0' }}>Buy No {noPct}c</a>
         </div>
       </div>
       <div className="featured-book">
@@ -705,10 +726,13 @@ export function PredictionsPage() {
 
           <div className="pred-grid">
             {rest.map(e => (
-              <button key={e.id} className="pred-card" onClick={() => handleOpen(e.id)}>
+              <button key={e.id} className={`pred-card ${e.hot ? 'pred-card-glow' : ''}`} onClick={() => handleOpen(e.id)}>
                 <div className="pred-card-top">
                   <span className="pred-card-badge">{e.category}</span>
                   {e.hot && <span className="pred-card-hot">Hot</span>}
+                  {daysUntil(e.endDate) <= 7 && daysUntil(e.endDate) > 0 && (
+                    <span className="pred-card-urgent">{daysUntil(e.endDate)}d left</span>
+                  )}
                   <span
                     className={`pred-card-star ${watchlist.has(e.id) ? 'active' : ''}`}
                     onClick={ev => { ev.stopPropagation(); toggleWatch(e.id) }}
@@ -720,7 +744,7 @@ export function PredictionsPage() {
                 <div className="pred-card-chart-row">
                   <Sparkline points={genSparkline(e.id, e.yesPrice)} color={e.yesPrice >= 0.5 ? 'var(--green)' : 'var(--red)'} />
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 18, fontWeight: 700, color: e.yesPrice >= 0.5 ? 'var(--green)' : 'var(--red)' }}>{Math.round(e.yesPrice * 100)}%</div>
+                    <div style={{ fontSize: 20, fontWeight: 800, color: e.yesPrice >= 0.5 ? 'var(--green)' : 'var(--red)' }}>{Math.round(e.yesPrice * 100)}%</div>
                     <div style={{ fontSize: 10, color: 'var(--text-3)' }}>chance</div>
                   </div>
                 </div>
@@ -731,7 +755,11 @@ export function PredictionsPage() {
                   <span className="pred-card-yes">Yes {Math.round(e.yesPrice * 100)}c</span>
                   <span className="pred-card-no">No {Math.round((1 - e.yesPrice) * 100)}c</span>
                 </div>
-                <div className="pred-card-meta">
+                <div className="pred-card-footer">
+                  <span className="pred-card-social">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                    {genTraders(e.id, e.volNum).toLocaleString()}
+                  </span>
                   <span>{e.volume} vol</span>
                   <span>Ends {e.endDate}</span>
                 </div>

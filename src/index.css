@@ -3376,6 +3376,99 @@ body {
 .pred-card-star:hover { color: #f59e0b; }
 .pred-card-star.active { color: #f59e0b; }
 
+/* ═══════════════════════════════════════════
+   NEUROMARKETING: Visual hierarchy & attention
+   ═══════════════════════════════════════════ */
+
+/* Live pulse indicator - draws eye to active market */
+.pred-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #16a34a;
+  box-shadow: 0 0 6px rgba(22,163,74,0.6);
+  animation: pred-pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes pred-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(22,163,74,0.6); }
+  50% { opacity: 0.5; box-shadow: 0 0 12px rgba(22,163,74,0.3); }
+}
+
+/* Featured market glow - anchors attention to primary content */
+.featured-glow {
+  border-color: rgba(59,130,246,0.2) !important;
+  box-shadow: 0 0 20px rgba(59,130,246,0.06), 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Hot market card glow - subtle attention pull */
+.pred-card-glow {
+  border-color: rgba(245,158,11,0.15) !important;
+  box-shadow: 0 0 12px rgba(245,158,11,0.04);
+}
+.pred-card-glow:hover {
+  border-color: rgba(245,158,11,0.25) !important;
+  box-shadow: 0 2px 16px rgba(245,158,11,0.08);
+}
+
+/* Urgency badge - scarcity principle */
+.pred-card-urgent {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  animation: pred-urgency 3s ease-in-out infinite;
+}
+@keyframes pred-urgency {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Social proof - trader count */
+.pred-card-social {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+.pred-card-social svg { color: var(--text-3); }
+
+/* Featured social proof */
+.featured-social {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+.featured-social svg { color: var(--text-3); }
+
+/* Card footer with social proof */
+.pred-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+/* CTA buttons - stronger visual weight */
+.featured-cta {
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.3px;
+  transition: all 0.2s !important;
+}
+.featured-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
 /* Featured carousel dots */
 .pred-carousel-dots {
   display: flex;
