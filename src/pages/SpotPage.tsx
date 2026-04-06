@@ -6,6 +6,7 @@ import { formatPrice } from '../lib/format'
 import { createChart, CandlestickSeries, HistogramSeries, type IChartApi, type ISeriesApi, type CandlestickData, type HistogramData, type Time } from 'lightweight-charts'
 import { useTheme } from '../contexts/ThemeContext'
 import { Positions } from '../components/perps/Positions'
+import { TickerBar } from '../components/perps/TickerBar'
 
 // ── Spot Chart ──
 function SpotChart({ coin, theme }: { coin: string; theme: 'dark' | 'light' }) {
@@ -27,7 +28,7 @@ function SpotChart({ coin, theme }: { coin: string; theme: 'dark' | 'light' }) {
       handleScroll: { mouseWheel: true, pressedMouseMove: true },
       handleScale: { mouseWheel: true, pinch: true },
     })
-    const up = isDark ? '#22c55e' : '#059669'
+    const up = isDark ? '#22c55e' : '#16a34a'
     const down = isDark ? '#ef4444' : '#dc2626'
     const series = chart.addSeries(CandlestickSeries, { upColor: up, downColor: down, borderUpColor: up, borderDownColor: down, wickUpColor: up, wickDownColor: down })
     const vol = chart.addSeries(HistogramSeries, { priceFormat: { type: 'volume' }, priceScaleId: 'vol' })
@@ -318,6 +319,7 @@ export function SpotPage() {
 
   return (
     <div className="perps-page">
+      <TickerBar />
       {/* Market header */}
       <div className="market-header">
         <SpotSelector markets={markets} selected={selectedPair} onSelect={setSelectedPair} />

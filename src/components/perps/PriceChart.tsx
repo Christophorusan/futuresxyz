@@ -24,7 +24,7 @@ function getChartColors(theme: 'dark' | 'light') {
     grid: 'rgba(0, 0, 0, 0.04)',
     cross: 'rgba(0, 0, 0, 0.08)',
     border: 'rgba(0, 0, 0, 0.06)',
-    up: '#059669',
+    up: '#16a34a',
     down: '#dc2626',
     volUp: 'rgba(5, 150, 105, 0.25)',
     volDown: 'rgba(220, 38, 38, 0.25)',
