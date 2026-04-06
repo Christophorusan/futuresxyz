@@ -2408,11 +2408,30 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--bg-4); }
 
 /* ─── Responsive ─── */
-/* Medium screens: orderbook hides */
+/* Medium-large screens */
 @media (max-width: 1100px) {
   .perps-book-area { display: none; }
   .pos-row-full { grid-template-columns: repeat(7, 1fr); }
   .pos-row-full > :nth-child(n+8) { display: none; }
+}
+
+/* Medium screens: nav + predictions adjust */
+@media (max-width: 960px) {
+  /* Nav: make tabs scroll, shrink right buttons */
+  .nav { padding: 0 10px; }
+  .nav-left { gap: 12px; min-width: 0; }
+  .nav-tabs { overflow-x: auto; scrollbar-width: none; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab { padding: 14px 10px; font-size: 12px; white-space: nowrap; }
+  .nav-right { gap: 6px; flex-shrink: 0; }
+  .nav-deposit-btn { padding: 5px 10px; font-size: 11px; }
+  .connect-btn { padding: 5px 10px; font-size: 11px; }
+  .theme-toggle { width: 28px; height: 28px; }
+  /* Predictions: hide sidebar, hide featured orderbook */
+  .pred-sidebar { display: none !important; }
+  .featured-book { display: none !important; }
+  .pred-layout { padding: 0 12px; }
+  .pred-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 }
 
 /* ═══════════════════════════════════════════
