@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const CATEGORIES = ['Trending', 'Crypto', 'Macro', 'Politics', 'Sports', 'Tech'] as const
+const CATEGORIES = ['Trending', 'Crypto', 'TradFi', 'Macro', 'Politics', 'Sports', 'Tech'] as const
 type Category = typeof CATEGORIES[number]
 
 interface Market {
@@ -34,6 +34,11 @@ const EVENTS: Market[] = [
   { id: 10, title: 'Trump wins 2028 primary?', yesPrice: 0.41, volume: '$4.5M', volNum: 4500000, endDate: 'Dec 31', category: 'Politics', hot: true },
   { id: 11, title: 'Apple launches AR glasses in 2026?', yesPrice: 0.33, volume: '$1.1M', volNum: 1100000, endDate: 'Dec 31', category: 'Tech', hot: false },
   { id: 12, title: 'Lakers make NBA playoffs?', yesPrice: 0.55, volume: '$2.8M', volNum: 2800000, endDate: 'Apr 30', category: 'Sports', hot: false },
+  { id: 13, title: 'S&P 500 above 5,500 by June?', yesPrice: 0.48, volume: '$3.8M', volNum: 3800000, endDate: 'Jun 30', category: 'TradFi', hot: true },
+  { id: 14, title: 'Gold above $3,000 by Q3?', yesPrice: 0.72, volume: '$2.1M', volNum: 2100000, endDate: 'Sep 30', category: 'TradFi', hot: true },
+  { id: 15, title: 'Tesla stock above $300 by EOY?', yesPrice: 0.31, volume: '$4.2M', volNum: 4200000, endDate: 'Dec 31', category: 'TradFi', hot: false },
+  { id: 16, title: 'WTI Crude Oil above $80 in April?', yesPrice: 0.19, volume: '$1.5M', volNum: 1500000, endDate: 'Apr 30', category: 'TradFi', hot: false },
+  { id: 17, title: 'NVIDIA above $150 by May?', yesPrice: 0.64, volume: '$5.1M', volNum: 5100000, endDate: 'May 30', category: 'TradFi', hot: true },
 ]
 
 const HOT_TOPICS = [
