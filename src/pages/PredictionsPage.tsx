@@ -155,14 +155,12 @@ function MarketDetail({ market, onBack }: { market: Market; onBack: () => void }
 export function PredictionsPage() {
   const [category, setCategory] = useState<Category | 'All'>('All')
   const [selectedMarket, setSelectedMarket] = useState<Market | null>(null)
-  const [amount, setAmount] = useState('')
-  const [side, setSide] = useState<'yes' | 'no'>('yes')
 
   const filtered = category === 'All' || category === 'Trending'
     ? (category === 'Trending' ? EVENTS.filter(e => e.hot) : EVENTS)
     : EVENTS.filter(e => e.category === category)
 
-  const openMarket = (m: Market) => { setSelectedMarket(m); setSide('yes'); setAmount('') }
+  const openMarket = (m: Market) => { setSelectedMarket(m) }
 
   // Detail view
   if (selectedMarket) {
