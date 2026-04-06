@@ -2499,6 +2499,121 @@ body {
 .pred-mover-row:hover { color: var(--text-0); }
 .pred-mover-name { color: var(--text-1); font-weight: 500; }
 
+/* ─── Prediction Detail View ─── */
+.pred-detail {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+  overflow: hidden;
+}
+.pred-detail-main {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--bg-1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.pred-detail-side {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+}
+.pred-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.pred-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--text-2);
+  font-size: 13px;
+  font-family: var(--font);
+  cursor: pointer;
+  padding: 4px 0;
+}
+.pred-back-btn:hover { color: var(--text-0); }
+.pred-detail-meta { display: flex; align-items: center; gap: 8px; }
+.pred-detail-vol { font-size: 12px; color: var(--text-2); }
+.pred-detail-end { font-size: 12px; color: var(--text-3); }
+.pred-detail-title { font-size: 20px; font-weight: 700; color: var(--text-0); margin-bottom: 20px; line-height: 1.4; }
+
+/* Outcome rows */
+.pred-outcomes { display: flex; flex-direction: column; gap: 1px; }
+.pred-outcome-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.pred-outcome-label { flex: 1; min-width: 0; }
+.pred-outcome-name { font-size: 14px; font-weight: 600; color: var(--text-0); display: block; }
+.pred-outcome-vol { font-size: 11px; color: var(--text-3); }
+.pred-outcome-pct {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-0);
+  min-width: 80px;
+}
+.pred-outcome-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.pred-outcome-btn:hover { opacity: 0.85; }
+.pred-outcome-btn.yes { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+.pred-outcome-btn.no { background: var(--red-bg); color: var(--red); border: 1px solid var(--red); }
+
+/* Rules */
+.pred-rules { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
+.pred-rules-title { font-size: 14px; font-weight: 600; color: var(--text-0); margin-bottom: 8px; }
+.pred-rules p { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+/* Quick amount buttons */
+.pred-amount-section { display: flex; flex-direction: column; gap: 8px; }
+.pred-amount-label { font-size: 12px; color: var(--text-3); }
+.pred-quick-amounts { display: flex; gap: 4px; }
+.pred-quick-btn {
+  flex: 1;
+  padding: 5px 0;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.pred-quick-btn:hover { border-color: var(--border-hover); color: var(--text-0); }
+
+/* What's Happening */
+.pred-happening-item { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.pred-happening-item:last-child { border-bottom: none; }
+.pred-happening-label { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--blue); margin-bottom: 2px; }
+.pred-happening-text { font-size: 12px; color: var(--text-1); line-height: 1.5; }
+.pred-happening-time { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+
 /* Light theme: glass prediction cards */
 [data-theme="light"] .pred-topbar,
 [data-theme="light"] .pred-card,
