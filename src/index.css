@@ -1983,6 +1983,120 @@ body {
 }
 .pos-close-btn:hover { background: var(--red); color: #fff; }
 
+/* TP/SL button in positions */
+.pos-tpsl-btn {
+  background: var(--blue-bg);
+  color: var(--blue);
+  border: 1px solid rgba(59,130,246,0.15);
+  padding: 3px 10px;
+  border-radius: var(--radius-xs);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.1s;
+}
+.pos-tpsl-btn:hover { background: var(--blue); color: #fff; }
+
+/* TP/SL Modal */
+.tpsl-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.tpsl-modal {
+  background: var(--bg-1);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  width: 380px;
+  max-width: 95vw;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+}
+[data-theme="dark"] .tpsl-modal {
+  background: rgba(12, 20, 40, 0.85);
+}
+.tpsl-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.tpsl-close {
+  background: none;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 4px;
+}
+.tpsl-close:hover { color: var(--text-0); }
+.tpsl-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--bg-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.tpsl-info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-2);
+}
+.tpsl-info-row span:last-child { color: var(--text-0); font-weight: 600; }
+.tpsl-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tpsl-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-0);
+}
+.tpsl-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tpsl-presets {
+  display: flex;
+  gap: 6px;
+}
+.tpsl-preset-btn {
+  flex: 1;
+  padding: 4px 0;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.tpsl-preset-btn:hover { border-color: var(--border-hover); color: var(--text-0); }
+[data-theme="light"] .tpsl-modal {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
 /* ─── Portfolio Page ─── */
 .portfolio-page { overflow-y: auto; display: flex; flex-direction: column; }
 .portfolio-top {

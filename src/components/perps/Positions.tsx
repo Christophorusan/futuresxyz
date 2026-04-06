@@ -7,8 +7,149 @@ import { useMarket } from '../../contexts/MarketContext'
 import { useToast } from '../../contexts/ToastContext'
 import { formatPrice, formatUsd, formatPct } from '../../lib/format'
 import { useAccount } from 'wagmi'
+import { TokenIcon } from '../TokenIcon'
 
 type Tab = 'orders' | 'history' | 'positions' | 'assets' | 'trades' | 'twap' | 'funding'
+
+// ── TP/SL Modal ──
+function TpSlModal({ coin, szi, entryPx, markPx, onClose, onSubmit }: {
+  coin: string
+  szi: string
+  entryPx: string
+  markPx: string
+  onClose: () => void
+  onSubmit: (tp: string, sl: string) => Promise<void>
+}) {
+  const [tp, setTp] = useState('')
+  const [sl, setSl] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  const isLong = parseFloat(szi) > 0
+  const entry = parseFloat(entryPx)
+  const mark = parseFloat(markPx)
+  const size = Math.abs(parseFloat(szi))
+
+  // Calculate estimated PnL
+  const tpPnl = tp ? (isLong ? (parseFloat(tp) - entry) : (entry - parseFloat(tp))) * size : 0
+  const slPnl = sl ? (isLong ? (parseFloat(sl) - entry) : (entry - parseFloat(sl))) * size : 0
+
+  const handleSubmit = async () => {
+    if (!tp && !sl) return
+    setSubmitting(true)
+    await onSubmit(tp, sl)
+    setSubmitting(false)
+  }
+
+  return (
+    <div className="tpsl-overlay" onClick={onClose}>
+      <div className="tpsl-modal" onClick={e => e.stopPropagation()}>
+        <div className="tpsl-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <TokenIcon symbol={coin} size={20} />
+            <span style={{ fontWeight: 700, color: 'var(--text-0)' }}>{coin}-PERP</span>
+            <span className={isLong ? 'pos-pnl-green' : 'pos-pnl-red'} style={{ fontSize: 12, fontWeight: 600 }}>
+              {isLong ? 'LONG' : 'SHORT'}
+            </span>
+          </div>
+          <button className="tpsl-close" onClick={onClose}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <div className="tpsl-info">
+          <div className="tpsl-info-row">
+            <span>Entry Price</span><span>${formatPrice(entryPx)}</span>
+          </div>
+          <div className="tpsl-info-row">
+            <span>Mark Price</span><span>${formatPrice(markPx)}</span>
+          </div>
+          <div className="tpsl-info-row">
+            <span>Size</span><span>{size.toFixed(4)} {coin}</span>
+          </div>
+        </div>
+
+        {/* Take Profit */}
+        <div className="tpsl-section">
+          <label className="tpsl-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg>
+            Take Profit
+          </label>
+          <div className="tpsl-input-row">
+            <div className="trade-input-wrapper" style={{ flex: 1 }}>
+              <span className="trade-input-unit">$</span>
+              <input
+                type="number"
+                className="trade-input"
+                placeholder={isLong ? `Above ${formatPrice(markPx)}` : `Below ${formatPrice(markPx)}`}
+                value={tp}
+                onChange={e => setTp(e.target.value)}
+              />
+            </div>
+            {tp && (
+              <span className={tpPnl >= 0 ? 'green' : 'red'} style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap' }}>
+                {tpPnl >= 0 ? '+' : ''}{formatUsd(tpPnl)}
+              </span>
+            )}
+          </div>
+          <div className="tpsl-presets">
+            {[2, 5, 10, 25].map(pct => {
+              const price = isLong ? mark * (1 + pct / 100) : mark * (1 - pct / 100)
+              return (
+                <button key={pct} className="tpsl-preset-btn" onClick={() => setTp(price.toFixed(2))}>
+                  +{pct}%
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Stop Loss */}
+        <div className="tpsl-section">
+          <label className="tpsl-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="2"><path d="M23 18l-9.5-9.5-5 5L1 6"/><path d="M17 18h6v-6"/></svg>
+            Stop Loss
+          </label>
+          <div className="tpsl-input-row">
+            <div className="trade-input-wrapper" style={{ flex: 1 }}>
+              <span className="trade-input-unit">$</span>
+              <input
+                type="number"
+                className="trade-input"
+                placeholder={isLong ? `Below ${formatPrice(markPx)}` : `Above ${formatPrice(markPx)}`}
+                value={sl}
+                onChange={e => setSl(e.target.value)}
+              />
+            </div>
+            {sl && (
+              <span className={slPnl >= 0 ? 'green' : 'red'} style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap' }}>
+                {slPnl >= 0 ? '+' : ''}{formatUsd(slPnl)}
+              </span>
+            )}
+          </div>
+          <div className="tpsl-presets">
+            {[2, 5, 10, 25].map(pct => {
+              const price = isLong ? mark * (1 - pct / 100) : mark * (1 + pct / 100)
+              return (
+                <button key={pct} className="tpsl-preset-btn" onClick={() => setSl(price.toFixed(2))}>
+                  -{pct}%
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <button
+          className={`trade-submit buy`}
+          style={{ width: '100%', marginTop: 8 }}
+          disabled={submitting || (!tp && !sl)}
+          onClick={handleSubmit}
+        >
+          {submitting ? 'Placing...' : `Set ${tp ? 'TP' : ''}${tp && sl ? ' & ' : ''}${sl ? 'SL' : ''}`}
+        </button>
+      </div>
+    </div>
+  )
+}
 
 export function Positions() {
   const { isConnected } = useAccount()
@@ -22,6 +163,47 @@ export function Positions() {
   const [closingCoin, setClosingCoin] = useState<string | null>(null)
   const [cancellingOid, setCancellingOid] = useState<number | null>(null)
   const [cancellingAll, setCancellingAll] = useState(false)
+  const [tpslCoin, setTpslCoin] = useState<string | null>(null)
+
+  const handleSetTpSl = async (coin: string, szi: string, tp: string, sl: string) => {
+    const isLong = parseFloat(szi) > 0
+    const size = Math.abs(parseFloat(szi))
+    const market = markets.find(m => m.name === coin)
+    const midPrice = market ? parseFloat(market.midPrice) : 0
+    if (!midPrice) return
+
+    try {
+      // Place TP order
+      if (tp && parseFloat(tp) > 0) {
+        await placeOrder({
+          coin,
+          side: isLong ? 'sell' : 'buy',
+          size: size.toString(),
+          orderType: 'limit',
+          price: tp,
+          reduceOnly: true,
+          tpPrice: tp,
+        })
+      }
+      // Place SL order
+      if (sl && parseFloat(sl) > 0) {
+        await placeOrder({
+          coin,
+          side: isLong ? 'sell' : 'buy',
+          size: size.toString(),
+          orderType: 'limit',
+          price: sl,
+          reduceOnly: true,
+          slPrice: sl,
+        })
+      }
+      addToast(`TP/SL set for ${coin}`, 'success')
+      setTpslCoin(null)
+      refetchAccount()
+    } catch {
+      addToast(`Failed to set TP/SL for ${coin}`, 'error')
+    }
+  }
 
   const sortedBalances = useMemo(
     () => [...spotBalances].sort((a, b) => parseFloat(b.usdValue) - parseFloat(a.usdValue)),
@@ -221,7 +403,11 @@ export function Positions() {
                       <span className={pnl >= 0 ? 'pos-pnl-green' : 'pos-pnl-red'}>
                         {formatUsd(pnl)} ({formatPct(parseFloat(pos.returnOnEquity) * 100)})
                       </span>
-                      <span>--</span>
+                      <span>
+                        <button className="pos-tpsl-btn" onClick={() => setTpslCoin(pos.coin)}>
+                          + TP/SL
+                        </button>
+                      </span>
                       <span>
                         <button
                           className="pos-close-btn"
@@ -328,6 +514,23 @@ export function Positions() {
           )}
         </>
       )}
+
+      {/* TP/SL Modal */}
+      {tpslCoin && state && (() => {
+        const pos = state.positions.find(p => p.coin === tpslCoin)
+        if (!pos) return null
+        const market = markets.find(m => m.name === tpslCoin)
+        return (
+          <TpSlModal
+            coin={tpslCoin}
+            szi={pos.szi}
+            entryPx={pos.entryPx}
+            markPx={market?.midPrice || pos.entryPx}
+            onClose={() => setTpslCoin(null)}
+            onSubmit={(tp, sl) => handleSetTpSl(tpslCoin, pos.szi, tp, sl)}
+          />
+        )
+      })()}
     </div>
   )
 }
