@@ -2598,7 +2598,7 @@ body {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  max-width: 1100px;
+  max-width: 1020px;
   margin: 0 auto;
   width: calc(100% - 80px);
   position: relative;
