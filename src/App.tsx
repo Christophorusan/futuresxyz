@@ -12,7 +12,10 @@ import { ProtocolsPage } from './pages/ProtocolsPage'
 import { PortfolioPage } from './pages/PortfolioPage'
 import { SpotPage } from './pages/SpotPage'
 import { DocsPage } from './pages/DocsPage'
-import { EmbedPage, ProtocolPage } from './pages/EmbedPage'
+import { PredictionsPage } from './pages/PredictionsPage'
+import { LendingPage } from './pages/LendingPage'
+import { CDPPage } from './pages/CDPPage'
+import { StakingPage } from './pages/StakingPage'
 import { useSoundNotifications } from './hooks/useSoundNotifications'
 
 const queryClient = new QueryClient()
@@ -87,10 +90,10 @@ function AppContent() {
         <Routes>
           <Route path="/perps" element={<PerpsPage />} />
           <Route path="/spot" element={<SpotPage />} />
-          <Route path="/predictions" element={<EmbedPage title="Predictions" url="https://testnet.outcome.xyz/events" description="Powered by Outcome" />} />
-          <Route path="/lending" element={<ProtocolPage title="HyperLend" url="https://app.hyperlend.finance/dashboard" description="Lend and borrow on Hyperliquid's native lending protocol." features={['Supply assets to earn yield', 'Borrow against your collateral', 'Manage lending positions']} />} />
-          <Route path="/cdp" element={<EmbedPage title="Felix CDP" url="https://www.usefelix.xyz/portfolio" description="Powered by Felix" />} />
-          <Route path="/staking" element={<ProtocolPage title="HyperBeat" url="https://app.hyperbeat.org/staking" description="Stake HYPE and earn liquid staking rewards." features={['Stake HYPE for stHYPE', 'Earn staking rewards', 'Liquid staking derivatives']} />} />
+          <Route path="/predictions" element={<PredictionsPage />} />
+          <Route path="/lending" element={<LendingPage />} />
+          <Route path="/cdp" element={<CDPPage />} />
+          <Route path="/staking" element={<StakingPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/protocols" element={<ProtocolsPage />} />
           <Route path="/docs" element={<DocsPage />} />
