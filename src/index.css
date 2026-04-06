@@ -6,11 +6,11 @@
    THEME: Dark (default) — Black/White/Blue
    ═══════════════════════════════════════════ */
 :root, [data-theme="dark"] {
-  --bg-0: rgba(8, 14, 30, 0.35);
-  --bg-1: rgba(12, 20, 40, 0.25);
-  --bg-2: rgba(16, 26, 50, 0.2);
-  --bg-3: rgba(20, 30, 55, 0.3);
-  --bg-4: rgba(26, 36, 62, 0.3);
+  --bg-0: rgba(8, 14, 30, 0.4);
+  --bg-1: rgba(12, 20, 40, 0.3);
+  --bg-2: rgba(16, 26, 50, 0.22);
+  --bg-3: rgba(20, 30, 55, 0.35);
+  --bg-4: rgba(26, 36, 62, 0.35);
   --border: rgba(80, 140, 255, 0.12);
   --border-hover: rgba(80, 140, 255, 0.22);
   --text-0: #e8eaf0;
@@ -150,6 +150,39 @@ body {
 }
 .nav-tab:hover { color: var(--text-1); }
 .nav-tab.active { color: var(--text-0); border-bottom-color: var(--blue); }
+
+/* Dark theme: 3D glass nav tabs */
+[data-theme="dark"] .nav-tab,
+:root .nav-tab {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding: 6px 16px;
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: perspective(800px) rotateX(0deg);
+}
+[data-theme="dark"] .nav-tab:hover,
+:root .nav-tab:hover {
+  background: rgba(255,255,255,0.06);
+  transform: perspective(800px) rotateX(-2deg) translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  color: var(--text-1);
+}
+[data-theme="dark"] .nav-tab.active,
+:root .nav-tab.active {
+  background: rgba(255,255,255,0.1);
+  border-bottom: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+  transform: perspective(800px) rotateX(-3deg) translateY(-2px);
+  color: var(--text-0);
+}
+[data-theme="dark"] .nav-tabs,
+:root .nav-tabs {
+  gap: 4px;
+  padding: 4px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+}
 
 /* Light theme: glass nav + 3D tabs */
 [data-theme="light"] .nav {
