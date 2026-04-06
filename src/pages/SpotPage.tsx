@@ -89,14 +89,25 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
       {open && (
         <div className="spot-dropdown">
           <input className="spot-dd-search" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} autoFocus />
+          <div className="spot-dd-header">
+            <span>Pair</span>
+            <span>Price</span>
+            <span>24h</span>
+            <span>Volume</span>
+          </div>
           <div className="spot-dd-list">
-            {filtered.map(m => (
-              <button key={m.name} className={`spot-dd-item ${m.pairName === selected ? 'active' : ''}`} onClick={() => { onSelect(m.pairName); setOpen(false); setSearch('') }}>
-                <span className="spot-dd-name">{m.pairName}</span>
-                <span className="spot-dd-price">${formatPrice(m.markPx)}</span>
-                <span className={m.change24h >= 0 ? 'green' : 'red'}>{m.change24h >= 0 ? '+' : ''}{m.change24h.toFixed(1)}%</span>
-              </button>
-            ))}
+            {filtered.map(m => {
+              const vol = parseFloat(m.volume24h)
+              const volStr = vol >= 1e6 ? `$${(vol / 1e6).toFixed(1)}M` : vol >= 1e3 ? `$${(vol / 1e3).toFixed(0)}K` : `$${vol.toFixed(0)}`
+              return (
+                <button key={m.name} className={`spot-dd-item ${m.pairName === selected ? 'active' : ''}`} onClick={() => { onSelect(m.pairName); setOpen(false); setSearch('') }}>
+                  <span className="spot-dd-name">{m.pairName}</span>
+                  <span className="spot-dd-price">${formatPrice(m.markPx)}</span>
+                  <span className={m.change24h >= 0 ? 'green' : 'red'}>{m.change24h >= 0 ? '+' : ''}{m.change24h.toFixed(1)}%</span>
+                  <span className="spot-dd-vol">{volStr}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
       )}
