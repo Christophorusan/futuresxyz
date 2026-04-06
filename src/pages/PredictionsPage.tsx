@@ -288,7 +288,7 @@ export function PredictionsPage() {
   const rest = filtered.filter(e => e.id !== featured.id)
 
   const handleOpen = (id: number) => { setOpenMarketId(id) }
-  const handleFeature = (id: number) => { setFeaturedId(id) }
+  void featuredId // used for featured selection
 
   // Detail view
   if (openMarket) {
