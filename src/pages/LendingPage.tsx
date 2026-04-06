@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
-type Protocol = 'all' | 'hyperlend' | 'felix'
+type Protocol = 'all' | 'hyperlend' | 'felix' | 'hypurrfi'
 
 interface LendingMarket {
   asset: string
-  protocol: 'HyperLend' | 'Felix'
+  protocol: 'HyperLend' | 'Felix' | 'HypurrFi'
   type: 'lending' | 'cdp'
   supplyApy: string
   borrowApy: string
@@ -26,11 +26,17 @@ const MARKETS: LendingMarket[] = [
   { asset: 'HYPE', protocol: 'Felix', type: 'cdp', supplyApy: '--', borrowApy: '0.5%', totalSupply: '$62M', totalBorrow: '$28M', utilization: '45%', collateral: true },
   { asset: 'kHYPE', protocol: 'Felix', type: 'cdp', supplyApy: '--', borrowApy: '0.5%', totalSupply: '$34M', totalBorrow: '$14M', utilization: '41%', collateral: true },
   { asset: 'uBTC', protocol: 'Felix', type: 'cdp', supplyApy: '--', borrowApy: '0.3%', totalSupply: '$48M', totalBorrow: '$12M', utilization: '25%', collateral: true },
+  // HypurrFi markets
+  { asset: 'USDXL', protocol: 'HypurrFi', type: 'lending', supplyApy: '5.1%', borrowApy: '7.2%', totalSupply: '$18M', totalBorrow: '$11M', utilization: '61%', collateral: false },
+  { asset: 'HYPE', protocol: 'HypurrFi', type: 'lending', supplyApy: '3.4%', borrowApy: '6.8%', totalSupply: '$24M', totalBorrow: '$9M', utilization: '38%', collateral: true },
+  { asset: 'USDC', protocol: 'HypurrFi', type: 'lending', supplyApy: '4.8%', borrowApy: '6.5%', totalSupply: '$32M', totalBorrow: '$20M', utilization: '63%', collateral: true },
+  { asset: 'uETH', protocol: 'HypurrFi', type: 'lending', supplyApy: '2.1%', borrowApy: '4.9%', totalSupply: '$15M', totalBorrow: '$5M', utilization: '33%', collateral: true },
 ]
 
 const PROTOCOL_INFO = {
   hyperlend: { name: 'HyperLend', url: 'https://app.hyperlend.finance/dashboard', desc: 'Lend & borrow on HyperEVM', tvl: '$348M', markets: 6 },
   felix: { name: 'Felix', url: 'https://www.usefelix.xyz/portfolio', desc: 'CDP - mint feUSD against collateral', tvl: '$144M', markets: 3 },
+  hypurrfi: { name: 'HypurrFi', url: 'https://hypurrfi.com/', desc: 'Pooled & isolated lending + USDXL', tvl: '$89M', markets: 4 },
 }
 
 export function LendingPage() {
@@ -43,6 +49,7 @@ export function LendingPage() {
 
   const hyperlendMarkets = MARKETS.filter(m => m.protocol === 'HyperLend')
   const felixMarkets = MARKETS.filter(m => m.protocol === 'Felix')
+  const hypurrfiMarkets = MARKETS.filter(m => m.protocol === 'HypurrFi')
 
   return (
     <div className="pred-page">
@@ -51,6 +58,7 @@ export function LendingPage() {
         <button className={`pred-topbar-tab ${protocol === 'all' ? 'active' : ''}`} onClick={() => setProtocol('all')}>All Markets</button>
         <button className={`pred-topbar-tab ${protocol === 'hyperlend' ? 'active' : ''}`} onClick={() => setProtocol('hyperlend')}>HyperLend</button>
         <button className={`pred-topbar-tab ${protocol === 'felix' ? 'active' : ''}`} onClick={() => setProtocol('felix')}>Felix CDP</button>
+        <button className={`pred-topbar-tab ${protocol === 'hypurrfi' ? 'active' : ''}`} onClick={() => setProtocol('hypurrfi')}>HypurrFi</button>
       </div>
 
       <div className="pred-layout">
@@ -68,6 +76,12 @@ export function LendingPage() {
               <div className="protocol-stat-card">
                 <span className="protocol-stat-label">Felix TVL</span>
                 <span className="protocol-stat-value">{PROTOCOL_INFO.felix.tvl}</span>
+              </div>
+            )}
+            {(protocol === 'all' || protocol === 'hypurrfi') && (
+              <div className="protocol-stat-card">
+                <span className="protocol-stat-label">HypurrFi TVL</span>
+                <span className="protocol-stat-value">{PROTOCOL_INFO.hypurrfi.tvl}</span>
               </div>
             )}
             <div className="protocol-stat-card">
@@ -141,6 +155,39 @@ export function LendingPage() {
               </div>
             </div>
           )}
+
+          {/* HypurrFi section */}
+          {(protocol === 'all' || protocol === 'hypurrfi') && (
+            <div className="lending-protocol-section">
+              <div className="lending-protocol-header">
+                <span className="lending-protocol-name">HypurrFi</span>
+                <span className="lending-protocol-desc">Pooled & Isolated + USDXL</span>
+                <a href={PROTOCOL_INFO.hypurrfi.url} target="_blank" rel="noopener noreferrer" className="protocol-action-link">Open App</a>
+              </div>
+              <div className="protocol-table">
+                <div className="protocol-table-header" style={{ gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1fr 0.8fr' }}>
+                  <span>Asset</span>
+                  <span>Supply APY</span>
+                  <span>Borrow APY</span>
+                  <span>Total Supply</span>
+                  <span>Total Borrow</span>
+                  <span>Util.</span>
+                </div>
+                {hypurrfiMarkets.map(m => (
+                  <button key={`hf-${m.asset}`} className={`protocol-table-row ${selectedAsset === m ? 'active' : ''}`}
+                    style={{ gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1fr 0.8fr' }}
+                    onClick={() => { setSelectedAsset(m); setMode('supply'); setAmount('') }}>
+                    <span className="protocol-cell-name">{m.asset} {m.collateral && <span className="lending-collateral-badge">C</span>}</span>
+                    <span className="green">{m.supplyApy}</span>
+                    <span>{m.borrowApy}</span>
+                    <span>{m.totalSupply}</span>
+                    <span>{m.totalBorrow}</span>
+                    <span>{m.utilization}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right sidebar */}
@@ -174,10 +221,10 @@ export function LendingPage() {
                     <div className="tp-summary-row"><span>Utilization</span><span>{selectedAsset.utilization}</span></div>
                     <div className="tp-summary-row"><span>Collateral</span><span>{selectedAsset.collateral ? 'Yes' : 'No'}</span></div>
                   </div>
-                  <a href={PROTOCOL_INFO.hyperlend.url} target="_blank" rel="noopener noreferrer"
+                  <a href={selectedAsset.protocol === 'HyperLend' ? PROTOCOL_INFO.hyperlend.url : PROTOCOL_INFO.hypurrfi.url} target="_blank" rel="noopener noreferrer"
                     className={`trade-submit ${mode === 'supply' ? 'buy' : 'sell'}`}
                     style={{ textAlign: 'center', textDecoration: 'none', display: 'block' }}>
-                    {mode === 'supply' ? 'Supply' : 'Borrow'} on HyperLend
+                    {mode === 'supply' ? 'Supply' : 'Borrow'} on {selectedAsset.protocol}
                   </a>
                 </>
               ) : (
@@ -220,6 +267,10 @@ export function LendingPage() {
             <a href={PROTOCOL_INFO.felix.url} target="_blank" rel="noopener noreferrer" className="pred-hot-row" style={{ textDecoration: 'none' }}>
               <span className="pred-hot-name">Felix</span>
               <span className="pred-hot-vol">{PROTOCOL_INFO.felix.tvl} TVL</span>
+            </a>
+            <a href={PROTOCOL_INFO.hypurrfi.url} target="_blank" rel="noopener noreferrer" className="pred-hot-row" style={{ textDecoration: 'none' }}>
+              <span className="pred-hot-name">HypurrFi</span>
+              <span className="pred-hot-vol">{PROTOCOL_INFO.hypurrfi.tvl} TVL</span>
             </a>
           </div>
         </div>

@@ -13,7 +13,7 @@ import { SpotPage } from './pages/SpotPage'
 import { DocsPage } from './pages/DocsPage'
 import { PredictionsPage } from './pages/PredictionsPage'
 import { LendingPage } from './pages/LendingPage'
-import { CDPPage } from './pages/CDPPage'
+import { OptionsPage } from './pages/OptionsPage'
 import { StakingPage } from './pages/StakingPage'
 import { useSoundNotifications } from './hooks/useSoundNotifications'
 
@@ -66,8 +66,8 @@ function AppContent() {
               <NavLink to="/lending" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
                 Lending
               </NavLink>
-              <NavLink to="/cdp" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
-                CDP
+              <NavLink to="/options" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
+                Options
               </NavLink>
               <NavLink to="/staking" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
                 Staking
@@ -92,7 +92,7 @@ function AppContent() {
           <Route path="/spot" element={<SpotPage />} />
           <Route path="/predictions" element={<PredictionsPage />} />
           <Route path="/lending" element={<LendingPage />} />
-          <Route path="/cdp" element={<CDPPage />} />
+          <Route path="/options" element={<OptionsPage />} />
           <Route path="/staking" element={<StakingPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/docs" element={<DocsPage />} />
