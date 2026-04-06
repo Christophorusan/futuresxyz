@@ -351,10 +351,11 @@ body {
   align-items: center;
   gap: 32px;
   padding: 10px 20px;
-  border-bottom: 1px solid var(--border);
   background: var(--bg-1);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   overflow-x: auto;
 }
 
@@ -561,7 +562,7 @@ body {
 
 .mkt-empty { padding: 32px; text-align: center; color: var(--text-3); font-size: 13px; }
 
-/* ─── Perps Layout ─── */
+/* ─── Perps Layout — Floating Glass Cards ─── */
 .perps-page {
   display: flex;
   flex-direction: column;
@@ -569,6 +570,8 @@ body {
   min-height: 0;
   height: 0;
   overflow: hidden;
+  padding: 6px;
+  gap: 6px;
 }
 
 /* Main area: left (chart+book+bottom) + right (trade panel) */
@@ -577,6 +580,7 @@ body {
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  gap: 6px;
 }
 
 /* Left side: chart + orderbook row, then bottom panel */
@@ -586,6 +590,7 @@ body {
   flex-direction: column;
   min-height: 0;
   min-width: 0;
+  gap: 6px;
 }
 
 /* Top row: chart + orderbook side by side */
@@ -593,18 +598,20 @@ body {
   display: flex;
   flex: 1;
   min-height: 0;
+  gap: 6px;
 }
 
 .perps-chart-area {
   flex: 1;
-  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   min-height: 0;
   min-width: 0;
   background: var(--bg-1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   overflow: hidden;
 }
 
@@ -614,8 +621,10 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--bg-1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   min-height: 0;
 }
 
@@ -628,19 +637,21 @@ body {
   background: var(--bg-1);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-left: 1px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   min-height: 0;
 }
 
 /* Bottom panel: only under chart + orderbook */
 .perps-bottom {
-  border-top: 1px solid var(--border);
   height: 200px;
   flex-shrink: 0;
   overflow: hidden;
   background: var(--bg-1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   display: flex;
   flex-direction: column;
 }
