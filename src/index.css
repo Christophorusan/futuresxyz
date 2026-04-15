@@ -2705,12 +2705,15 @@ body {
     height: 100vh;
   }
   .perps-page-mobile-hl {
-    min-height: 100vh;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     gap: 0;
     padding: 0;
     background: #0d141a;
+    overflow: hidden;
   }
   .perps-mobile-topbar {
     display: flex;
@@ -2852,13 +2855,25 @@ body {
     min-height: 0;
     overflow: hidden;
     background: #10191f;
-    padding-bottom: 74px;
+    /* bottom padding handled by the fixed bottom nav — shells must scroll within their own area */
   }
   .perps-mobile-chart-shell,
   .perps-mobile-book-shell,
   .perps-mobile-trades-shell {
     height: 100%;
     min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .perps-mobile-book-shell,
+  .perps-mobile-trades-shell {
+    padding-bottom: 74px;
+    overflow-y: auto;
+  }
+  .perps-mobile-chart-shell {
+    /* chart's own scroll is handled inside, bottom nav clearance via wrapper padding */
+    padding-bottom: 74px;
   }
   .perps-page-mobile-hl .chart-container {
     height: 100%;
@@ -2880,7 +2895,7 @@ body {
   }
   .perps-page-mobile-hl .chart-wrapper {
     height: calc(100% - 49px);
-    min-height: 420px;
+    min-height: 0;
   }
   .perps-mobile-book-shell .orderbook,
   .perps-mobile-trades-shell .recent-trades {
