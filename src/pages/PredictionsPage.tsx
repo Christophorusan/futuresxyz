@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const CATEGORIES = ['Trending', 'Breaking', 'New', 'Politics', 'Sports', 'Crypto', 'Esports', 'Finance', 'Geopolitics', 'Tech', 'Culture', 'Economy', 'Weather', 'Elections'] as const
 type Category = typeof CATEGORIES[number]
@@ -542,6 +543,293 @@ function FeaturedMarket({ market }: { market: Market }) {
   )
 }
 
+// ── Mobile market detail ──────────────────────────────────────
+function MobileMarketDetail({ market, onBack }: { market: Market; onBack: () => void }) {
+  const [side, setSide] = useState<'yes' | 'no'>('yes')
+  const [amount, setAmount] = useState('')
+  const yesPct = Math.round(market.yesPrice * 100)
+  const noPct = 100 - yesPct
+
+  return (
+    <div className="pm-detail">
+      <div className="pm-detail-header">
+        <button className="pm-back-btn" onClick={onBack}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <span className="pm-detail-title">{market.title}</span>
+        <button className="pm-deposit-btn" style={{ fontSize: 12, padding: '6px 12px' }}>Share</button>
+      </div>
+
+      <div className="pm-detail-body">
+        <div className="pm-detail-stats">
+          <div className="pm-detail-stat">
+            <span className="pm-detail-stat-label">Volume</span>
+            <span className="pm-detail-stat-val">{market.volume}</span>
+          </div>
+          <div className="pm-detail-stat">
+            <span className="pm-detail-stat-label">Ends</span>
+            <span className="pm-detail-stat-val">{market.endDate}</span>
+          </div>
+          <div className="pm-detail-stat">
+            <span className="pm-detail-stat-label">Traders</span>
+            <span className="pm-detail-stat-val">{genTraders(market.id, market.volNum).toLocaleString()}</span>
+          </div>
+        </div>
+
+        {/* Probability chart */}
+        <div className="pm-detail-chart">
+          <div className="pm-detail-chart-label">
+            <span>Probability</span>
+            <span className={market.yesPrice >= 0.5 ? 'green' : 'red'} style={{ fontSize: 22, fontWeight: 700 }}>{yesPct}%</span>
+          </div>
+          <div className="pm-detail-chart-svg">
+            <Sparkline points={genSparkline(market.id, market.yesPrice)} color={market.yesPrice >= 0.5 ? 'var(--green)' : 'var(--red)'} width={340} height={100} />
+          </div>
+        </div>
+
+        {/* Outcome rows */}
+        <div className="pm-detail-outcomes">
+          <div className="pm-detail-outcome">
+            <span className="pm-detail-outcome-name">Yes</span>
+            <div className="pm-detail-outcome-bar-wrap">
+              <div className="pm-detail-outcome-bar yes" style={{ width: `${yesPct}%` }} />
+            </div>
+            <span className="pm-outcome-pct yes">{yesPct}%</span>
+          </div>
+          <div className="pm-detail-outcome">
+            <span className="pm-detail-outcome-name">No</span>
+            <div className="pm-detail-outcome-bar-wrap">
+              <div className="pm-detail-outcome-bar no" style={{ width: `${noPct}%` }} />
+            </div>
+            <span className="pm-outcome-pct no">{noPct}%</span>
+          </div>
+        </div>
+
+        {/* Trade section */}
+        <div className="pm-trade-card">
+          <div className="pm-trade-sides">
+            <button className={`pm-trade-side yes${side === 'yes' ? ' active' : ''}`} onClick={() => setSide('yes')}>
+              Buy Yes · {yesPct}¢
+            </button>
+            <button className={`pm-trade-side no${side === 'no' ? ' active' : ''}`} onClick={() => setSide('no')}>
+              Buy No · {noPct}¢
+            </button>
+          </div>
+          <div className="pm-trade-input-row">
+            <span className="pm-trade-input-unit">$</span>
+            <input className="pm-trade-input" type="number" placeholder="0" value={amount} onChange={e => setAmount(e.target.value)} />
+          </div>
+          <div className="pm-quick-amounts">
+            {[1, 5, 10, 50].map(v => (
+              <button key={v} className="pm-quick-btn" onClick={() => setAmount(String(v))}>+${v}</button>
+            ))}
+            <button className="pm-quick-btn" onClick={() => setAmount('100')}>Max</button>
+          </div>
+          <a
+            href="https://testnet.outcome.xyz/events"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`pm-trade-submit ${side === 'yes' ? 'yes' : 'no'}`}
+          >
+            {side === 'yes' ? `Buy Yes ${yesPct}¢` : `Buy No ${noPct}¢`}
+          </a>
+        </div>
+
+        {/* Comments */}
+        <div className="pm-comments">
+          <div className="pm-comments-title">Comments</div>
+          {(MOCK_COMMENTS[market.id] || []).map((c, i) => (
+            <div key={i} className="pm-comment">
+              <div className="pm-comment-top">
+                <span className="pm-comment-user">{c.user}</span>
+                <span className="pm-comment-time">{c.time}</span>
+              </div>
+              <div className="pm-comment-text">{c.text}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Mobile predictions (Polymarket style) ─────────────────────
+const MOBILE_CATS = ['All', 'Crypto', 'Politics', 'Sports', 'Finance', 'Economy', 'Tech', 'Esports', 'Geopolitics', 'Culture', 'Elections'] as const
+const CAT_ICONS: Record<string, string> = {
+  All: '🧭', Crypto: '₿', Politics: '🏛', Sports: '⚽', Finance: '$', Economy: '📈',
+  Tech: '💻', Esports: '🎮', Geopolitics: '🌍', Culture: '🎬', Elections: '🗳',
+}
+
+function MobilePredictions({
+  events,
+  trending,
+  onOpen,
+}: {
+  events: Market[]
+  trending: Market[]
+  onOpen: (id: number) => void
+}) {
+  const navigate = useNavigate()
+  const [cat, setCat] = useState('All')
+  const [mobileTab, setMobileTab] = useState<'home' | 'live' | 'portfolio' | 'search'>('home')
+  const [search, setSearch] = useState('')
+
+  const filtered = cat === 'All'
+    ? events
+    : events.filter(e => e.category === cat)
+
+  const displayed = search
+    ? filtered.filter(e => e.title.toLowerCase().includes(search.toLowerCase()))
+    : filtered
+
+  function pillColor(pct: number) {
+    if (pct >= 70) return '#1a7a4a'
+    if (pct >= 50) return '#1a5a3a'
+    if (pct <= 30) return '#7a1a1a'
+    return '#2a2a2a'
+  }
+
+  return (
+    <div className="pm-shell">
+      {/* Top bar */}
+      <div className="pm-topbar">
+        <div className="pm-topbar-left">
+          <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+            <line x1="6" y1="2" x2="6" y2="30" stroke="currentColor" strokeWidth="1.5"/>
+            <rect x="2.5" y="7" width="7" height="15" rx="1" fill="currentColor"/>
+            <rect x="12.5" y="9" width="7" height="9" rx="1" stroke="currentColor" strokeWidth="1.5"/>
+            <rect x="22.5" y="5" width="7" height="11" rx="1" stroke="currentColor" strokeWidth="1.5"/>
+          </svg>
+          <span className="pm-topbar-name">Futuresxyz</span>
+        </div>
+        <button className="pm-deposit-btn">Deposit</button>
+      </div>
+
+      {/* Category chips */}
+      <div className="pm-cats">
+        {MOBILE_CATS.map(c => (
+          <button
+            key={c}
+            className={`pm-cat${cat === c ? ' active' : ''}`}
+            onClick={() => setCat(c)}
+          >
+            <span className="pm-cat-icon">{CAT_ICONS[c]}</span>
+            <span>{c}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="pm-content">
+        {mobileTab === 'search' ? (
+          <div className="pm-search-view">
+            <div className="pm-search-bar">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input
+                className="pm-search-input"
+                placeholder="Search markets..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                autoFocus
+              />
+            </div>
+            {displayed.map(e => <MobileMarketRow key={e.id} market={e} onOpen={onOpen} pillColor={pillColor} />)}
+          </div>
+        ) : (
+          <>
+            {/* Balance */}
+            <div className="pm-balance">
+              <div className="pm-balance-amount">$0 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg></div>
+              <div className="pm-balance-sub">$0 cash</div>
+            </div>
+
+            {/* Trending horizontal scroll */}
+            <div className="pm-section-title">Trending</div>
+            <div className="pm-trending-scroll">
+              {trending.slice(0, 8).map(e => {
+                const yesPct = Math.round(e.yesPrice * 100)
+                return (
+                  <button key={e.id} className="pm-trending-card" onClick={() => onOpen(e.id)}>
+                    <div className="pm-trending-card-top">
+                      <span className="pm-trending-live">
+                        <span className="pm-live-dot" />
+                        Hot
+                      </span>
+                      <span className="pm-trending-cat">{e.category}</span>
+                    </div>
+                    <div className="pm-trending-card-title">{e.title.length > 36 ? e.title.slice(0, 36) + '…' : e.title}</div>
+                    <div className="pm-trending-card-row">
+                      <span className="pm-trending-card-name">Yes</span>
+                      <span className="pm-trending-card-score">{yesPct}%</span>
+                      <span className="pm-prob-pill" style={{ background: pillColor(yesPct) }}>{yesPct}%</span>
+                    </div>
+                    <div className="pm-trending-card-row">
+                      <span className="pm-trending-card-name">No</span>
+                      <span className="pm-trending-card-score">{100 - yesPct}%</span>
+                      <span className="pm-prob-pill" style={{ background: pillColor(100 - yesPct) }}>{100 - yesPct}%</span>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Markets list */}
+            <div className="pm-section-title">Markets</div>
+            {displayed.map(e => (
+              <MobileMarketRow key={e.id} market={e} onOpen={onOpen} pillColor={pillColor} />
+            ))}
+          </>
+        )}
+      </div>
+
+      {/* Bottom nav */}
+      <nav className="pm-bottom-nav">
+        <button className={`pm-nav-item${mobileTab === 'home' ? ' active' : ''}`} onClick={() => setMobileTab('home')}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill={mobileTab === 'home' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+          <span>Home</span>
+        </button>
+        <button className={`pm-nav-item${mobileTab === 'live' ? ' active' : ''}`} onClick={() => setMobileTab('live')}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="3" fill={mobileTab === 'live' ? 'currentColor' : 'none'}/><path d="M5.6 5.6a9 9 0 000 12.8M18.4 5.6a9 9 0 010 12.8"/><path d="M8.5 8.5a5 5 0 000 7M15.5 8.5a5 5 0 010 7"/></svg>
+          <span>Live</span>
+          <span className="pm-nav-badge">6</span>
+        </button>
+        <button className={`pm-nav-item${mobileTab === 'portfolio' ? ' active' : ''}`} onClick={() => { navigate('/portfolio') }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M2 20h20M5 20V10m4 10V4m4 16V8m4 12v-6" strokeLinecap="round"/></svg>
+          <span>$0</span>
+        </button>
+        <button className={`pm-nav-item${mobileTab === 'search' ? ' active' : ''}`} onClick={() => setMobileTab('search')}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>Search</span>
+        </button>
+      </nav>
+    </div>
+  )
+}
+
+function MobileMarketRow({ market, onOpen, pillColor }: { market: Market; onOpen: (id: number) => void; pillColor: (pct: number) => string }) {
+  const yesPct = Math.round(market.yesPrice * 100)
+  const noPct = 100 - yesPct
+  return (
+    <button className="pm-market-row" onClick={() => onOpen(market.id)}>
+      <div className="pm-market-row-top">
+        {market.hot && <span className="pm-live-dot" />}
+        <span className="pm-market-row-cat">{market.category}</span>
+        <span className="pm-market-row-vol">{market.volume}</span>
+      </div>
+      <div className="pm-market-row-title">{market.title}</div>
+      <div className="pm-market-row-outcomes">
+        <div className="pm-market-outcome-row">
+          <span className="pm-market-outcome-name">Yes</span>
+          <span className="pm-prob-pill" style={{ background: pillColor(yesPct) }}>{yesPct}%</span>
+        </div>
+        <div className="pm-market-outcome-row">
+          <span className="pm-market-outcome-name">No</span>
+          <span className="pm-prob-pill" style={{ background: pillColor(noPct) }}>{noPct}%</span>
+        </div>
+      </div>
+    </button>
+  )
+}
+
 // ── Main Page ──
 export function PredictionsPage() {
   const [category, setCategory] = useState<Category | 'All'>('All')
@@ -663,115 +951,118 @@ export function PredictionsPage() {
     </div>
   )
 
-  // Detail view
+  const hotMarkets = useMemo(() => EVENTS.filter(e => e.hot), [])
+
+  // Mobile market detail
   if (openMarket) {
     return (
-      <div className="pred-page">
-        {topbar}
-        <MarketView market={openMarket} onBack={() => setOpenMarketId(null)} onOpenMarket={handleOpen} />
-      </div>
+      <>
+        {/* Mobile detail */}
+        <div className="pred-mobile-hl">
+          <MobileMarketDetail market={openMarket} onBack={() => setOpenMarketId(null)} />
+        </div>
+        {/* Desktop detail */}
+        <div className="pred-page pred-desktop-only">
+          {topbar}
+          <MarketView market={openMarket} onBack={() => setOpenMarketId(null)} onOpenMarket={handleOpen} />
+        </div>
+      </>
     )
   }
 
-  // List view
   return (
-    <div className="pred-page">
-      {topbar}
+    <>
+      {/* ── Mobile layout ── */}
+      <div className="pred-mobile-hl">
+        <MobilePredictions
+          events={filtered}
+          trending={hotMarkets}
+          onOpen={handleOpen}
+        />
+      </div>
 
-      <div className="pred-layout">
-        <div className="pred-main" style={{ padding: 4 }}>
-          <FeaturedMarket market={featured} />
-          <div className="pred-carousel-dots">
-            {topMarkets.map((_, i) => (
-              <button
-                key={i}
-                className={`pred-carousel-dot ${i === featuredIdx ? 'active' : ''}`}
-                onClick={() => setFeaturedIdx(i)}
-              />
-            ))}
-          </div>
-
-          {/* Search + Sort bar */}
-          <div className="pred-controls">
-            <div className="pred-search-wrap">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input className="pred-search" placeholder="Search markets..." value={search} onChange={e => setSearch(e.target.value)} />
-            </div>
-            <div className="pred-sort-wrap">
-              {(['volume', 'newest', 'ending', 'probability'] as SortMode[]).map(s => (
-                <button key={s} className={`pred-sort-btn ${sort === s ? 'active' : ''}`} onClick={() => setSort(s)}>
-                  {s === 'volume' ? 'Top Volume' : s === 'newest' ? 'Newest' : s === 'ending' ? 'Ending Soon' : 'Most Likely'}
-                </button>
+      {/* ── Desktop layout ── */}
+      <div className="pred-page pred-desktop-only">
+        {topbar}
+        <div className="pred-layout">
+          <div className="pred-main" style={{ padding: 4 }}>
+            <FeaturedMarket market={featured} />
+            <div className="pred-carousel-dots">
+              {topMarkets.map((_, i) => (
+                <button
+                  key={i}
+                  className={`pred-carousel-dot ${i === featuredIdx ? 'active' : ''}`}
+                  onClick={() => setFeaturedIdx(i)}
+                />
               ))}
             </div>
-          </div>
-
-          {/* Trending markets bar */}
-          <div className="pred-markets-bar">
-            <div className="pred-markets-bar-left">
-              <span className="pred-markets-title">Trending markets</span>
+            <div className="pred-controls">
+              <div className="pred-search-wrap">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input className="pred-search" placeholder="Search markets..." value={search} onChange={e => setSearch(e.target.value)} />
+              </div>
+              <div className="pred-sort-wrap">
+                {(['volume', 'newest', 'ending', 'probability'] as SortMode[]).map(s => (
+                  <button key={s} className={`pred-sort-btn ${sort === s ? 'active' : ''}`} onClick={() => setSort(s)}>
+                    {s === 'volume' ? 'Top Volume' : s === 'newest' ? 'Newest' : s === 'ending' ? 'Ending Soon' : 'Most Likely'}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="pred-markets-pills">
-              {EVENTS.filter(e => e.hot).slice(0, 8).map(e => (
-                <button key={e.id} className="pred-market-pill" onClick={() => handleOpen(e.id)}>
-                  {e.title.length > 25 ? e.title.slice(0, 25) + '...' : e.title}
-                </button>
-              ))}
+            <div className="pred-markets-bar">
+              <div className="pred-markets-bar-left"><span className="pred-markets-title">Trending markets</span></div>
+              <div className="pred-markets-pills">
+                {EVENTS.filter(e => e.hot).slice(0, 8).map(e => (
+                  <button key={e.id} className="pred-market-pill" onClick={() => handleOpen(e.id)}>
+                    {e.title.length > 25 ? e.title.slice(0, 25) + '...' : e.title}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-
-          {rest.length === 0 && search && (
-            <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-3)', fontSize: 14 }}>No markets found for "{search}"</div>
-          )}
-
-          <div className="pred-grid">
-            {rest.map(e => (
-              <button key={e.id} className={`pred-card ${e.hot ? 'pred-card-glow' : ''}`} onClick={() => handleOpen(e.id)}>
-                <div className="pred-card-top">
-                  <span className="pred-card-badge">{e.category}</span>
-                  {e.hot && <span className="pred-card-hot">Hot</span>}
-                  {daysUntil(e.endDate) <= 7 && daysUntil(e.endDate) > 0 && (
-                    <span className="pred-card-urgent">{daysUntil(e.endDate)}d left</span>
-                  )}
-                  <span
-                    className={`pred-card-star ${watchlist.has(e.id) ? 'active' : ''}`}
-                    onClick={ev => { ev.stopPropagation(); toggleWatch(e.id) }}
-                  >
-                    {watchlist.has(e.id) ? '\u2605' : '\u2606'}
-                  </span>
-                </div>
-                <div className="pred-card-title">{e.title}</div>
-                <div className="pred-card-chart-row">
-                  <Sparkline points={genSparkline(e.id, e.yesPrice)} color={e.yesPrice >= 0.5 ? 'var(--green)' : 'var(--red)'} />
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 20, fontWeight: 800, color: e.yesPrice >= 0.5 ? 'var(--green)' : 'var(--red)' }}>{Math.round(e.yesPrice * 100)}%</div>
-                    <div style={{ fontSize: 10, color: 'var(--text-3)' }}>chance</div>
+            {rest.length === 0 && search && (
+              <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-3)', fontSize: 14 }}>No markets found for "{search}"</div>
+            )}
+            <div className="pred-grid">
+              {rest.map(e => (
+                <button key={e.id} className={`pred-card ${e.hot ? 'pred-card-glow' : ''}`} onClick={() => handleOpen(e.id)}>
+                  <div className="pred-card-top">
+                    <span className="pred-card-badge">{e.category}</span>
+                    {e.hot && <span className="pred-card-hot">Hot</span>}
+                    {daysUntil(e.endDate) <= 7 && daysUntil(e.endDate) > 0 && (
+                      <span className="pred-card-urgent">{daysUntil(e.endDate)}d left</span>
+                    )}
+                    <span className={`pred-card-star ${watchlist.has(e.id) ? 'active' : ''}`} onClick={ev => { ev.stopPropagation(); toggleWatch(e.id) }}>
+                      {watchlist.has(e.id) ? '\u2605' : '\u2606'}
+                    </span>
                   </div>
-                </div>
-                <div className="pred-card-bar">
-                  <div className="pred-card-bar-fill" style={{ width: `${e.yesPrice * 100}%` }} />
-                </div>
-                <div className="pred-card-prices">
-                  <span className="pred-card-yes">Yes {Math.round(e.yesPrice * 100)}c</span>
-                  <span className="pred-card-no">No {Math.round((1 - e.yesPrice) * 100)}c</span>
-                </div>
-                <div className="pred-card-footer">
-                  <span className="pred-card-social">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-                    {genTraders(e.id, e.volNum).toLocaleString()}
-                  </span>
-                  <span>{e.volume} vol</span>
-                  <span>Ends {e.endDate}</span>
-                </div>
-              </button>
-            ))}
+                  <div className="pred-card-title">{e.title}</div>
+                  <div className="pred-card-chart-row">
+                    <Sparkline points={genSparkline(e.id, e.yesPrice)} color={e.yesPrice >= 0.5 ? 'var(--green)' : 'var(--red)'} />
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: 20, fontWeight: 800, color: e.yesPrice >= 0.5 ? 'var(--green)' : 'var(--red)' }}>{Math.round(e.yesPrice * 100)}%</div>
+                      <div style={{ fontSize: 10, color: 'var(--text-3)' }}>chance</div>
+                    </div>
+                  </div>
+                  <div className="pred-card-bar"><div className="pred-card-bar-fill" style={{ width: `${e.yesPrice * 100}%` }} /></div>
+                  <div className="pred-card-prices">
+                    <span className="pred-card-yes">Yes {Math.round(e.yesPrice * 100)}c</span>
+                    <span className="pred-card-no">No {Math.round((1 - e.yesPrice) * 100)}c</span>
+                  </div>
+                  <div className="pred-card-footer">
+                    <span className="pred-card-social">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                      {genTraders(e.id, e.volNum).toLocaleString()}
+                    </span>
+                    <span>{e.volume} vol</span>
+                    <span>Ends {e.endDate}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-
-        <div className="pred-sidebar">
-          <SidebarContent onOpenMarket={handleOpen} />
+          <div className="pred-sidebar"><SidebarContent onOpenMarket={handleOpen} /></div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
