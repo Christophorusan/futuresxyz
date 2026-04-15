@@ -2695,6 +2695,359 @@ body {
 
 /* ─── Protocol Pages (Staking, Lending, CDP, Predictions) ─── */
 .protocol-page { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+@media (max-width: 768px) {
+  body.perps-mobile-active .nav {
+    display: none;
+  }
+  body.perps-mobile-active #root,
+  body.perps-mobile-active .app {
+    height: 100vh;
+  }
+  .perps-page-mobile-hl {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    background: #0d141a;
+  }
+  .perps-mobile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    background: #121c23;
+  }
+  .perps-mobile-brand,
+  .perps-mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .perps-mobile-wordmark {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .perps-mobile-logo-dot {
+    width: 14px;
+    height: 24px;
+    border-radius: 999px;
+    background: #f5f7fa;
+  }
+  .perps-mobile-logo-dot:first-child,
+  .perps-mobile-logo-dot:last-child {
+    width: 10px;
+    height: 10px;
+    background: #8ee6d7;
+  }
+  .perps-mobile-icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: transparent;
+    color: var(--text-0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 0;
+  }
+  .perps-mobile-icon-btn span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 999px;
+  }
+  .perps-page-mobile-hl .connect-btn,
+  .perps-page-mobile-hl .connect-btn.connected {
+    min-width: 116px;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 14px;
+    font-size: 13px;
+    background: #1f4f46;
+    border: none;
+    color: #d7efe8;
+  }
+  .perps-mobile-marketbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: #121c23;
+  }
+  .perps-mobile-marketbar-left {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .perps-page-mobile-hl .market-selector-btn {
+    width: auto;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 0;
+  }
+  .perps-page-mobile-hl .market-name {
+    font-size: 18px;
+    font-weight: 500;
+  }
+  .perps-page-mobile-hl .market-arrow {
+    font-size: 10px;
+    color: var(--text-2);
+  }
+  .perps-mobile-market-type {
+    font-size: 12px;
+    color: #72d3c8;
+    padding-left: 32px;
+  }
+  .perps-mobile-marketbar-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .perps-mobile-market-price {
+    color: var(--text-0);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .perps-mobile-market-change {
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .perps-mobile-surface-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: #121c23;
+  }
+  .perps-mobile-surface-tab {
+    border: none;
+    background: transparent;
+    color: var(--text-2);
+    padding: 14px 8px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--font);
+    border-bottom: 2px solid transparent;
+  }
+  .perps-mobile-surface-tab.active {
+    color: var(--text-0);
+    border-bottom-color: #72d3c8;
+  }
+  .perps-mobile-surface {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    background: #10191f;
+    padding-bottom: 74px;
+  }
+  .perps-mobile-chart-shell,
+  .perps-mobile-book-shell,
+  .perps-mobile-trades-shell {
+    height: 100%;
+    min-height: 0;
+  }
+  .perps-page-mobile-hl .chart-container {
+    height: 100%;
+  }
+  .perps-page-mobile-hl .chart-controls {
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+  }
+  .perps-page-mobile-hl .chart-interval {
+    padding: 0;
+    background: transparent;
+    font-size: 16px;
+    color: #cdd4df;
+  }
+  .perps-page-mobile-hl .chart-interval.active {
+    background: transparent;
+    color: #72d3c8;
+  }
+  .perps-page-mobile-hl .chart-wrapper {
+    height: calc(100% - 49px);
+    min-height: 420px;
+  }
+  .perps-mobile-book-shell .orderbook,
+  .perps-mobile-trades-shell .recent-trades {
+    height: 100%;
+  }
+  .perps-mobile-trades-shell .recent-trades {
+    display: flex;
+    flex-direction: column;
+  }
+  .perps-mobile-trades-shell .rt-body {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .perps-mobile-bottomnav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    background: #121c23;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  }
+  .perps-mobile-bottomitem {
+    border: none;
+    background: transparent;
+    color: var(--text-1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-family: var(--font);
+    padding: 6px 4px;
+  }
+  .perps-mobile-bottomitem.active {
+    color: #72d3c8;
+  }
+  .perps-mobile-bottomicon {
+    position: relative;
+    display: block;
+    width: 20px;
+    height: 20px;
+  }
+  .perps-mobile-bottomicon.bars::before,
+  .perps-mobile-bottomicon.bars::after,
+  .perps-mobile-bottomicon.bars {
+    background: transparent;
+  }
+  .perps-mobile-bottomicon.bars::before,
+  .perps-mobile-bottomicon.bars::after {
+    content: '';
+    position: absolute;
+    left: 3px;
+    width: 4px;
+    border-radius: 999px;
+    background: currentColor;
+  }
+  .perps-mobile-bottomicon.bars::before { height: 14px; bottom: 1px; }
+  .perps-mobile-bottomicon.bars::after { height: 10px; left: 9px; bottom: 1px; }
+  .perps-mobile-bottomicon.bars { box-shadow: inset -3px -6px 0 0 currentColor; border-radius: 999px; width: 15px; }
+  .perps-mobile-bottomicon.trade {
+    border-radius: 999px;
+    border: 2px solid currentColor;
+  }
+  .perps-mobile-bottomicon.trade::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: currentColor;
+    left: 4px;
+    top: 4px;
+  }
+  .perps-mobile-bottomicon.account {
+    border-radius: 999px;
+    border: 2px solid currentColor;
+  }
+  .perps-mobile-bottomicon.account::before,
+  .perps-mobile-bottomicon.account::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: currentColor;
+    border-radius: 999px;
+  }
+  .perps-mobile-bottomicon.account::before {
+    width: 6px;
+    height: 6px;
+    top: 3px;
+  }
+  .perps-mobile-bottomicon.account::after {
+    width: 10px;
+    height: 5px;
+    bottom: 3px;
+  }
+  .perps-mobile-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 8, 13, 0.64);
+    z-index: 40;
+    display: flex;
+    align-items: flex-end;
+  }
+  .perps-mobile-sheet {
+    width: 100%;
+    max-height: 76vh;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    background: #121c23;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .perps-mobile-sheet-handle {
+    width: 44px;
+    height: 5px;
+    border: none;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.22);
+    margin: 10px auto 6px;
+    padding: 0;
+  }
+  .perps-mobile-sheet-content {
+    min-height: 0;
+    overflow: auto;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  }
+  .perps-mobile-sheet .trade-panel {
+    padding: 14px;
+  }
+  .perps-mobile-sheet .positions {
+    min-height: 420px;
+  }
+}
+
+@media (max-width: 480px) {
+  .perps-mobile-topbar {
+    padding: 8px 10px;
+  }
+  .perps-page-mobile-hl .connect-btn,
+  .perps-page-mobile-hl .connect-btn.connected {
+    min-width: 98px;
+    font-size: 12px;
+  }
+  .perps-mobile-marketbar {
+    padding: 12px;
+  }
+  .perps-page-mobile-hl .market-name {
+    font-size: 16px;
+  }
+  .perps-mobile-market-price {
+    font-size: 18px;
+  }
+  .perps-page-mobile-hl .chart-controls {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  .perps-page-mobile-hl .chart-interval {
+    font-size: 15px;
+  }
+}
 .protocol-main { flex: 1; display: flex; overflow: hidden; }
 .protocol-content { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
 .protocol-panel {
