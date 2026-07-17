@@ -4,13 +4,14 @@ import { RecentTrades } from './RecentTrades'
 
 type View = 'book' | 'trades'
 
-export function OrderBookPanel() {
-  const [view, setView] = useState<View>('book')
+export function OrderBookPanel({ externalView }: { externalView?: View }) {
+  const [internalView, setView] = useState<View>('book')
+  const view = externalView ?? internalView
 
   return (
     <div className="obp">
-      {/* Tab bar — like Hyperliquid */}
-      <div className="obp-tabs">
+      {/* Tab bar — like Hyperliquid; hidden when the mobile page tabs drive the view */}
+      <div className={`obp-tabs ${externalView ? 'obp-tabs-external' : ''}`}>
         <button
           className={`obp-tab ${view === 'book' ? 'active' : ''}`}
           onClick={() => setView('book')}

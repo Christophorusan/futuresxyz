@@ -635,6 +635,23 @@ body {
   gap: 6px;
 }
 
+/* Mobile segmented tabs (Chart | Order Book | Trades) — hidden on desktop */
+.perps-mobile-tabs { display: none; }
+.pm-tab {
+  flex: 1;
+  padding: 9px 4px;
+  border: none;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.pm-tab.active { background: var(--bg-4); color: var(--text-0); }
+
 /* Main area: left (chart+book+bottom) + right (trade panel) */
 .perps-main {
   display: flex;
@@ -2497,7 +2514,7 @@ body {
    ═══════════════════════════════════════════ */
 @media (max-width: 768px) {
   /* Page scrolls as one vertical stack (Hyperliquid mobile web style):
-     market header, chart, order book, trade form, positions */
+     market header, Chart|Order Book|Trades tabs, trade form, positions */
   .perps-page { overflow-y: auto; overflow-x: hidden; padding: 4px 8px 16px; }
   .perps-main { flex-direction: column; flex: none; overflow: visible; }
   /* flatten left column so the trade form can slot between book and positions */
@@ -2506,8 +2523,12 @@ body {
   .perps-trade-area { order: 1; }
   .perps-bottom { order: 2; }
   .market-header { flex-shrink: 0; }
-  .perps-chart-area { flex: none; height: 340px; }
-  .perps-book-area { display: block; width: 100%; height: 320px; flex: none; }
+  .perps-mobile-tabs { display: flex; flex-shrink: 0; gap: 4px; padding: 3px; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  .perps-chart-area { flex: none; height: 380px; }
+  .perps-book-area { display: block; width: 100%; height: 420px; flex: none; }
+  .pm-book .perps-chart-area, .pm-trades .perps-chart-area { display: none; }
+  .pm-chart .perps-book-area { display: none; }
+  .obp-tabs-external { display: none; }
   .perps-trade-area { width: 100%; flex: none; max-height: none; overflow: visible; }
   .perps-bottom { height: auto; max-height: none; min-height: 0; flex: none; overflow: visible; }
   .perps-bottom .positions-table { overflow-x: auto; }
