@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useHyperEvmBalance } from '../hooks/useHyperEvmBalance'
 
 const VALIDATORS = [
   { name: 'HyperBeat', apy: '4.8%', staked: '12.4M', commission: '5%', url: 'https://app.hyperbeat.org/staking' },
@@ -10,6 +11,7 @@ const VALIDATORS = [
 export function StakingPage() {
   const [amount, setAmount] = useState('')
   const [mode, setMode] = useState<'stake' | 'unstake'>('stake')
+  const walletBalance = useHyperEvmBalance(mode === 'stake' ? 'HYPE' : 'stHYPE')
 
   return (
     <div className="protocol-page">
@@ -71,7 +73,7 @@ export function StakingPage() {
           <div className="trade-input-group">
             <div className="tp-info-row" style={{ marginBottom: 4 }}>
               <span>Amount</span>
-              <span>Balance: 0.00 {mode === 'stake' ? 'HYPE' : 'stHYPE'}</span>
+              <span>Balance: {walletBalance}</span>
             </div>
             <div className="trade-input-wrapper">
               <input type="number" className="trade-input" placeholder="0.00" value={amount} onChange={e => setAmount(e.target.value)} step="any" />

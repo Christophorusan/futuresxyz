@@ -1,6 +1,7 @@
 import { http, createConfig } from 'wagmi'
 import { mainnet, arbitrum } from 'wagmi/chains'
 import { defineChain } from 'viem'
+import { alchemyTransport } from './alchemy'
 import { injected } from 'wagmi/connectors'
 
 export const hyperEVM = defineChain({
@@ -31,9 +32,9 @@ export const config = createConfig({
     injected(),
   ],
   transports: {
-    [arbitrum.id]: http(),
-    [mainnet.id]: http(),
-    [hyperEVM.id]: http(),
+    [arbitrum.id]: alchemyTransport('arb-mainnet', 'https://arb1.arbitrum.io/rpc'),
+    [mainnet.id]: alchemyTransport('eth-mainnet', 'https://ethereum-rpc.publicnode.com'),
+    [hyperEVM.id]: alchemyTransport('hyperliquid-mainnet', 'https://rpc.hyperliquid.xyz/evm'),
     [hyperliquidL1.id]: http('https://api.hyperliquid.xyz/evm'),
   },
 })
