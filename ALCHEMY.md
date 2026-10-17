@@ -100,7 +100,14 @@ against a local Anvil fork at 127.0.0.1:8545. Public latest-state RPC makes this
 functional smoke test, not an archival regression. No real mainnet payment was made.
 
 All application routes now load lazily. The main entry chunk fell from about
-951 kB to 320 kB uncompressed in the local production build; shared dependencies
+951 kB to 412 kB uncompressed in the local production build; shared dependencies
 and the selected route still load separately, so this is not a total-page byte
 or measured latency comparison. Removed placeholder social links and corrected
 the repository link.
+
+Compatible dependency security updates reduced npm audit findings from 16
+(including 10 high) to two moderate findings in the existing Hyperliquid SDK /
+Valibot dependency chain. The remaining fix requires a breaking SDK upgrade and
+is deferred from the payments release. A page error boundary lets stale tabs
+reload safely after a deployment. Public RPC remains active by user preference;
+no Alchemy service activation is claimed.

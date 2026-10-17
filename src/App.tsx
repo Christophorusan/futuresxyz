@@ -7,6 +7,7 @@ import { HyperliquidProvider } from './contexts/HyperliquidContext'
 import { MarketProvider } from './contexts/MarketContext'
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
 import { ToastProvider } from './contexts/ToastContext'
+import { PageErrorBoundary } from './components/shared/PageErrorBoundary'
 import { ConnectButton } from './components/shared/ConnectButton'
 const PerpsPage = lazy(() => import('./pages/PerpsPage').then(m => ({ default: m.PerpsPage })))
 const PortfolioPage = lazy(() => import('./pages/PortfolioPage').then(m => ({ default: m.PortfolioPage })))
@@ -122,7 +123,7 @@ function AppContent() {
           </div>
         </nav>
 
-        <Suspense fallback={<main className="lending-page" role="status">Loading…</main>}>
+        <PageErrorBoundary><Suspense fallback={<main className="lending-page" role="status">Loading…</main>}>
         <Routes>
           <Route path="/perps" element={<PerpsPage />} />
           <Route path="/spot" element={<SpotPage />} />
@@ -135,7 +136,7 @@ function AppContent() {
           <Route path="/docs" element={<DocsPage />} />
           <Route path="*" element={<Navigate to="/perps" replace />} />
         </Routes>
-        </Suspense>
+        </Suspense></PageErrorBoundary>
       </div>
     </BrowserRouter>
   )
