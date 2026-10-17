@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi'
 import { useQuery } from '@tanstack/react-query'
 import { formatUnits, type Address } from 'viem'
-import { protocols, type ProtocolId } from '../lib/lending/contracts'
+import { protocols } from '../lib/lending/contracts'
 import { readMarkets, rateToApy } from '../lib/lending/markets'
 import { LendingTrade } from '../components/shared/LendingTrade'
 import { SmartAccountTransfer } from '../components/shared/SmartAccountTransfer'
@@ -14,7 +14,7 @@ export function LendingPage() {
   const { address } = useAccount()
   const { data: signer } = useWalletClient()
   const client = usePublicClient({ chainId: 999 })!
-  const [protocol, setProtocol] = useState<ProtocolId>('hyperlend')
+  const protocol = 'hyperlend' as const
   const [selected, setSelected] = useState<Address>()
   const [smart, setSmart] = useState(false)
   const [smartAccount, setSmartAccount] = useState<{ owner: Address; address: Address }>()
@@ -38,11 +38,10 @@ export function LendingPage() {
     finally { setLoadingAccount(false) }
   }
   return <main className="lending-page">
-    <header className="lending-heading"><div><h1>Lend & borrow</h1><p>HyperEVM pooled markets · live onchain rates and positions</p></div>
+    <header className="lending-heading"><div><h1>Lending</h1><p>HyperEVM pooled markets · live onchain rates and positions</p></div>
       <a href={protocols[protocol].source} target="_blank" rel="noreferrer">Protocol documentation ↗</a>
     </header>
     <div className="lending-toolbar">
-      <div className="lending-actions">{(Object.keys(protocols) as ProtocolId[]).map(id => <button key={id} disabled={busy} className={id === protocol ? 'active' : ''} onClick={() => { setProtocol(id); setSelected(undefined) }}>{protocols[id].name}</button>)}</div>
       <div className="lending-actions"><button disabled={busy || loadingAccount} className={!smart ? 'active' : ''} onClick={() => setSmart(false)}>Connected wallet</button>
         <button disabled={busy || loadingAccount || !smartWalletsEnabled || !signer} className={smart ? 'active' : ''} onClick={enableSmartAccount}>{loadingAccount ? 'Loading…' : 'Alchemy smart account'}</button></div>
     </div>
@@ -68,6 +67,6 @@ export function LendingPage() {
     <HypeWrap key={`${account}-${smart}`} account={account} smart={smart} disabled={busy} onBusy={setBusy} />
     {address && currentSmartAccount && <SmartAccountTransfer key={`${address}-${currentSmartAccount}-${market?.asset}`} owner={address} smartAccount={currentSmartAccount} market={market} disabled={busy} onBusy={setBusy} />}
     <EvmActivity />
-    <section className="lending-card"><h3>Other lending products</h3><p>Felix CDPs and isolated markets use different contracts and risk models. Manage those positions in their protocol app.</p><a href="https://www.usefelix.xyz/portfolio" target="_blank" rel="noreferrer">Open Felix ↗</a></section>
+    <section className="lending-card"><h3>Felix</h3><p>Felix CDPs and isolated markets use different contracts and risk models. Manage those positions in their protocol app.</p><a href="https://www.usefelix.xyz/portfolio" target="_blank" rel="noreferrer">Open Felix ↗</a></section>
   </main>
 }

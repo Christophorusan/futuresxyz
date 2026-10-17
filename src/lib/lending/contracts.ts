@@ -7,12 +7,6 @@ export const protocols = {
     data: '0x5481bf8d3946e6a3168640c1d7523eb59f055a29',
     source: 'https://docs.hyperlend.finance/developer-documentation/contract-addresses',
   },
-  hypurrfi: {
-    name: 'HypurrFi', pool: '0xcecce0eb9dd2ef7996e01e25dd70e461f918a14b',
-    provider: '0xa73ff12d177d8f1ec938c3ba0e87d33524dd5594',
-    data: '0x895c799a5bbdcb63b80bee5bd94e7b9138d977d6',
-    source: 'https://docs.hypurrfi.com/developers/addresses',
-  },
 } as const satisfies Record<string, { name: string; pool: Address; provider: Address; data: Address; source: string }>
 export type ProtocolId = keyof typeof protocols
 export type LendingAction = 'supply' | 'withdraw' | 'borrow' | 'repay'

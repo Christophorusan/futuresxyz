@@ -9,7 +9,6 @@ export interface Protocol {
 
 export const PROTOCOLS: Protocol[] = [
   { name: 'HyperLend', category: 'lending', description: 'Aave V3 fork — largest lending market on HyperEVM', url: 'https://hyperlend.finance' },
-  { name: 'HypurrFi', category: 'lending', description: 'Aave V3 fork with competitive rates', url: 'https://hypurr.fi' },
   { name: 'Felix', category: 'lending', description: 'Morpho Blue fork — isolated lending markets', url: 'https://usefelix.xyz' },
   { name: 'Keiko Finance', category: 'lending', description: 'Lending and borrowing protocol', url: 'https://keiko.finance' },
   { name: 'Sentiment', category: 'lending', description: 'Under-collateralized lending', url: 'https://sentiment.xyz' },

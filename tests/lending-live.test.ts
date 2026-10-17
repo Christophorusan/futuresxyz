@@ -4,7 +4,7 @@ import { hyperEvm } from 'viem/chains'
 import { readMarkets, readPosition } from '../src/lib/lending/markets'
 const rpc = process.env.LIVE_RPC
 const client = createPublicClient({ chain: hyperEvm, transport: http(rpc || 'http://127.0.0.1:8545', { batch: true }) })
-for (const protocol of ['hyperlend', 'hypurrfi'] as const) {
+for (const protocol of ['hyperlend'] as const) {
   test.skipIf(!rpc)(`${protocol} deployed registry, reserves and account ABI`, async () => {
     const data = await readMarkets(client, protocol)
     expect(data.markets.length).toBeGreaterThan(0)
