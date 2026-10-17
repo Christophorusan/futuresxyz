@@ -1,12 +1,15 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const exchange = 'https://exchange.papertrade.xyz/trade'
+const markets = [{ id: 'btc', symbol: 'BTC', name: 'Bitcoin' }, { id: 'eth', symbol: 'ETH', name: 'Ethereum' }] as const
 const docs = 'https://docs.papertrade.xyz/'
 
 export function ThousandXPerpsPage() {
+  const [market, setMarket] = useState<(typeof markets)[number]>(markets[0])
+  const exchange = `https://exchange.papertrade.xyz/trade/${market.id}`
   return <main className="lending-page payments-page thousandx-page">
     <header className="payment-hero">
-      <div><span className="payment-eyebrow">POWERED BY PAPERTRADE</span><h1>1000x Perps</h1><p>Synthetic perpetuals on HyperEVM, in a dedicated trading venue.</p></div>
+      <div><span className="payment-eyebrow">PAPERTRADE EXCHANGE</span><h1>1000x Perps</h1><p>Synthetic perpetuals on HyperEVM, in a dedicated trading venue.</p></div>
       <span className="payment-network">HyperEVM · Chain 999</span>
     </header>
     <div className="payment-layout">
@@ -14,10 +17,12 @@ export function ThousandXPerpsPage() {
         <span className="thousandx-number" aria-hidden="true">1000<span>×</span></span>
         <h2>Trade with Papertrade</h2>
         <p>Open the official exchange to select a market, review leverage and manage your positions. Available leverage and execution depend on Papertrade’s current market limits.</p>
-        <a className="thousandx-primary" href={exchange} target="_blank" rel="noopener noreferrer">Launch Papertrade ↗</a>
-        <p className="thousandx-caption">Opens in a new tab. Connect your wallet in Papertrade to trade.</p>
+        <fieldset className="thousandx-markets"><legend>Choose your market</legend><div>{markets.map(item => <label key={item.id} className={market.id === item.id ? 'selected' : ''}><input type="radio" name="papertrade-market" value={item.id} checked={market.id === item.id} onChange={() => setMarket(item)} /><span><strong>{item.symbol}</strong><small>{item.name}</small></span></label>)}</div></fieldset>
+        <a className="thousandx-primary" href={exchange} target="_blank" rel="noopener noreferrer">Open {market.symbol} in Papertrade ↗</a>
+        <p className="thousandx-caption">exchange.papertrade.xyz · opens in a new tab. Connect your wallet there to trade.</p>
         <div className="thousandx-links">
           <a href="https://exchange.papertrade.xyz/portfolio?mode=pnl" target="_blank" rel="noopener noreferrer">Papertrade portfolio ↗</a>
+          <a href={`${exchange}?tab=status`} target="_blank" rel="noopener noreferrer">Market status ↗</a>
           <a href={docs} target="_blank" rel="noopener noreferrer">Protocol docs ↗</a>
         </div>
       </section>
