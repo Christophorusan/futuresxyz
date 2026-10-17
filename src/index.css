@@ -3829,3 +3829,14 @@ body {
 [data-theme="light"] .payments-page .payment-step b,
 [data-theme="light"] .payments-page .payment-request summary,
 [data-theme="light"] .payments-page a { color: #006452; }
+
+.thousandx-launch { display: flex; flex-direction: column; justify-content: center; padding: clamp(24px, 4vw, 48px); }
+.thousandx-number { font-size: clamp(72px, 9vw, 130px); font-weight: 750; letter-spacing: -.075em; line-height: 1; color: var(--text-1); margin: 12px 0 32px; }
+.thousandx-number span { color: #55cbb5; }
+.thousandx-page .thousandx-primary { display: block; padding: 17px 24px; margin-top: 22px; text-align: center; background: #55cbb5; color: #082b24; border-radius: 8px; font-weight: 700; text-decoration: none; }
+.thousandx-primary:hover { filter: brightness(1.08); }
+.thousandx-primary:focus-visible { outline: 2px solid var(--text-1); outline-offset: 4px; }
+.thousandx-caption { text-align: center; }
+.thousandx-links { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 18px; font-size: 13px; }
+[data-theme="light"] .thousandx-number span { color: #006452; }
+[data-theme="light"] .thousandx-page .thousandx-primary { color: #082b24; }
