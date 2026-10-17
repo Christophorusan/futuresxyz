@@ -48,13 +48,15 @@ function NavMore() {
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
     }
+    const closeOnEscape = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
     document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
+    document.addEventListener('keydown', closeOnEscape)
+    return () => { document.removeEventListener('mousedown', handler); document.removeEventListener('keydown', closeOnEscape) }
   }, [])
 
   return (
     <div ref={ref} style={{ position: 'relative' }}>
-      <button className={`nav-tab`} onClick={() => setOpen(o => !o)} style={{ cursor: 'pointer' }}>
+      <button className={`nav-tab`} aria-expanded={open} aria-label="More navigation" onClick={() => setOpen(o => !o)} style={{ cursor: 'pointer' }}>
         More
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginLeft: 4, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}><path d="M6 9l6 6 6-6"/></svg>
       </button>

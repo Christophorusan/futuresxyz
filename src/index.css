@@ -3840,3 +3840,23 @@ body {
 .thousandx-links { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 18px; font-size: 13px; }
 [data-theme="light"] .thousandx-number span { color: #006452; }
 [data-theme="light"] .thousandx-page .thousandx-primary { color: #082b24; }
+
+.thousandx-markets { border: 0; padding: 0; margin: 24px 0 0; min-width: 0; }
+.thousandx-markets legend { color: var(--text-2); font-size: 13px; margin-bottom: 10px; }
+.thousandx-markets > div { display: flex; gap: 12px; }
+.thousandx-markets label { display: flex; align-items: center; gap: 12px; flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 14px; cursor: pointer; }
+.thousandx-markets label.selected { border-color: #269b81; background: rgba(38,155,129,.1); }
+.thousandx-markets input { accent-color: #269b81; width: 18px; height: 18px; }
+.thousandx-markets input:focus-visible { outline: 2px solid var(--text-1); outline-offset: 3px; }
+.thousandx-markets strong, .thousandx-markets small { display: block; }
+.thousandx-markets small { color: var(--text-2); margin-top: 4px; font-size: 12px; }
+.nav { flex-shrink: 0; }
+@media (max-width: 1280px) {
+  .nav { display: grid; grid-template-columns: minmax(0,1fr) auto; grid-template-rows: 44px auto; height: auto; gap: 0 12px; padding: 0 12px; }
+  .nav-left { display: contents; }
+  .nav .logo { grid-column: 1; grid-row: 1; justify-self: start; }
+  .nav-right { grid-column: 2; grid-row: 1; justify-self: end; }
+  .nav-tabs { grid-column: 1 / -1; grid-row: 2; min-width: 0; max-width: 100%; overflow-x: auto; scrollbar-width: thin; }
+  .nav-tabs .nav-tab { white-space: nowrap; flex-shrink: 0; padding: 12px; }
+  .nav-more-dropdown { position: fixed; top: 88px; right: 12px; left: auto; }
+}
