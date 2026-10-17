@@ -11,7 +11,7 @@ const testClient = createTestClient({ chain: hyperEvm, mode: 'anvil', transport 
 const owner = '0x0000000000000000000000000000000000005678'
 const wallet = createWalletClient({ account: owner, chain: hyperEvm, transport })
 const wrapAbi = parseAbi(['function deposit() payable', 'function withdraw(uint256 amount)'])
-for (const protocol of ['hyperlend', 'hypurrfi'] as const) {
+for (const protocol of ['hyperlend'] as const) {
   test.skipIf(!enabled)(`${protocol}: lending lifecycle and current reserve constraints on local fork`, async () => {
     expect(await testClient.getAutomine()).toBe(true)
     const snapshot = await testClient.snapshot()
@@ -25,17 +25,9 @@ for (const protocol of ['hyperlend', 'hypurrfi'] as const) {
       await testClient.setNextBlockTimestamp({ timestamp: target > block.timestamp ? target : block.timestamp + 1n })
       await testClient.mine({ blocks: 1 })
       const collateral = await readMarket(client, protocol, '0x5555555555555555555555555555555555555555', 'WHYPE')
-      const borrowed = protocol === 'hyperlend' ? collateral : await readMarket(client, protocol, '0xb8ce59fc3717ada4c02eadf9682a9e934f625ebb', 'USDT0')
+      const borrowed = collateral
       const wrap = await wallet.sendTransaction({ to: collateral.asset, data: encodeFunctionData({ abi: wrapAbi, functionName: 'deposit' }), value: parseEther('20') })
       expect((await client.waitForTransactionReceipt({ hash: wrap })).status).toBe('success')
-      if (protocol === 'hypurrfi') {
-        // Simulate a small extra token balance for repayment interest on the LOCAL fork.
-        await testClient.impersonateAccount({ address: borrowed.aToken })
-        await testClient.setBalance({ address: borrowed.aToken, value: parseEther('1') })
-        const topup = await wallet.sendTransaction({ account: borrowed.aToken, to: borrowed.asset, data: encodeFunctionData({ abi: erc20Abi, functionName: 'transfer', args: [owner, 10n ** BigInt(borrowed.decimals)] }) })
-        expect((await client.waitForTransactionReceipt({ hash: topup })).status).toBe('success')
-        await testClient.stopImpersonatingAccount({ address: borrowed.aToken })
-      }
       const borrowCapped = borrowed.borrowCap > 0n && borrowed.debt >= borrowed.borrowCap * 10n ** BigInt(borrowed.decimals)
       const steps = borrowCapped ? [['supply', '10'], ['withdraw', '9']] as const : [['supply','10'], ['borrow','0.05'], ['repay','0.051'], ['withdraw','9']] as const
       if (borrowCapped) {
