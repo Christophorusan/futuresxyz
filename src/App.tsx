@@ -9,6 +9,7 @@ import { ThemeProvider, useTheme } from './contexts/ThemeContext'
 import { ToastProvider } from './contexts/ToastContext'
 import { PageErrorBoundary } from './components/shared/PageErrorBoundary'
 import { ConnectButton } from './components/shared/ConnectButton'
+const ThousandXPerpsPage = lazy(() => import('./pages/ThousandXPerpsPage').then(m => ({ default: m.ThousandXPerpsPage })))
 const PerpsPage = lazy(() => import('./pages/PerpsPage').then(m => ({ default: m.PerpsPage })))
 const PortfolioPage = lazy(() => import('./pages/PortfolioPage').then(m => ({ default: m.PortfolioPage })))
 const SpotPage = lazy(() => import('./pages/SpotPage').then(m => ({ default: m.SpotPage })))
@@ -94,6 +95,7 @@ function AppContent() {
               <NavLink to="/perps" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
                 Perps
               </NavLink>
+              <NavLink to="/1000x-perps" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>1000x Perps</NavLink>
               <NavLink to="/spot" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
                 Swap
               </NavLink>
@@ -126,6 +128,7 @@ function AppContent() {
         <PageErrorBoundary><Suspense fallback={<main className="lending-page" role="status">Loading…</main>}>
         <Routes>
           <Route path="/perps" element={<PerpsPage />} />
+          <Route path="/1000x-perps" element={<ThousandXPerpsPage />} />
           <Route path="/spot" element={<SpotPage />} />
           <Route path="/predictions" element={<PredictionsPage />} />
           <Route path="/payments" element={<PaymentsPage />} />
