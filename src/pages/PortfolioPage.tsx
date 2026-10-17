@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useAccount } from 'wagmi'
+import { useEvmBalances } from '../hooks/useEvmBalances'
+import { EvmActivity } from '../components/shared/EvmActivity'
 import { useUserState } from '../hooks/useUserState'
 import { useAccountData } from '../hooks/useAccountData'
 import { useMarket } from '../contexts/MarketContext'
@@ -121,6 +123,7 @@ function EquityChart({ balance, fills, theme }: {
 
 export function PortfolioPage() {
   const { isConnected } = useAccount()
+  const evm = useEvmBalances()
   const { state } = useUserState()
   const { spotBalances, fills } = useAccountData()
   const { setSelectedMarket } = useMarket()
@@ -226,6 +229,15 @@ export function PortfolioPage() {
         </div>
       </div>
 
+      <section className="portfolio-section-card">
+        <h3 className="portfolio-section-title">HyperEVM wallet balances</h3>
+        <p>Native HYPE and supported tokens in your connected wallet, separate from HyperCore trading balances.</p>
+        {evm.isLoading && <p>Loading balances…</p>}
+        {evm.isError && <p role="alert">Some token balances could not be loaded.</p>}
+        {evm.balances.map(b => <div className="portfolio-row" key={b.symbol}><span>{b.symbol}</span><span>{b.balance}</span></div>)}
+        {!evm.isLoading && !evm.isError && !evm.balances.length && <p>No supported token balances.</p>}
+      </section>
+      <EvmActivity />
       {/* Recent Trades */}
       <div className="portfolio-section-card">
         <h3 className="portfolio-section-title">Recent Trades</h3>
