@@ -3824,3 +3824,8 @@ body {
 .payments-page .evm-address { overflow-wrap: anywhere; }
 .evm-activity-row { overflow-wrap: anywhere; }
 @media (max-width: 800px) { .payment-layout { grid-template-columns: 1fr; } .payments-page { padding: 16px; } .payment-main { padding: 18px; } .payment-hero { align-items: flex-start; flex-direction: column; } }
+[data-theme="light"] .payments-page .payment-eyebrow,
+[data-theme="light"] .payments-page .payment-network,
+[data-theme="light"] .payments-page .payment-step b,
+[data-theme="light"] .payments-page .payment-request summary,
+[data-theme="light"] .payments-page a { color: #006452; }
