@@ -8,7 +8,7 @@ import { LendingTrade } from '../components/shared/LendingTrade'
 import { SmartAccountTransfer } from '../components/shared/SmartAccountTransfer'
 import { HypeWrap } from '../components/shared/HypeWrap'
 import { EvmActivity } from '../components/shared/EvmActivity'
-import { alchemyApiKey, gasPolicyId } from '../config/alchemy'
+import { gasPolicyId, smartWalletsEnabled } from '../config/alchemy'
 
 export function LendingPage() {
   const { address } = useAccount()
@@ -44,7 +44,7 @@ export function LendingPage() {
     <div className="lending-toolbar">
       <div className="lending-actions">{(Object.keys(protocols) as ProtocolId[]).map(id => <button key={id} disabled={busy} className={id === protocol ? 'active' : ''} onClick={() => { setProtocol(id); setSelected(undefined) }}>{protocols[id].name}</button>)}</div>
       <div className="lending-actions"><button disabled={busy || loadingAccount} className={!smart ? 'active' : ''} onClick={() => setSmart(false)}>Connected wallet</button>
-        <button disabled={busy || loadingAccount || !alchemyApiKey || !signer} className={smart ? 'active' : ''} onClick={enableSmartAccount}>{loadingAccount ? 'Loading…' : 'Alchemy smart account'}</button></div>
+        <button disabled={busy || loadingAccount || !smartWalletsEnabled || !signer} className={smart ? 'active' : ''} onClick={enableSmartAccount}>{loadingAccount ? 'Loading…' : 'Alchemy smart account'}</button></div>
     </div>
     {smart && <div className="lending-notice"><strong>Separate smart account</strong><p className="evm-address">{currentSmartAccount || 'Reconnect the owner wallet to continue.'}</p><p>Only assets at this address can be supplied or repaid. Your connected wallet’s existing deposits and debts remain there. Fund this address on HyperEVM before use. {gasPolicyId ? 'Eligible transaction gas is sponsored.' : 'Gas sponsorship is not configured.'}</p></div>}
     {error && <p role="alert">{error}</p>}

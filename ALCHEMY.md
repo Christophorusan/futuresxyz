@@ -55,3 +55,59 @@ A receipt confirms execution, not future lending safety. Rates, collateral price
 - https://www.alchemy.com/docs/wallets/recipes/hyperliquid-wallets
 - https://www.alchemy.com/docs/wallets/third-party/signers/custom-integration
 - https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/hyperevm/json-rpc
+
+## Payments (October 2026)
+
+`/payments` provides reviewed HyperEVM transfers for HYPE, WHYPE, USDC, USDT0,
+and USDH. Token decimals and balances are read onchain; direct payments use
+`transfer`, never `approve`. Native payments reserve an estimated network fee.
+Both review and confirmation perform fresh preflight checks. The wallet shows
+final gas. QR codes encode either the receiving address or a Futuresxyz request
+link; requests use URL fragments and cannot automatically submit transactions.
+Request amounts, recipient addresses and chain 999 are validated. Incoming
+history is linked to HyperEVM Scan; local activity is explicitly browser-local,
+not presented as a complete transaction index. No card, fiat, or Elios backend
+integration is implied.
+
+Alchemy RPC fallback, smart-account request/prepare/send/status APIs and optional
+gas policies are wired into payments. `ALCHEMY_SMART_WALLETS_ENABLED=true` must be
+set as a repository variable (Vite equivalent in `.env.example`) only after a
+successful signer and smart-account integration test. The official overview says
+external browser wallets are not supported, while its custom-signer guide shows
+a browser WalletClient with non-7702 support. Because these sources conflict,
+production activation requires verification, not just an API key. HyperEVM uses
+separate sma-b accounts; deposits and debts in an existing wallet do not migrate.
+
+- https://www.alchemy.com/docs/wallets/authentication/overview
+- https://www.alchemy.com/docs/wallets/third-party/signers/custom-integration
+- https://www.alchemy.com/docs/wallets/recipes/hyperliquid-wallets
+- https://www.eliospay.com/ (product reference, no integration API used)
+
+Configure `ALCHEMY_BROWSER_API_KEY` in GitHub Actions secrets, enable HyperEVM in
+that Alchemy app, restrict allowed origins, and verify `eth_chainId` returns
+`0x3e7`. An `arb-mainnet.g.alchemy.com` endpoint targets Arbitrum and cannot be used
+as the HyperEVM RPC. Do not paste management credentials into frontend code.
+Gas sponsorship additionally needs `ALCHEMY_GAS_POLICY_ID` and bounded policy
+spending/target rules. Paid services and live sponsored transfers have not been
+activated or tested by these changes.
+
+Payment validation: seven unit tests cover request roundtrips, wrong networks,
+unsupported assets, invalid precision, token call encoding, insufficient balances,
+self/token-contract recipients, gas reserves and false-returning ERC20s. An opt-in
+loopback fork test executes native and WHYPE payments and checks recipient balance
+changes with simulated funds. Run `FORK_TEST=1 npx vitest run tests/payments-fork.test.ts`
+against a local Anvil fork at 127.0.0.1:8545. Public latest-state RPC makes this a
+functional smoke test, not an archival regression. No real mainnet payment was made.
+
+All application routes now load lazily. The main entry chunk fell from about
+951 kB to 412 kB uncompressed in the local production build; shared dependencies
+and the selected route still load separately, so this is not a total-page byte
+or measured latency comparison. Removed placeholder social links and corrected
+the repository link.
+
+Compatible dependency security updates reduced npm audit findings from 16
+(including 10 high) to two moderate findings in the existing Hyperliquid SDK /
+Valibot dependency chain. The remaining fix requires a breaking SDK upgrade and
+is deferred from the payments release. A page error boundary lets stale tabs
+reload safely after a deployment. Public RPC remains active by user preference;
+no Alchemy service activation is claimed.
