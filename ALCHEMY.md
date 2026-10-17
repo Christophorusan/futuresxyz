@@ -6,6 +6,7 @@
 - Supply, withdraw, variable-rate borrow and repay run in-app with explicit transaction review and wallet confirmation. Exact token approvals, zero-reset when required, reserve/cap/balance/liquidity checks, fresh preflight reads, contract simulation, chain/account checks and receipt verification are included.
 - Optional Alchemy smart accounts batch approval and action. The same owner is used to resolve the separate non-7702 smart account. All positions and balances use the selected account address. Existing wallet debt is never silently migrated.
 - Smart-wallet prepareCalls performs preflight before review; sendCalls prepares again before signing/submission. Gas Manager sponsorship is used only when a policy is configured. Failed/uncertain operations are not automatically resubmitted.
+- Reviewed transfers into the smart account and back to its owner for native HYPE and selected reserve tokens. Existing loans/collateral are not transferred.
 - HYPE/WHYPE wrapping in either account mode, with user review. This is conversion, not staking.
 - HyperEVM balances in Portfolio and lending, native gas balance, live ERC-20 decimals, and persistent local transaction history with status recovery and replacement handling.
 - Alchemy HTTP RPC batching and public fallback for HyperEVM, Ethereum and Arbitrum. SDK is lazy-loaded. HyperCore trading retains its native APIs.

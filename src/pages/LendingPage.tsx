@@ -5,6 +5,7 @@ import { formatUnits, type Address } from 'viem'
 import { protocols, type ProtocolId } from '../lib/lending/contracts'
 import { readMarkets, rateToApy } from '../lib/lending/markets'
 import { LendingTrade } from '../components/shared/LendingTrade'
+import { SmartAccountTransfer } from '../components/shared/SmartAccountTransfer'
 import { HypeWrap } from '../components/shared/HypeWrap'
 import { EvmActivity } from '../components/shared/EvmActivity'
 import { alchemyApiKey, gasPolicyId } from '../config/alchemy'
@@ -65,6 +66,7 @@ export function LendingPage() {
       {market && <LendingTrade key={`${market.protocol}-${market.asset}-${account}-${smart}`} market={market} account={account} smart={smart} disabled={busy} onBusy={setBusy} />}
     </div>
     <HypeWrap key={`${account}-${smart}`} account={account} smart={smart} disabled={busy} onBusy={setBusy} />
+    {address && currentSmartAccount && <SmartAccountTransfer key={`${address}-${currentSmartAccount}-${market?.asset}`} owner={address} smartAccount={currentSmartAccount} market={market} disabled={busy} onBusy={setBusy} />}
     <EvmActivity />
     <section className="lending-card"><h3>Other lending products</h3><p>Felix CDPs and isolated markets use different contracts and risk models. Manage those positions in their protocol app.</p><a href="https://www.usefelix.xyz/portfolio" target="_blank" rel="noreferrer">Open Felix ↗</a></section>
   </main>
