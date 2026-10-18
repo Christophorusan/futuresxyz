@@ -110,3 +110,13 @@ Valibot dependency chain. The remaining fix requires a breaking SDK upgrade and
 is deferred from the payments release. A page error boundary lets stale tabs
 reload safely after a deployment. Public RPC remains active by user preference;
 no Alchemy service activation is claimed.
+
+## Expanded data integration (October 18)
+
+- Wallet and Payments now include Alchemy indexed received/sent transfer history when a browser key is configured. Pagination is scoped to account and direction; the payments view follows the selected account. Covers native external and ERC-20 transfers, not internal transfers, NFTs or HyperCore. Amounts are approximate API values, token names are unverified, and provider errors show an explorer fallback rather than an empty history. This API still requires live verification for the configured app/network.
+- Alchemy WebSocket new-block subscriptions refresh supported wallet balances at most once per five seconds while the page is visible. The existing 15-second HTTP polling remains as recovery. This is not a claim of full pending-transaction or transfer notifications.
+- Wallet includes an explicit read-only Alchemy connection check. Configured does not mean healthy; the check verifies chain 999 and a readable block number, not signing or gas-policy eligibility.
+- Deployments check configured Alchemy RPC chain identity before publishing. No key skips the check and preserves public RPC. Errors redact endpoint credentials. Run locally with `ALCHEMY_BROWSER_API_KEY` in the environment: `node scripts/check-alchemy.mjs`.
+- No new authority to sign, autonomous trading, session keys or unbounded sponsorship has been introduced. Webhooks need a deployed server and signature verification; this GitHub Pages app cannot receive them. Token discovery and pricing require separate verified network/API support and are not implied by the supported-asset balance view.
+
+Sources: https://www.alchemy.com/rpc/hyperliquid and https://www.alchemy.com/docs/data/transfers-api/transfers-endpoints/alchemy-get-asset-transfers

@@ -1,3 +1,5 @@
+import { useCallback } from 'react'
+import { useAlchemyBalanceUpdates } from './useAlchemyBalanceUpdates'
 import { useAccount, useBalance, useReadContracts } from 'wagmi'
 import { erc20Abi, formatUnits } from 'viem'
 import { hyperEVM } from '../config/wagmi'
@@ -15,8 +17,11 @@ export function useEvmBalances() {
     { address: token.address, abi: erc20Abi, functionName: 'balanceOf' as const, args: [address!] as const, chainId: hyperEVM.id },
     { address: token.address, abi: erc20Abi, functionName: 'decimals' as const, chainId: hyperEVM.id },
   ])
-  const { data, isLoading, isError } = useReadContracts({ contracts: address ? contracts : [],
+  const { data, isLoading, isError, refetch } = useReadContracts({ contracts: address ? contracts : [],
     query: { enabled: isConnected && !!address, refetchInterval: 15000 } })
+  const nativeRefetch = native.refetch
+  const refresh = useCallback(() => { void nativeRefetch(); void refetch() }, [nativeRefetch, refetch])
+  useAlchemyBalanceUpdates(isConnected && !!address, refresh)
   const balances: EvmBalance[] = []
   if (native.data) balances.push({ symbol: 'HYPE', balance: formatUnits(native.data.value, native.data.decimals), raw: native.data.value })
   TOKENS.forEach((token, i) => {
