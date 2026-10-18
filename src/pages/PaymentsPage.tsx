@@ -1,3 +1,4 @@
+import { AlchemyHistory } from '../components/shared/AlchemyHistory'
 import { useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAccount, usePublicClient, useSwitchChain } from 'wagmi'
@@ -130,7 +131,7 @@ function PaymentWorkspace({ hash, receive }: { hash: string; receive: boolean })
       <section className="lending-card"><h2>Simple by design</h2><div className="payment-step"><b>01</b><div><h3>Choose your asset</h3><p>USDC, USDT0, USDH, HYPE or WHYPE.</p></div></div><div className="payment-step"><b>02</b><div><h3>Review every detail</h3><p>Full addresses, network and estimated fee before your wallet signs.</p></div></div><div className="payment-step"><b>03</b><div><h3>Follow the confirmation</h3><p>Track payments made here and reopen their explorer receipts.</p></div></div></section>
       <section className="lending-card"><h3>Put your assets to work</h3><p>Explore live lending markets. Deposits carry protocol and liquidation risks.</p><Link to="/lending">Explore lending →</Link></section>
       <section className="lending-card"><h3>Connection status</h3><p>{alchemyApiKey ? 'Alchemy RPC configured with public fallback.' : 'Public HyperEVM RPC active. Alchemy setup pending.'}</p><p>{gasPolicyId ? 'Gas sponsorship policy configured; eligibility is checked per operation.' : 'Gas sponsorship is not enabled.'}</p><p>Smart-wallet compatibility is pending live verification. Standard wallet payments work independently.</p></section>
-    </aside></div><EvmActivity />
+    </aside></div><EvmActivity /><AlchemyHistory address={account} />
     <p>Activity covers transactions initiated in this browser. For all incoming and outgoing transfers, {account ? <a href={`https://hyperevmscan.io/address/${account}`} target="_blank" rel="noreferrer">open your account on HyperEVM Scan ↗</a> : 'connect your wallet and open its explorer history'}.</p>
   </main>
 }

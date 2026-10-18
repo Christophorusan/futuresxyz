@@ -1,3 +1,5 @@
+import { AlchemyConnection } from '../components/shared/AlchemyConnection'
+import { AlchemyHistory } from '../components/shared/AlchemyHistory'
 import { Link } from 'react-router-dom'
 import { useAccount } from 'wagmi'
 import { useEvmBalances } from '../hooks/useEvmBalances'
@@ -25,6 +27,6 @@ export function WalletPage() {
     </section><aside>
       <section className="lending-card"><h2>Explore</h2><div className="wallet-explore"><Link to="/perps"><strong>Perps</strong><span>Hyperliquid trading →</span></Link><Link to="/1000x-perps"><strong>1000x Perps</strong><span>Open Papertrade markets →</span></Link><Link to="/portfolio"><strong>Portfolio</strong><span>HyperCore account overview →</span></Link></div><p>HyperEVM wallet balances, lending positions and HyperCore trading balances are separate.</p></section>
       <section className="lending-card"><h3>Keep Futuresxyz on your home screen</h3><details><summary>Install on your phone</summary><p>On iPhone, open this site in Safari, tap Share, then Add to Home Screen. On Android, open your browser menu and choose Install app or Add to Home screen when available.</p><p>Internet access is required for balances and transactions. In a standalone browser, mobile wallet pairing requires WalletConnect; you can also open this site in your wallet app’s built-in browser.</p></details></section>
-    </aside></div><EvmActivity />
+    </aside></div><AlchemyConnection /><EvmActivity /><AlchemyHistory address={address} />
   </main>
 }

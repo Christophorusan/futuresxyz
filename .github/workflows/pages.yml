@@ -20,6 +20,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - name: Verify configured Alchemy network
+        if: github.event_name != 'pull_request'
+        run: node scripts/check-alchemy.mjs
+        env:
+          ALCHEMY_BROWSER_API_KEY: ${{ secrets.ALCHEMY_BROWSER_API_KEY }}
       - run: npm run build
         env:
           VITE_WALLETCONNECT_PROJECT_ID: ${{ vars.WALLETCONNECT_PROJECT_ID }}
