@@ -22,6 +22,7 @@ jobs:
       - run: npm test
       - run: npm run build
         env:
+          VITE_WALLETCONNECT_PROJECT_ID: ${{ vars.WALLETCONNECT_PROJECT_ID }}
           VITE_ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_BROWSER_API_KEY }}
           VITE_ALCHEMY_SMART_WALLETS_ENABLED: ${{ vars.ALCHEMY_SMART_WALLETS_ENABLED }}
           VITE_ALCHEMY_GAS_POLICY_ID: ${{ vars.ALCHEMY_GAS_POLICY_ID }}

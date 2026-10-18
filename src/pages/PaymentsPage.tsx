@@ -14,9 +14,9 @@ import { EvmActivity } from '../components/shared/EvmActivity'
 
 export function PaymentsPage() {
   const location = useLocation()
-  return <PaymentWorkspace key={location.hash} hash={location.hash} />
+  return <PaymentWorkspace key={`${location.hash}-${location.search}`} hash={location.hash} receive={new URLSearchParams(location.search).get('mode') === 'receive'} />
 }
-function PaymentWorkspace({ hash }: { hash: string }) {
+function PaymentWorkspace({ hash, receive }: { hash: string; receive: boolean }) {
   const [request] = useState(() => { try { return { data: parsePaymentRequest(hash), error: '' } } catch (e) { return { data: undefined, error: (e as Error).message } } })
   const { address } = useAccount()
   const client = usePublicClient({ chainId: 999 })!
@@ -26,7 +26,7 @@ function PaymentWorkspace({ hash }: { hash: string }) {
   const [recipient, setRecipient] = useState(request.data?.to || '')
   const [amount, setAmount] = useState(request.data?.amount || '')
   const [requestAmount, setRequestAmount] = useState('')
-  const [tab, setTab] = useState<'send' | 'receive'>('send')
+  const [tab, setTab] = useState<'send' | 'receive'>(receive ? 'receive' : 'send')
   const [smart, setSmart] = useState<{ owner: Address; address: Address }>()
   const account = smart && smart.owner === address ? smart.address : address
   const isSmart = !!smart && smart.owner === address

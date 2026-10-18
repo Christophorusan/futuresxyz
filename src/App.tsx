@@ -10,6 +10,7 @@ import { ToastProvider } from './contexts/ToastContext'
 import { PageErrorBoundary } from './components/shared/PageErrorBoundary'
 import { ConnectButton } from './components/shared/ConnectButton'
 const ThousandXPerpsPage = lazy(() => import('./pages/ThousandXPerpsPage').then(m => ({ default: m.ThousandXPerpsPage })))
+const WalletPage = lazy(() => import('./pages/WalletPage').then(m => ({ default: m.WalletPage })))
 const PerpsPage = lazy(() => import('./pages/PerpsPage').then(m => ({ default: m.PerpsPage })))
 const PortfolioPage = lazy(() => import('./pages/PortfolioPage').then(m => ({ default: m.PortfolioPage })))
 const SpotPage = lazy(() => import('./pages/SpotPage').then(m => ({ default: m.SpotPage })))
@@ -114,6 +115,7 @@ function AppContent() {
                 Staking
               </NavLink>
               <NavLink to="/payments" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>Payments</NavLink>
+              <NavLink to="/wallet" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>Wallet</NavLink>
               <NavLink to="/portfolio" className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>
                 Portfolio
               </NavLink>
@@ -133,6 +135,7 @@ function AppContent() {
           <Route path="/1000x-perps" element={<ThousandXPerpsPage />} />
           <Route path="/spot" element={<SpotPage />} />
           <Route path="/predictions" element={<PredictionsPage />} />
+          <Route path="/wallet" element={<WalletPage />} />
           <Route path="/payments" element={<PaymentsPage />} />
           <Route path="/lending" element={<LendingPage />} />
           <Route path="/options" element={<OptionsPage />} />
@@ -142,6 +145,9 @@ function AppContent() {
           <Route path="*" element={<Navigate to="/perps" replace />} />
         </Routes>
         </Suspense></PageErrorBoundary>
+        <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
+          {[['/wallet', 'Wallet', '◈'], ['/payments', 'Pay', '↗'], ['/perps', 'Trade', '≋'], ['/lending', 'Lend', '＋'], ['/1000x-perps', '1000x', '×']].map(([to, label, icon]) => <NavLink key={to} to={to} className={({ isActive }) => isActive ? 'active' : ''}><span aria-hidden="true">{icon}</span>{label}</NavLink>)}
+        </nav>
       </div>
     </BrowserRouter>
   )

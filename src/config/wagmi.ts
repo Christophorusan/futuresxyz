@@ -2,7 +2,7 @@ import { http, createConfig } from 'wagmi'
 import { mainnet, arbitrum } from 'wagmi/chains'
 import { defineChain } from 'viem'
 import { alchemyTransport } from './alchemy'
-import { injected } from 'wagmi/connectors'
+import { injected, walletConnect } from 'wagmi/connectors'
 
 export const hyperEVM = defineChain({
   id: 999,
@@ -26,10 +26,16 @@ export const hyperliquidL1 = defineChain({
   },
 })
 
+export const walletConnectProjectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID?.trim() || ''
+const appUrl = new URL(import.meta.env.BASE_URL, typeof window === 'undefined' ? 'https://christophorusan.github.io' : window.location.origin).href
+
 export const config = createConfig({
   chains: [arbitrum, mainnet, hyperEVM, hyperliquidL1],
   connectors: [
     injected(),
+    ...(walletConnectProjectId ? [walletConnect({ projectId: walletConnectProjectId, showQrModal: true,
+      metadata: { name: 'Futuresxyz', description: 'HyperEVM payments, lending and trading', url: appUrl, icons: [new URL('logo.svg', appUrl).href] },
+    })] : []),
   ],
   transports: {
     [arbitrum.id]: alchemyTransport('arb-mainnet', 'https://arb1.arbitrum.io/rpc'),
