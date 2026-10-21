@@ -69,3 +69,19 @@
 .wallet-star-button[aria-pressed=true]{color:#bd8c21}
 .wallet-price-up{color:#23956c}.wallet-price-down{color:#d35e69}
 @media(max-width:800px){.wallet-overview-top{flex-direction:column;gap:18px}.wallet-portfolio-home .wallet-quick-actions{min-width:0;width:100%}.wallet-total{font-size:38px}.wallet-holdings,.wallet-watchlist{padding:20px 16px!important}.wallet-watchlist .wallet-assets-heading{align-items:stretch;flex-direction:column}.wallet-watch-search input{width:100%}.wallet-history-empty{min-height:180px}.wallet-portfolio-table{min-width:540px}.wallet-watchlist .wallet-portfolio-table{min-width:380px}}
+
+.wallet-payment-dialog{width:min(460px,calc(100vw - 24px));padding:24px}
+.wallet-payment-dialog header small{display:block;margin-top:5px;color:var(--text-3);font-size:11px}
+.wallet-payment-dialog .payment-compact{padding:0;overflow:visible}
+.wallet-payment-dialog .payment-main{padding:0;border:0;background:transparent}
+.wallet-payment-dialog .payment-advanced{margin:16px 0;font-size:11px;color:var(--text-3)}
+.wallet-payment-dialog .payment-account{flex-wrap:wrap;margin-top:12px}
+.wallet-payment-dialog .payment-tabs{margin-bottom:18px}
+.wallet-payment-dialog .payment-tabs button{padding:8px;font-size:12px}
+.wallet-payment-dialog .payment-label input,.wallet-payment-dialog .payment-label select{width:100%;min-height:44px;font-size:16px}
+.wallet-payment-dialog .payment-primary{width:100%;background:#326fe0;color:#fff;border:0;margin-top:14px}
+.wallet-payment-dialog .payment-qr{display:flex;justify-content:center;margin:18px 0}
+.wallet-payment-dialog .payment-receive{text-align:center}
+.wallet-payment-dialog{background:#142039;box-shadow:0 28px 100px #0005}
+[data-theme="light"] .wallet-payment-dialog{background:#f2f7ff;color:#1c2d46}
+[data-theme="light"] .wallet-payment-dialog input,[data-theme="light"] .wallet-payment-dialog select{background:#fff;color:#1c2d46;border-color:#cad9ed}

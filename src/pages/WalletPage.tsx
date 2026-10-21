@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import { useFavorites } from '../hooks/useFavorites'
 import { useMarketMeta } from '../hooks/useMarketMeta'
 import { useWalletPrices } from '../hooks/useWalletPrices'
@@ -8,15 +8,27 @@ import './WalletPage.css'
 import { TokenIcon } from '../components/TokenIcon'
 import { AlchemyConnection } from '../components/shared/AlchemyConnection'
 import { AlchemyHistory } from '../components/shared/AlchemyHistory'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAccount } from 'wagmi'
 import { useEvmBalances } from '../hooks/useEvmBalances'
 import { ConnectButton } from '../components/shared/ConnectButton'
 import { EvmActivity } from '../components/shared/EvmActivity'
 
+const PaymentForm = lazy(() => import('../components/PaymentForm').then(m => ({ default: m.PaymentForm })))
+
 const walletAssets = [{symbol:'HYPE',name:'Hyperliquid',type:'Native asset'}, {symbol:'USDC',name:'USD Coin',type:'Stablecoin'}, {symbol:'USDT0',name:'USDT0',type:'Stablecoin'}, {symbol:'USDH',name:'USDH',type:'Stablecoin'}, {symbol:'WHYPE',name:'Wrapped HYPE',type:'Wrapped'}]
 
 export function WalletPage() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const action = new URLSearchParams(location.search).get('action')
+  const paymentMode = location.hash.includes('chain=') ? 'send' : action === 'send' || action === 'receive' ? action : null
+  useEffect(() => {
+    if (paymentMode && !dialogRef.current?.open) dialogRef.current?.showModal()
+    else if (!paymentMode && dialogRef.current?.open) dialogRef.current.close()
+  }, [paymentMode])
+  const closePayment = () => navigate('/wallet', { replace: true })
   const { address, isConnected } = useAccount()
   const { balances, isLoading, isError } = useEvmBalances()
   const { data: prices = {}, isError: priceError } = useWalletPrices()
@@ -33,7 +45,7 @@ export function WalletPage() {
     <header className="payment-hero"><div><span className="payment-eyebrow">YOUR OSLO</span><h1>Portfolio</h1></div><span className="payment-network">HyperEVM wallet</span></header>
     <section className="lending-card wallet-summary">
       <div className="wallet-overview-top"><div><span className="wallet-total-label">Estimated portfolio value</span><strong className="wallet-total">{total === null ? '—' : money(total)} <small>USDC</small></strong><p>{!isConnected ? 'Connect your wallet to get started.' : isLoading ? 'Loading your holdings…' : incomplete ? 'Some balances or prices are unavailable.' : `${holdings.length} assets in your wallet`}</p></div>
-      <div className="wallet-quick-actions"><Link to="/payments"><span aria-hidden="true">↗</span>Send</Link><Link to="/payments?mode=receive"><span aria-hidden="true">↙</span>Receive</Link><Link to="/spot"><span aria-hidden="true">⇄</span>Swap</Link><Link to="/lending"><span aria-hidden="true">＋</span>Lend</Link></div></div>
+      <div className="wallet-quick-actions"><Link to="/wallet?action=send"><span aria-hidden="true">↗</span>Send</Link><Link to="/wallet?action=receive"><span aria-hidden="true">↙</span>Receive</Link><Link to="/spot"><span aria-hidden="true">⇄</span>Swap</Link><Link to="/lending"><span aria-hidden="true">＋</span>Lend</Link></div></div>
       {!isConnected && <ConnectButton />}
       <WalletHistory address={address} value={total} />
     </section>
@@ -48,5 +60,9 @@ export function WalletPage() {
       <p className="wallet-assets-note">Hyperliquid perpetual market prices. Stars sync with your trading watchlist in this browser.</p>
     </section>
     <details className="wallet-details"><summary>Activity and connection details</summary><AlchemyConnection /><EvmActivity /><AlchemyHistory address={address} /></details>
+    <dialog ref={dialogRef} className="wallet-dialog wallet-payment-dialog" aria-labelledby="wallet-payment-title" onCancel={closePayment} onClose={() => { if (paymentMode) closePayment() }}>
+      <header><div><h2 id="wallet-payment-title">{paymentMode === 'receive' ? 'Receive' : 'Send'}</h2><small>HyperEVM</small></div><button className="wallet-close" aria-label="Close" onClick={closePayment}>×</button></header>
+      {paymentMode && <Suspense fallback={<p role="status">Loading…</p>}><PaymentForm key={`${paymentMode}-${location.hash}`} hash={location.hash} receive={paymentMode === 'receive'} /></Suspense>}
+    </dialog>
   </main>
 }

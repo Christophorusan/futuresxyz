@@ -49,7 +49,7 @@ export function ConnectButton() {
       {isConnected && address ? <>
         <p>{activeConnector?.name} · {chain?.name || 'Unsupported network'}</p>
         <p className="wallet-full-address">{address}</p>
-        <div className="wallet-dialog-actions"><button onClick={() => copy(address)}>Copy address</button><Link to="/payments" onClick={() => setOpen(false)}>Send / receive</Link><Link to="/wallet" onClick={() => setOpen(false)}>Wallet overview</Link></div>
+        <div className="wallet-dialog-actions"><button onClick={() => copy(address)}>Copy address</button><Link to="/wallet?action=send" onClick={() => setOpen(false)}>Send / receive</Link><Link to="/wallet" onClick={() => setOpen(false)}>Wallet overview</Link></div>
         <button className="wallet-disconnect" onClick={() => { disconnect(); setOpen(false) }}>Disconnect wallet</button>
       </> : <>
         <p>Choose a wallet available on this device. Your wallet approves connections and signs transactions.</p>

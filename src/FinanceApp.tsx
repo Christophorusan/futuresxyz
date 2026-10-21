@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, lazy, Suspense } from 'react'
-import { Routes, Route, NavLink, Navigate } from 'react-router-dom'
+import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom'
 import { WagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { config } from './config/wagmi'
@@ -16,7 +16,6 @@ const PortfolioPage = lazy(() => import('./pages/PortfolioPage').then(m => ({ de
 const SpotPage = lazy(() => import('./pages/SpotPage').then(m => ({ default: m.SpotPage })))
 const DocsPage = lazy(() => import('./pages/DocsPage').then(m => ({ default: m.DocsPage })))
 const PredictionsPage = lazy(() => import('./pages/PredictionsPage').then(m => ({ default: m.PredictionsPage })))
-const PaymentsPage = lazy(() => import('./pages/PaymentsPage').then(m => ({ default: m.PaymentsPage })))
 const LendingPage = lazy(() => import('./pages/LendingPage').then(m => ({ default: m.LendingPage })))
 const OptionsPage = lazy(() => import('./pages/OptionsPage').then(m => ({ default: m.OptionsPage })))
 const StakingPage = lazy(() => import('./pages/StakingPage').then(m => ({ default: m.StakingPage })))
@@ -81,7 +80,6 @@ function NavMore() {
 
 const sidebarItems = [
   ['/wallet', 'Wallet', 'M3 7h18v14H3z M3 7V4h15v3 M16 12h5v5h-5z'],
-  ['/payments', 'Payments', 'M5 19 19 5 M5 5h14v14'],
   ['/lending', 'Lending', 'M4 20h16 M7 16v-5 M12 16V7 M17 16V3'],
   ['/perps', 'Trade', 'M3 17 8 12l4 3 9-11 M15 4h6v6'],
   ['/spot', 'Swap', 'M4 7h16l-4-4 M20 17H4l4 4'],
@@ -103,6 +101,12 @@ function Sidebar() {
   </aside>
 }
 
+function LegacyPaymentRedirect() {
+  const location = useLocation()
+  const action = new URLSearchParams(location.search).get('mode') === 'receive' && !location.hash ? 'receive' : 'send'
+  return <Navigate to={`/wallet?action=${action}${location.hash}`} replace />
+}
+
 function AppContent() {
   useSoundNotifications()
 
@@ -115,7 +119,7 @@ function AppContent() {
               oslo
             </NavLink>
             <div className="nav-tabs">
-              {[['/wallet', 'Wallet'], ['/payments', 'Payments'], ['/lending', 'Lending'], ['/perps', 'Trade']].map(([to, label]) => <NavLink key={to} to={to} className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>{label}</NavLink>)}
+              {[['/wallet', 'Wallet'], ['/lending', 'Lending'], ['/perps', 'Trade']].map(([to, label]) => <NavLink key={to} to={to} className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>{label}</NavLink>)}
               <NavMore />
             </div>
           </div>
@@ -133,7 +137,7 @@ function AppContent() {
           <Route path="/spot" element={<SpotPage />} />
           <Route path="/predictions" element={<PredictionsPage />} />
           <Route path="/wallet" element={<WalletPage />} />
-          <Route path="/payments" element={<PaymentsPage />} />
+          <Route path="/payments" element={<LegacyPaymentRedirect />} />
           <Route path="/lending" element={<LendingPage />} />
           <Route path="/options" element={<OptionsPage />} />
           <Route path="/staking" element={<StakingPage />} />
@@ -143,7 +147,7 @@ function AppContent() {
         </Routes>
         </Suspense></PageErrorBoundary>
         <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
-          {[['/wallet', 'Wallet', '◈'], ['/payments', 'Pay', '↗'], ['/perps', 'Trade', '≋'], ['/lending', 'Lend', '＋'], ['/portfolio', 'Portfolio', '◷']].map(([to, label, icon]) => <NavLink key={to} to={to} className={({ isActive }) => isActive ? 'active' : ''}><span aria-hidden="true">{icon}</span>{label}</NavLink>)}
+          {[['/wallet', 'Wallet', '◈'], ['/spot', 'Swap', '⇄'], ['/perps', 'Trade', '≋'], ['/lending', 'Lend', '＋'], ['/portfolio', 'Portfolio', '◷']].map(([to, label, icon]) => <NavLink key={to} to={to} className={({ isActive }) => isActive ? 'active' : ''}><span aria-hidden="true">{icon}</span>{label}</NavLink>)}
         </nav>
       </div>
   )

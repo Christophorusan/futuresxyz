@@ -1,6 +1,4 @@
-import { AlchemyHistory } from '../components/shared/AlchemyHistory'
 import { useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
 import { useAccount, usePublicClient, useSwitchChain } from 'wagmi'
 import { getAccount, getWalletClient } from 'wagmi/actions'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -11,13 +9,9 @@ import { alchemyApiKey, gasPolicyId, smartWalletsEnabled } from '../config/alche
 import { paymentAssets, paymentRequest, parsePaymentRequest, preparePayment, readPaymentBalance, type PaymentAsset } from '../lib/payments'
 import { getActivity, saveActivity, type EvmActivity as Activity } from '../lib/evmActivity'
 import { trackTransaction } from '../lib/transactionReceipt'
-import { EvmActivity } from '../components/shared/EvmActivity'
+import { ConnectButton } from './shared/ConnectButton'
 
-export function PaymentsPage() {
-  const location = useLocation()
-  return <PaymentWorkspace key={`${location.hash}-${location.search}`} hash={location.hash} receive={new URLSearchParams(location.search).get('mode') === 'receive'} />
-}
-function PaymentWorkspace({ hash, receive }: { hash: string; receive: boolean }) {
+export function PaymentForm({ hash, receive }: { hash: string; receive: boolean }) {
   const [request] = useState(() => { try { return { data: parsePaymentRequest(hash), error: '' } } catch (e) { return { data: undefined, error: (e as Error).message } } })
   const { address } = useAccount()
   const client = usePublicClient({ chainId: 999 })!
@@ -27,7 +21,7 @@ function PaymentWorkspace({ hash, receive }: { hash: string; receive: boolean })
   const [recipient, setRecipient] = useState(request.data?.to || '')
   const [amount, setAmount] = useState(request.data?.amount || '')
   const [requestAmount, setRequestAmount] = useState('')
-  const [tab, setTab] = useState<'send' | 'receive'>(receive ? 'receive' : 'send')
+  const tab = receive ? 'receive' : 'send'
   const [smart, setSmart] = useState<{ owner: Address; address: Address }>()
   const account = smart && smart.owner === address ? smart.address : address
   const isSmart = !!smart && smart.owner === address
@@ -97,18 +91,19 @@ function PaymentWorkspace({ hash, receive }: { hash: string; receive: boolean })
   }
   let requestLink = ''; let requestError = ''
   if (account && balance.data) {
-    try { requestLink = paymentRequest(window.location.href, account, asset, requestAmount, balance.data.decimals) }
+    try { requestLink = paymentRequest(window.location.href.split('?')[0].split('#')[0] + '?action=send', account, asset, requestAmount, balance.data.decimals) }
     catch (e) { requestError = (e as Error).message }
   }
   async function copy(value: string) {
     try { await navigator.clipboard.writeText(value); setMessage('Copied.') }
     catch { setMessage('Clipboard unavailable. Select and copy the displayed text.') }
   }
-  return <main className="lending-page payments-page">
-    <header className="payment-hero"><div><span className="payment-eyebrow">OSLO PAY · HYPEREVM</span><h1>Your money. Your wallet.</h1><p>Send tokens directly. Share a request. Stay in control.</p></div><span className="payment-network">HyperEVM · Chain 999</span></header>
-    <div className="payment-layout"><section className="lending-card payment-main">
-      <div className="payment-tabs" role="tablist" aria-label="Payment mode">{(['send', 'receive'] as const).map(t => <button role="tab" aria-selected={tab === t} className={tab === t ? 'active' : ''} disabled={busy} onClick={() => { setTab(t); reset() }} key={t}>{t === 'send' ? '↗ Send' : '↙ Receive & request'}</button>)}</div>
+  return <div className="payments-page payment-compact">
+    <section className="payment-main">
+      {!address && <ConnectButton />}
+      <details className="payment-advanced"><summary>Advanced account options</summary>
       <div className="lending-actions payment-account"><button disabled={busy} className={!isSmart ? 'active' : ''} onClick={() => { setSmart(undefined); reset() }}>Connected wallet</button><button title={!alchemyApiKey ? 'Alchemy account setup required' : 'Separate account; compatibility must be verified'} disabled={busy || !address || !smartWalletsEnabled} className={isSmart ? 'active' : ''} onClick={smartAccount}>Alchemy smart account</button></div>
+      </details>
       {isSmart && <p>Separate smart account. Fund this address on HyperEVM before sending. {gasPolicyId ? 'Gas sponsorship is subject to policy eligibility.' : 'HYPE is required for gas.'}</p>}
       {account && <p className="evm-address">{isSmart ? 'Smart account' : 'Your wallet'}: {account}</p>}
       <label className="payment-label">Asset<select disabled={busy} value={asset.symbol} onChange={e => { setAsset(paymentAssets.find(a => a.symbol === e.target.value)!); setAmount(''); setRequestAmount(''); reset() }}>{paymentAssets.map(a => <option key={a.symbol}>{a.symbol}</option>)}</select></label>
@@ -127,11 +122,6 @@ function PaymentWorkspace({ hash, receive }: { hash: string; receive: boolean })
         {requestLink && <details className="payment-request"><summary>Share payment request</summary><div className="payment-qr"><QRCodeSVG value={requestLink} size={200} marginSize={3} title="Open payment request in Oslo" /></div><p>This QR opens a payment review in Oslo. It never sends automatically.</p><p className="evm-address">{requestLink}</p><button onClick={() => copy(requestLink)}>Copy request link</button></details>}
       </>}
       {message && <p role="status" className="payment-message">{message}</p>}
-    </section><aside>
-      <section className="lending-card"><h2>Simple by design</h2><div className="payment-step"><b>01</b><div><h3>Choose your asset</h3><p>USDC, USDT0, USDH, HYPE or WHYPE.</p></div></div><div className="payment-step"><b>02</b><div><h3>Review every detail</h3><p>Full addresses, network and estimated fee before your wallet signs.</p></div></div><div className="payment-step"><b>03</b><div><h3>Follow the confirmation</h3><p>Track payments made here and reopen their explorer receipts.</p></div></div></section>
-      <section className="lending-card"><h3>Put your assets to work</h3><p>Explore live lending markets. Deposits carry protocol and liquidation risks.</p><Link to="/lending">Explore lending →</Link></section>
-      <section className="lending-card"><h3>Connection status</h3><p>{alchemyApiKey ? 'Alchemy RPC configured with public fallback.' : 'Public HyperEVM RPC active. Alchemy setup pending.'}</p><p>{gasPolicyId ? 'Gas sponsorship policy configured; eligibility is checked per operation.' : 'Gas sponsorship is not enabled.'}</p><p>Smart-wallet compatibility is pending live verification. Standard wallet payments work independently.</p></section>
-    </aside></div><EvmActivity /><AlchemyHistory address={account} />
-    <p>Activity covers transactions initiated in this browser. For all incoming and outgoing transfers, {account ? <a href={`https://hyperevmscan.io/address/${account}`} target="_blank" rel="noreferrer">open your account on HyperEVM Scan ↗</a> : 'connect your wallet and open its explorer history'}.</p>
-  </main>
+    </section>
+  </div>
 }
