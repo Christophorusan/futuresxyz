@@ -37,11 +37,20 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
           <div className="oslo-orbit oslo-orbit-one" /><div className="oslo-orbit oslo-orbit-two" /><div className="oslo-orbit oslo-orbit-three" />
           <div className="oslo-floating-token oslo-token-top" aria-hidden="true">↗</div>
           <div className="oslo-wallet-demo">
-            <div className="oslo-phone-status" aria-hidden="true"><span>9:41</span><i /><span>••• ▰</span></div><div className="oslo-demo-head"><b>oslo.</b><span>WALLET PREVIEW</span><span className="oslo-demo-avatar">O</span></div>
-            <div className="oslo-demo-balance"><span>Your wallet, connected</span><strong>$12,480.50</strong><p>Sample balance · Your assets in one place</p></div>
-            <div className="oslo-demo-actions"><span>↗<small>Send</small></span><span>↙<small>Receive</small></span><span>⇄<small>Swap</small></span><span>+<small>Lend</small></span></div>
-            <div className="oslo-demo-assets"><div><span>Assets</span><span>HyperEVM ↗</span></div>{[['HYPE','Hyperliquid'],['USDC','USD Coin'],['USDH','USDH']].map(([name, detail]) => <div key={name}><TokenIcon symbol={name} size={27} /><span><b>{name}</b><small>{detail}</small></span><span className="oslo-demo-dash">—</span></div>)}</div>
-            <div className="oslo-demo-foot"><i /> Preview · Connect to see your balances</div><div className="oslo-demo-nav"><b>◉<small>Wallet</small></b><span>↗<small>Payments</small></span><span>+<small>Lending</small></span><span>⌁<small>Trade</small></span></div>
+            <div className="oslo-phone-status" aria-hidden="true"><span>9:41</span><i /><span>••• ▰</span></div>
+            <div className="oslo-demo-head"><b>oslo</b><span>APP PREVIEW</span><span className="oslo-demo-avatar">O</span></div>
+            <div className="oslo-demo-title"><small>YOUR OSLO</small><h3>Portfolio</h3><p>One place for your digital assets.</p></div>
+            <div className="oslo-demo-summary">
+              <div className="oslo-demo-balance"><span>Estimated portfolio value</span><strong>$12,480.50 <small>USD</small></strong><p>+$284.32 (2.33%) <span>today</span></p></div>
+              <div className="oslo-demo-actions"><span>↗<small>Send</small></span><span>↙<small>Receive</small></span><span>⇄<small>Swap</small></span><span>＋<small>Lend</small></span></div>
+              <div className="oslo-demo-chart-title"><span>Balance over time</span><span>1H <b>1D</b> 1W 1M</span></div>
+              <svg className="oslo-demo-chart" viewBox="0 0 270 90" role="img" aria-label="Illustrative portfolio balance chart"><defs><linearGradient id="oslo-preview-chart" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#4a8fee" stopOpacity=".35"/><stop offset="1" stopColor="#4a8fee" stopOpacity="0"/></linearGradient></defs><path d="M0 70L12 66 22 71 34 58 43 62 56 50 66 57 78 45 90 51 102 37 115 46 126 40 137 49 149 31 159 37 170 25 181 30 193 18 204 25 216 15 228 19 239 9 250 14 270 5V90H0Z" fill="url(#oslo-preview-chart)"/><path d="M0 70L12 66 22 71 34 58 43 62 56 50 66 57 78 45 90 51 102 37 115 46 126 40 137 49 149 31 159 37 170 25 181 30 193 18 204 25 216 15 228 19 239 9 250 14 270 5" fill="none" stroke="#6daaff" strokeWidth="2"/></svg>
+            </div>
+            <div className="oslo-demo-assets"><div><span>Holdings</span><span>All networks</span></div>{[['ETH','Ethereum','1.25 ETH','$3,060.00'],['SOL','Solana','24 SOL','$3,120.00'],['HYPE','HyperCore','60 HYPE','$4,890.00'],['USDC','Base','1,410.50 USDC','$1,410.50']].map(([name, detail, balance, value]) => <div key={name}><TokenIcon symbol={name} size={25} /><span><b>{name}</b><small>{detail}</small></span><span className="oslo-demo-asset-value"><b>{value}</b><small>{balance}</small></span></div>)}</div>
+            <div className="oslo-demo-favorites"><span>Favorites <i>★</i></span><span>BTC <b>+1.84%</b></span><span>ETH <b>+2.12%</b></span></div>
+            <div className="oslo-demo-foot">Illustrative preview · Sample balances</div>
+            <div className="oslo-demo-nav"><b>◈<small>Wallet</small></b><span>⇄<small>Swap</small></span><span>≋<small>Trade</small></span><span>＋<small>Lend</small></span></div>
+
           </div>
           <div className="oslo-float-label"><span>↗</span><div>Less switching.<br /><b>More living.</b></div></div>
         </div>
