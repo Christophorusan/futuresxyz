@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './LandingPage.css'
+import { TokenIcon } from '../components/TokenIcon'
 
 const features = [
   { name: 'Wallet', eyebrow: 'A CLEARER PICTURE', title: 'Your assets.\nAll in view.', text: 'See supported HyperEVM balances and account activity, with a connected wallet at the center of your experience.', symbol: '◉' },
@@ -39,7 +40,7 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
             <div className="oslo-phone-status" aria-hidden="true"><span>9:41</span><i /><span>••• ▰</span></div><div className="oslo-demo-head"><b>oslo.</b><span>WALLET PREVIEW</span><span className="oslo-demo-avatar">O</span></div>
             <div className="oslo-demo-balance"><span>Your wallet, connected</span><strong>$12,480.50</strong><p>Sample balance · Your assets in one place</p></div>
             <div className="oslo-demo-actions"><span>↗<small>Send</small></span><span>↙<small>Receive</small></span><span>⇄<small>Swap</small></span><span>+<small>Lend</small></span></div>
-            <div className="oslo-demo-assets"><div><span>Assets</span><span>HyperEVM ↗</span></div>{[['H','HYPE','Hyperliquid'],['$','USDC','USD Coin'],['U','USDH','USDH']].map(([icon, name, detail]) => <div key={name}><i>{icon}</i><span><b>{name}</b><small>{detail}</small></span><span className="oslo-demo-dash">—</span></div>)}</div>
+            <div className="oslo-demo-assets"><div><span>Assets</span><span>HyperEVM ↗</span></div>{[['HYPE','Hyperliquid'],['USDC','USD Coin'],['USDH','USDH']].map(([name, detail]) => <div key={name}><TokenIcon symbol={name} size={27} /><span><b>{name}</b><small>{detail}</small></span><span className="oslo-demo-dash">—</span></div>)}</div>
             <div className="oslo-demo-foot"><i /> Preview · Connect to see your balances</div><div className="oslo-demo-nav"><b>◉<small>Wallet</small></b><span>↗<small>Payments</small></span><span>+<small>Lending</small></span><span>⌁<small>Trade</small></span></div>
           </div>
           <div className="oslo-float-label"><span>↗</span><div>Less switching.<br /><b>More living.</b></div></div>

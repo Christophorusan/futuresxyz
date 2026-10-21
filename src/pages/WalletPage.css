@@ -1,2 +1,32 @@
 /* Wallet home shares Oslo's blue glass language without changing trade screens. */
 .oslo-wallet-home{max-width:1120px!important;margin:0 auto;width:100%;padding-top:40px!important}.oslo-wallet-home .payment-hero{margin-bottom:28px}.oslo-wallet-home .payment-hero h1{font-size:clamp(29px,4vw,43px);letter-spacing:-1.7px}.oslo-wallet-home .wallet-summary{padding:30px;border-radius:25px;background:linear-gradient(120deg,rgba(61,128,243,.18),rgba(148,191,255,.06));border:1px solid rgba(150,195,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 15px 50px rgba(0,20,70,.1);backdrop-filter:blur(24px)}.oslo-wallet-home .lending-card{border-radius:22px}.oslo-wallet-home .wallet-quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}.oslo-wallet-home .wallet-quick-actions a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:19px 12px;background:rgba(89,153,255,.1);border:1px solid rgba(150,195,255,.17);border-radius:18px;transition:background .2s,transform .2s;color:var(--text-0);text-decoration:none}.oslo-wallet-home .wallet-quick-actions a:hover{background:rgba(89,153,255,.2);transform:translateY(-2px)}.oslo-wallet-home .wallet-quick-actions a>span{font-size:25px;color:#75b6ff}.oslo-wallet-home .wallet-asset-list li{padding:20px 0}.oslo-wallet-home .wallet-asset-icon{border-radius:14px;background:rgba(80,150,255,.15)}.oslo-wallet-home .wallet-explore a{border-radius:15px}.oslo-wallet-home .wallet-details{margin-top:20px;padding:20px 24px;border:1px solid var(--border);border-radius:20px;background:var(--bg-1)}.oslo-wallet-home .wallet-details>summary{cursor:pointer;color:var(--text-1);font-size:13px}.oslo-wallet-home .wallet-details[open]>summary{margin-bottom:20px}@media(max-width:700px){.oslo-wallet-home{padding-top:22px!important}.oslo-wallet-home .wallet-summary{padding:22px 18px}.oslo-wallet-home .wallet-quick-actions{gap:8px}.oslo-wallet-home .wallet-quick-actions a{font-size:11px;padding:16px 8px}.oslo-wallet-home .payment-hero h1{font-size:30px}.oslo-wallet-home .wallet-details{padding:18px 15px}}
+
+/* Clearer hierarchy and asset rows, with the blue glass kept in the surfaces. */
+.oslo-wallet-home{max-width:1240px!important;padding:40px 36px!important}
+.oslo-wallet-home .payment-hero{align-items:center}
+.oslo-wallet-home .payment-eyebrow{color:var(--text-2);letter-spacing:2px;font-size:10px}
+.oslo-wallet-home .payment-network,.wallet-chain-label{border:1px solid #719ce34d;background:#719ce312;color:var(--text-1);font-size:11px;padding:8px 12px;border-radius:30px}
+.oslo-wallet-home .wallet-summary{margin-bottom:28px;padding:30px 32px;background:linear-gradient(125deg,#467fec26,#91b9f210);border-color:#8eb5ef45}
+.oslo-wallet-home .wallet-summary>p{max-width:600px;line-height:1.7}
+.oslo-wallet-home .wallet-quick-actions a>span{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;background:#72a6f51c;color:#82baff}
+.oslo-wallet-home .wallet-quick-actions a{padding:16px;font-weight:500}
+.oslo-wallet-home .lending-card h2{font-size:18px;letter-spacing:-.4px}
+.oslo-wallet-home .payment-layout{grid-template-columns:minmax(0,1.65fr) minmax(260px,1fr);gap:24px}
+.oslo-wallet-home .wallet-assets-card{padding:26px}
+.wallet-assets-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}
+.wallet-assets-heading p{margin-bottom:0!important;font-size:12px!important}
+.wallet-table-heading{display:flex;justify-content:space-between;color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:1.2px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.oslo-wallet-home .wallet-asset-list{margin:0}
+.oslo-wallet-home .wallet-asset-list li{grid-template-columns:40px minmax(0,1fr) auto;gap:14px;padding:19px 0}
+.wallet-token-name strong{display:block;font-size:14px;font-weight:550;color:var(--text-0)}
+.wallet-token-name small,.wallet-token-balance small{display:block;font-size:11px;color:var(--text-3);margin-top:5px}
+.wallet-token-balance{font-variant-numeric:tabular-nums;font-size:14px;color:var(--text-1);max-width:180px}
+.wallet-assets-note{font-size:11px!important;line-height:1.7!important;margin:18px 0 0!important;color:var(--text-3)!important}
+.wallet-explorer-link{display:inline-block;margin-top:15px;font-size:12px;color:var(--blue)}
+.oslo-wallet-home .wallet-explore a{padding:18px 10px}
+[data-theme="light"] .oslo-wallet-home .lending-card{background:rgba(255,255,255,.68);border-color:rgba(255,255,255,.8);box-shadow:0 12px 36px #28508a0a}
+[data-theme="light"] .oslo-wallet-home .wallet-summary{background:linear-gradient(120deg,#edf5ffed,#ffffffaa);box-shadow:0 16px 45px #28508a12}
+[data-theme="light"] .oslo-wallet-home .wallet-quick-actions a{background:#ffffff80;border-color:#d5e3f7;color:#243951}
+[data-theme="light"] .oslo-wallet-home .wallet-quick-actions a>span{color:#326dbe;background:#e2edff}
+[data-theme="light"] .oslo-wallet-home .wallet-details{background:#ffffff80}
+@media(max-width:800px){.oslo-wallet-home{padding:24px 18px!important}.oslo-wallet-home .payment-layout{grid-template-columns:1fr}.oslo-wallet-home .wallet-summary{padding:22px 18px}.oslo-wallet-home .wallet-assets-card{padding:22px 18px}.wallet-token-name small span{display:none}.wallet-token-balance{max-width:120px}.oslo-wallet-home .wallet-quick-actions a{padding:12px 4px}}

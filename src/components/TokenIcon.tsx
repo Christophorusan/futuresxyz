@@ -5,8 +5,10 @@ export function TokenIcon({ symbol, size = 18 }: { symbol: string; size?: number
   const raw = symbol.toUpperCase()
   const clean = raw.replace(/^K/, '')
 
-  // URL fallback chain: Hyperliquid CDN first (has all HL tokens), then CoinGecko
+  // Verified local wallet assets, then the Hyperliquid market icon CDN.
+  const localSymbol = raw === 'WHYPE' ? 'HYPE' : raw
   const urls = [
+    ...(['HYPE', 'USDC', 'USDT0', 'USDH'].includes(localSymbol) ? [`${import.meta.env.BASE_URL}tokens/${localSymbol}.svg`] : []),
     `https://app.hyperliquid.xyz/coins/${raw}.svg`,
     `https://app.hyperliquid.xyz/coins/${clean}.svg`,
   ]
@@ -44,7 +46,7 @@ export function TokenIcon({ symbol, size = 18 }: { symbol: string; size?: number
       width={size}
       height={size}
       className="token-icon"
-      style={{ borderRadius: '50%', flexShrink: 0 }}
+      style={{ borderRadius: '50%', flexShrink: 0, background: localSymbol === 'HYPE' ? '#072f2c' : undefined, padding: localSymbol === 'HYPE' ? size * 0.14 : 0, boxSizing: 'border-box' }}
       onError={() => setTryIndex(i => i + 1)}
     />
   )
