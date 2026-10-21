@@ -12,7 +12,6 @@ import { ConnectButton } from './components/shared/ConnectButton'
 const ThousandXPerpsPage = lazy(() => import('./pages/ThousandXPerpsPage').then(m => ({ default: m.ThousandXPerpsPage })))
 const WalletPage = lazy(() => import('./pages/WalletPage').then(m => ({ default: m.WalletPage })))
 const PerpsPage = lazy(() => import('./pages/PerpsPage').then(m => ({ default: m.PerpsPage })))
-const PortfolioPage = lazy(() => import('./pages/PortfolioPage').then(m => ({ default: m.PortfolioPage })))
 const SpotPage = lazy(() => import('./pages/SpotPage').then(m => ({ default: m.SpotPage })))
 const DocsPage = lazy(() => import('./pages/DocsPage').then(m => ({ default: m.DocsPage })))
 const PredictionsPage = lazy(() => import('./pages/PredictionsPage').then(m => ({ default: m.PredictionsPage })))
@@ -62,7 +61,7 @@ function NavMore() {
       </button>
       {open && (
         <div className="nav-more-dropdown">
-          {[['/spot', 'Swap'], ['/portfolio', 'Portfolio'], ['/staking', 'Staking'], ['/predictions', 'Predictions'], ['/options', 'Options'], ['/1000x-perps', '1000x Perps']].map(([to, label]) => <NavLink key={to} to={to} className="nav-more-item" onClick={() => setOpen(false)}>{label}</NavLink>)}
+          {[['/spot', 'Swap'], ['/staking', 'Staking'], ['/predictions', 'Predictions'], ['/options', 'Options'], ['/1000x-perps', '1000x Perps']].map(([to, label]) => <NavLink key={to} to={to} className="nav-more-item" onClick={() => setOpen(false)}>{label}</NavLink>)}
 
           <NavLink to="/docs" className="nav-more-item" onClick={() => setOpen(false)}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M18 18h-8M18 10h-8"/></svg>
@@ -83,7 +82,6 @@ const sidebarItems = [
   ['/lending', 'Lending', 'M4 20h16 M7 16v-5 M12 16V7 M17 16V3'],
   ['/perps', 'Trade', 'M3 17 8 12l4 3 9-11 M15 4h6v6'],
   ['/spot', 'Swap', 'M4 7h16l-4-4 M20 17H4l4 4'],
-  ['/portfolio', 'Portfolio', 'M12 3v9h9 M9 4a9 9 0 1 0 11 11'],
   ['/docs', 'Docs', 'M5 3h14v18H5z M8 7h8 M8 11h8 M8 15h5'],
 ]
 
@@ -141,13 +139,13 @@ function AppContent() {
           <Route path="/lending" element={<LendingPage />} />
           <Route path="/options" element={<OptionsPage />} />
           <Route path="/staking" element={<StakingPage />} />
-          <Route path="/portfolio" element={<PortfolioPage />} />
+          <Route path="/portfolio" element={<Navigate to="/wallet" replace />} />
           <Route path="/docs" element={<DocsPage />} />
           <Route path="*" element={<Navigate to="/wallet" replace />} />
         </Routes>
         </Suspense></PageErrorBoundary>
         <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
-          {[['/wallet', 'Wallet', '◈'], ['/spot', 'Swap', '⇄'], ['/perps', 'Trade', '≋'], ['/lending', 'Lend', '＋'], ['/portfolio', 'Portfolio', '◷']].map(([to, label, icon]) => <NavLink key={to} to={to} className={({ isActive }) => isActive ? 'active' : ''}><span aria-hidden="true">{icon}</span>{label}</NavLink>)}
+          {[['/wallet', 'Wallet', '◈'], ['/spot', 'Swap', '⇄'], ['/perps', 'Trade', '≋'], ['/lending', 'Lend', '＋']].map(([to, label, icon]) => <NavLink key={to} to={to} className={({ isActive }) => isActive ? 'active' : ''}><span aria-hidden="true">{icon}</span>{label}</NavLink>)}
         </nav>
       </div>
   )

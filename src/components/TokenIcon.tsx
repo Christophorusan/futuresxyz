@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export function TokenIcon({ symbol, size = 18 }: { symbol: string; size?: number }) {
+export function TokenIcon({ symbol, size = 18, logo }: { symbol: string; size?: number; logo?:string }) {
   const [tryIndex, setTryIndex] = useState(0)
   const raw = symbol.toUpperCase()
   const clean = raw.replace(/^K/, '')
@@ -8,6 +8,7 @@ export function TokenIcon({ symbol, size = 18 }: { symbol: string; size?: number
   // Verified local wallet assets, then the Hyperliquid market icon CDN.
   const localSymbol = raw === 'WHYPE' ? 'HYPE' : raw
   const urls = [
+    ...(logo ? [logo] : []),
     ...(['HYPE', 'USDC', 'USDT0', 'USDH'].includes(localSymbol) ? [`${import.meta.env.BASE_URL}tokens/${localSymbol}.svg`] : []),
     `https://app.hyperliquid.xyz/coins/${raw}.svg`,
     `https://app.hyperliquid.xyz/coins/${clean}.svg`,

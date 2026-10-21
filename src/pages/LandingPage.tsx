@@ -3,7 +3,7 @@ import './LandingPage.css'
 import { TokenIcon } from '../components/TokenIcon'
 
 const features = [
-  { name: 'Wallet', eyebrow: 'A CLEARER PICTURE', title: 'Your assets.\nAll in view.', text: 'See supported HyperEVM balances and account activity, with a connected wallet at the center of your experience.', symbol: '◉' },
+  { name: 'Wallet', eyebrow: 'A CLEARER PICTURE', title: 'Your assets.\nAll in view.', text: 'One place for your digital assets. Track balances across supported EVM networks, Solana and HyperCore.', symbol: '◉' },
   { name: 'Payments', eyebrow: 'MONEY IN MOTION', title: 'Send simply.\nReceive easily.', text: 'Send supported tokens, share payment requests, and review the details before approving in your wallet.', symbol: '↗' },
   { name: 'Lending', eyebrow: 'EXPLORE MORE', title: 'Put your assets\nto work.', text: 'Explore lending markets and review rates, collateral requirements, and risk before opening a position.', symbol: '+' },
   { name: 'Trading', eyebrow: 'WHEN OPPORTUNITY CALLS', title: 'Your next move.\nYour decision.', text: 'Move from your wallet overview to Hyperliquid markets, with tools for orders, positions, and portfolio monitoring.', symbol: '⌁' },
@@ -66,7 +66,7 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
       <section className="oslo-faq" id="questions"><div><span className="oslo-eyebrow">A LITTLE CLARITY</span><h2>Good questions.<br />Straight answers.</h2></div><div>
         <details><summary>What is Oslo?<span aria-hidden="true">+</span></summary><p>Oslo is a wallet-centered finance interface bringing together supported balances, payments, lending, and trading. It’s the new home of Futures XYZ.</p></details>
         <details><summary>Do I need a wallet to explore?<span aria-hidden="true">+</span></summary><p>You can enter the app and explore without connecting. Viewing your balances or approving transactions requires a supported wallet.</p></details>
-        <details><summary>Which network does Oslo use?<span aria-hidden="true">+</span></summary><p>The wallet and payments experience uses HyperEVM. Trading uses Hyperliquid. HyperEVM wallet balances and HyperCore trading balances are separate.</p></details>
+        <details><summary>Which networks does Oslo support?<span aria-hidden="true">+</span></summary><p>Your portfolio brings together Ethereum, Base, Arbitrum, Optimism, Polygon, HyperEVM, Solana and HyperCore accounts. Add public addresses to track additional wallets. Payments currently use HyperEVM; NFTs and lending positions are not included in portfolio totals yet.</p></details>
         <details><summary>What should I know before using it?<span aria-hidden="true">+</span></summary><p>Oslo is not a bank. Network fees may apply. Lending and trading have risks, including loss of funds. Review each product and transaction before you approve.</p></details>
       </div></section>
 
