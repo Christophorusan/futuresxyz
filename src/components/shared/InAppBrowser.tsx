@@ -37,9 +37,11 @@ export function InAppBrowser() {
     if (url && !dialog.current?.open) dialog.current?.showModal()
     if (!url && dialog.current?.open) dialog.current.close()
   }, [url])
+  const blocked = url ? new URL(url).hostname === 'app.hyperunit.xyz' : false
   return <dialog ref={dialog} className="oslo-provider-panel" aria-labelledby="oslo-provider-title" onCancel={() => setUrl(null)} onClose={() => setUrl(null)}>
     <header><div><small>OSLO · CONNECTED SERVICE</small><h2 id="oslo-provider-title">{url ? new URL(url).hostname : 'Connected service'}</h2></div><button onClick={() => setUrl(null)}>Back to Oslo ×</button></header>
     <p className="oslo-provider-note">This is the provider’s website inside Oslo. If it stays blank or a wallet action is unavailable, the provider may not support embedded access. Close this panel to return to your portfolio.</p>
-    {url && <iframe key={url} src={url} title={`Connected service: ${new URL(url).hostname}`} sandbox="allow-scripts allow-same-origin allow-forms" referrerPolicy="strict-origin-when-cross-origin" />}
+    {blocked && <div className="oslo-provider-unavailable"><h3>This service needs an Oslo integration</h3><p>Hyperunit does not allow its deposit or withdrawal interface to appear inside other apps. This flow is unavailable inside Oslo for now.</p><button onClick={() => setUrl(null)}>Return to Oslo</button></div>}
+    {url && !blocked && <iframe key={url} src={url} title={`Connected service: ${new URL(url).hostname}`} sandbox="allow-scripts allow-same-origin allow-forms" referrerPolicy="strict-origin-when-cross-origin" />}
   </dialog>
 }
