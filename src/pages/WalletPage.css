@@ -85,3 +85,18 @@
 .wallet-payment-dialog{background:#142039;box-shadow:0 28px 100px #0005}
 [data-theme="light"] .wallet-payment-dialog{background:#f2f7ff;color:#1c2d46}
 [data-theme="light"] .wallet-payment-dialog input,[data-theme="light"] .wallet-payment-dialog select{background:#fff;color:#1c2d46;border-color:#cad9ed}
+
+.wallet-balance-chart .wallet-history-toolbar>div:first-child{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.wallet-balance-chart .wallet-history-toolbar strong{color:var(--text-2);font-size:12px;font-weight:500}
+.wallet-chart-stage{position:relative;margin-top:12px}
+.wallet-balance-chart .wallet-chart-stage svg{height:290px;margin:0;cursor:crosshair}
+.wallet-chart-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:9px;pointer-events:none}
+.wallet-chart-overlay strong{font-size:14px;font-weight:500;color:var(--text-1)}
+.wallet-chart-overlay p{font-size:12px!important;margin:0!important;color:var(--text-3)}
+.wallet-chart-overlay button,.wallet-chart-preview-label button{pointer-events:auto;background:transparent;border:0;color:#4b83d5;font:inherit;font-size:12px;cursor:pointer;padding:8px}
+.wallet-chart-preview-label{display:flex;justify-content:space-between;align-items:center;background:#76a7ed15;border:1px solid #76a7ed30;border-radius:8px;font-size:11px;padding:4px 10px;margin-top:12px;color:var(--text-2)}
+.wallet-chart-value{position:absolute;top:8px;left:8px;font-size:18px;font-weight:500;color:var(--text-0);pointer-events:none;background:var(--bg-1);padding:8px 12px;border-radius:10px}
+.wallet-chart-value small{display:block;font-size:10px;font-weight:400;color:var(--text-3);margin-top:4px}
+.wallet-chart-first{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:11px;color:var(--text-3)}
+.wallet-chart-scrubber{width:100%;height:14px;margin:0 0 12px;accent-color:#4a8fee;cursor:pointer}
+@media(max-width:700px){.wallet-balance-chart .wallet-history-toolbar{align-items:flex-start;gap:12px;flex-direction:column}.wallet-balance-chart .wallet-chart-stage svg{height:240px}.wallet-chart-value{font-size:15px}.wallet-chart-preview-label{font-size:10px}}

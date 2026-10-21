@@ -1,32 +1,67 @@
-import { useEffect, useState } from 'react'
-type Point = { time: number; value: number }
-function read(key: string): Point[] {
-  try { const parsed: unknown = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(parsed) ? parsed.filter((p): p is Point => p && Number.isFinite(p.time) && Number.isFinite(p.value) && p.value >= 0).slice(-2000) : [] } catch { return [] }
-}
+import { useEffect, useRef, useState } from 'react'
+import { appendSnapshot, parseHistory, type BalancePoint } from '../lib/walletHistory'
+const ranges = [{days:1/24,label:'1H'},{days:1,label:'1D'},{days:7,label:'1W'},{days:30,label:'1M'},{days:0,label:'ALL'}]
+const previewValues = [100,101,100.4,103,105,104,106,105,104,106,109,108,112,115,114,116,115,114,116,118,117,121,120,119,122,123,122,124]
+const amount = (n: number) => n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})
 export function WalletHistory({ address, value }: { address?: string; value: number | null }) {
   const key = `oslo-wallet-history:${address?.toLowerCase() ?? 'disconnected'}`
-  const [history, setHistory] = useState<{key:string;points:Point[]}>({key:'',points:[]})
+  const [history, setHistory] = useState<{key:string;points:BalancePoint[]}>({key:'',points:[]})
+  const current = useRef(value)
+  current.current = value
   const [range, setRange] = useState(1)
+  const [hover, setHover] = useState<number | null>(null)
+  const [preview, setPreview] = useState(false)
   useEffect(() => {
-    if (!address || value === null) return
+    if (!address) return
+    let points: BalancePoint[] = []
+    try { points = parseHistory(localStorage.getItem(key)) } catch { /* Private browsing can disable storage. */ }
+    setHistory({key,points})
     const record = () => {
-    const points = read(key)
-    const now = Date.now()
-    if (!points.length || now - points[points.length-1].time >= 60000) points.push({time:now,value})
-    const trimmed = points.slice(-2000)
-    try { localStorage.setItem(key, JSON.stringify(trimmed)) } catch { /* Storage may be unavailable. */ }
-    setHistory({key,points:trimmed})
+      if (current.current === null) return
+      points = appendSnapshot(points,{time:Date.now(),value:current.current})
+      try { localStorage.setItem(key,JSON.stringify(points)) } catch { /* Keep session history in memory. */ }
+      setHistory({key,points:[...points]})
     }
     record()
-    const timer = window.setInterval(record, 60000)
+    const timer=window.setInterval(record,15000)
     return () => window.clearInterval(timer)
-  }, [key, address, value])
-  const points = history.key === key ? history.points.filter(p => range === 0 || p.time >= Date.now()-range*86400000) : []
-  const min = Math.min(...points.map(p=>p.value)), max = Math.max(...points.map(p=>p.value))
-  const line = points.map(p => `${((p.time-points[0].time)/Math.max(1,points[points.length-1].time-points[0].time))*1000},${180-((p.value-min)/Math.max(max-min,1))*140}`).join(' ')
-  return <div className="wallet-history">
-    <div className="wallet-history-toolbar"><span>Portfolio history</span><div aria-label="History period">{[[1,'1D'],[7,'1W'],[30,'1M'],[0,'ALL']].map(([days,label])=><button key={label} aria-pressed={range===days} onClick={()=>setRange(Number(days))}>{label}</button>)}</div></div>
-    {points.length > 1 ? <><svg viewBox="0 0 1000 210" preserveAspectRatio="none" role="img" aria-label="Recorded portfolio value over time"><defs><linearGradient id="wallet-history-fill" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#589bfa" stopOpacity=".3"/><stop offset="1" stopColor="#589bfa" stopOpacity="0"/></linearGradient></defs><polygon points={`0,210 ${line} 1000,210`} fill="url(#wallet-history-fill)"/><polyline points={line} fill="none" stroke="#4a8fee" strokeWidth="2.5" vectorEffect="non-scaling-stroke"/></svg><div className="wallet-history-dates"><span>{new Date(points[0].time).toLocaleString()}</span><span>{new Date(points[points.length-1].time).toLocaleString()}</span></div></> : <div className="wallet-history-empty"><span aria-hidden="true">⌁</span><strong>{address ? 'Your portfolio story starts here' : 'Your portfolio, all in view'}</strong><p>{address ? 'History appears after two snapshots, at least one minute apart.' : 'Connect your wallet to see your holdings and start recording portfolio history.'}</p></div>}
-    <small className="wallet-history-note">Snapshots recorded in this browser while this page is open. Values are estimated in USDC; deposits and withdrawals affect the chart.</small>
+  }, [key,address])
+  const recorded = history.key===key ? history.points.filter(p=>range===0 || p.time>=Date.now()-range*86400000) : []
+  const isPreview = preview && !address
+  const points = isPreview ? previewValues.map((v,i)=>({time:Date.now()-((previewValues.length-1-i)*3600000),value:v})) : recorded
+  const first=points[0], last=points.at(-1)
+  const min=points.length ? Math.min(...points.map(p=>p.value)) : 0
+  const max=points.length ? Math.max(...points.map(p=>p.value)) : 1
+  const padding=Math.max((max-min)*.15,max*.002,.01)
+  const low=Math.max(0,min-padding), high=max+padding
+  const x=(p:BalancePoint)=>first && last && first.time!==last.time ? 20+(p.time-first.time)/(last.time-first.time)*960 : 500
+  const y=(p:BalancePoint)=>240-(p.value-low)/(high-low)*210
+  const line=points.map(p=>`${x(p)},${y(p)}`).join(' ')
+  const selected=hover!==null ? points[Math.min(hover,points.length-1)] : last
+  const change=first && last ? last.value-first.value : null
+  const pick=(clientX:number,rect:DOMRect)=> {
+    const position=Math.max(0,Math.min(1,(clientX-rect.left)/rect.width))
+    const target=(first?.time??0)+position*((last?.time??0)-(first?.time??0))
+    let nearest=0
+    points.forEach((p,i)=>{if(Math.abs(p.time-target)<Math.abs(points[nearest].time-target)) nearest=i})
+    setHover(nearest)
+  }
+  return <div className="wallet-history wallet-balance-chart">
+    <div className="wallet-history-toolbar"><div><strong>Balance over time</strong><span className={change!==null&&change<0?'wallet-price-down':'wallet-price-up'}>{change===null?'':`${change>=0?'+':''}${amount(change)} USDC${first?.value ? ` (${(change/first.value*100).toFixed(2)}%)` : ''}`}</span></div><div aria-label="History period">{ranges.map(r=><button key={r.label} disabled={isPreview} aria-pressed={range===r.days} onClick={()=>{setRange(r.days);setHover(null)}}>{r.label}</button>)}</div></div>
+    {isPreview && <div className="wallet-chart-preview-label">Example chart · sample data, not your balance <button onClick={()=>{setPreview(false);setHover(null)}}>Close preview</button></div>}
+    <div className="wallet-chart-stage">
+      <svg viewBox="0 0 1000 270" preserveAspectRatio="none" role="img" aria-label={isPreview?'Example balance chart with sample data':'Wallet balance over time'} onPointerMove={e=>{if(points.length)pick(e.clientX,e.currentTarget.getBoundingClientRect())}} onPointerLeave={()=>setHover(null)}>
+        <defs><linearGradient id="wallet-history-fill" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#589bfa" stopOpacity=".3"/><stop offset="1" stopColor="#589bfa" stopOpacity="0"/></linearGradient><pattern id="wallet-chart-dots" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".7" fill="#6a9bdf" opacity=".28"/></pattern></defs>
+        {[30,100,170,240].map(v=><line key={v} x1="0" x2="1000" y1={v} y2={v} stroke="currentColor" opacity=".08" strokeDasharray="3 5"/>)}
+        {points.length>1 && <><polygon points={`${x(first)},260 ${line} ${x(last!)},260`} fill="url(#wallet-history-fill)"/><polygon points={`${x(first)},260 ${line} ${x(last!)},260`} fill="url(#wallet-chart-dots)"/><polyline points={line} fill="none" stroke="#4a8fee" strokeWidth="2.5" vectorEffect="non-scaling-stroke"/></>}
+        {selected && <><line x1={x(selected)} x2={x(selected)} y1="20" y2="250" stroke="#6c9be0" strokeDasharray="4 5" opacity=".5"/><circle cx={x(selected)} cy={y(selected)} r="4" fill="#4a8fee" stroke="white" strokeWidth="2"/></>}
+      </svg>
+      {selected && <output className="wallet-chart-value">{amount(selected.value)} <small>USDC · {new Date(selected.time).toLocaleString()}</small></output>}
+      {!points.length && <div className="wallet-chart-overlay"><strong>{address?'Waiting for your first balance snapshot':'Connect to track your balance'}</strong><p>{address?'Your chart starts when your balances and prices load.':'Your portfolio value will update here over time.'}</p>{!address&&<button onClick={()=>setPreview(true)}>Preview the chart ↗</button>}</div>}
+      {points.length===1 && <span className="wallet-chart-first">First snapshot recorded. The line grows as new balances arrive.</span>}
+    </div>
+    {first && last && <div className="wallet-history-dates"><span>{new Date(first.time).toLocaleString()}</span><span>{new Date(last.time).toLocaleString()}</span></div>}
+    {points.length>1 && <input className="wallet-chart-scrubber" type="range" min="0" max={points.length-1} value={hover ?? points.length-1} onChange={e=>setHover(Number(e.target.value))} aria-label="Explore balance history" aria-valuetext={selected ? `${amount(selected.value)} USDC at ${new Date(selected.time).toLocaleString()}` : undefined}/>}
+    <small className="wallet-history-note">{isPreview?'Preview only. Connect your wallet to track real balances.':'Recorded in this browser while this wallet page is open, kept for 90 days. Values are in USDC; deposits and withdrawals affect the change.'}</small>
   </div>
 }
