@@ -35,7 +35,7 @@ export function WalletPage() {
   const total = isConnected && !isLoading && !incomplete ? holdings.reduce((sum, asset) => sum + (asset.value ?? 0), 0) : null
   const money = (value: number) => value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   return <main className="lending-page payments-page mobile-wallet-page oslo-wallet-home wallet-portfolio-home">
-    <header className="payment-hero"><div><span className="payment-eyebrow">YOUR OSLO</span><h1>Portfolio</h1></div><span className="payment-network">HyperEVM wallet</span></header>
+    <header className="payment-hero"><div><span className="payment-eyebrow">YOUR OSLO</span><h1>Portfolio</h1></div></header>
     <section className="lending-card wallet-summary">
       <div className="wallet-overview-top"><div><span className="wallet-total-label">Estimated portfolio value</span><strong className="wallet-total">{total === null ? '—' : money(total)} <small>USDC</small></strong><p>{!isConnected ? 'Connect your wallet to get started.' : isLoading ? 'Loading your holdings…' : incomplete ? 'Some balances or prices are unavailable.' : `${holdings.length} assets in your wallet`}</p></div>
       <div className="wallet-quick-actions"><Link to="/wallet?action=send"><span aria-hidden="true">↗</span>Send</Link><Link to="/wallet?action=receive"><span aria-hidden="true">↙</span>Receive</Link><Link to="/spot"><span aria-hidden="true">⇄</span>Swap</Link><Link to="/lending"><span aria-hidden="true">＋</span>Lend</Link></div></div>
