@@ -19,7 +19,7 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
   return <div className="oslo-landing">
     <a className="oslo-skip" href="#oslo-main">Skip to content</a>
     <header className="oslo-header">
-      <a href="#" className="oslo-wordmark" aria-label="Oslo home"><span className="oslo-mark" aria-hidden="true" />oslo<span className="oslo-wordmark-dot">.</span></a>
+      <a href="#" className="oslo-wordmark" aria-label="Oslo home">oslo.</a>
       <nav aria-label="Landing page navigation"><a href="#possibilities">Explore Oslo</a><a href="#how-it-works">How it works</a><a href="#questions">Questions</a></nav>
       <button className="oslo-button oslo-button-dark" onClick={onEnter}>Enter app <span aria-hidden="true">↗</span></button>
     </header>
@@ -36,14 +36,13 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
           <div className="oslo-orbit oslo-orbit-one" /><div className="oslo-orbit oslo-orbit-two" /><div className="oslo-orbit oslo-orbit-three" />
           <div className="oslo-floating-token oslo-token-top" aria-hidden="true">↗</div>
           <div className="oslo-wallet-demo">
-            <div className="oslo-demo-head"><b>oslo.</b><span>WALLET PREVIEW</span><span className="oslo-demo-avatar">O</span></div>
-            <div className="oslo-demo-balance"><span>Your wallet, connected</span><strong>Hello, possibilities.</strong><p>Your assets start here.</p></div>
-            <div className="oslo-demo-actions"><span>↗<small>Send</small></span><span>↙<small>Receive</small></span><span>⇄<small>Explore</small></span></div>
+            <div className="oslo-phone-status" aria-hidden="true"><span>9:41</span><i /><span>••• ▰</span></div><div className="oslo-demo-head"><b>oslo.</b><span>WALLET PREVIEW</span><span className="oslo-demo-avatar">O</span></div>
+            <div className="oslo-demo-balance"><span>Your wallet, connected</span><strong>$12,480.50</strong><p>Sample balance · Your assets in one place</p></div>
+            <div className="oslo-demo-actions"><span>↗<small>Send</small></span><span>↙<small>Receive</small></span><span>⇄<small>Swap</small></span><span>+<small>Lend</small></span></div>
             <div className="oslo-demo-assets"><div><span>Assets</span><span>HyperEVM ↗</span></div>{[['H','HYPE','Hyperliquid'],['$','USDC','USD Coin'],['U','USDH','USDH']].map(([icon, name, detail]) => <div key={name}><i>{icon}</i><span><b>{name}</b><small>{detail}</small></span><span className="oslo-demo-dash">—</span></div>)}</div>
-            <div className="oslo-demo-foot"><i /> Connect to see your balances</div>
+            <div className="oslo-demo-foot"><i /> Preview · Connect to see your balances</div><div className="oslo-demo-nav"><b>◉<small>Wallet</small></b><span>↗<small>Payments</small></span><span>+<small>Lending</small></span><span>⌁<small>Trade</small></span></div>
           </div>
           <div className="oslo-float-label"><span>↗</span><div>Less switching.<br /><b>More living.</b></div></div>
-          <span className="oslo-preview-label">ILLUSTRATIVE PRODUCT VIEW</span>
         </div>
       </section>
 

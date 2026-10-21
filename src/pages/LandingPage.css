@@ -7,3 +7,33 @@
 /* Oslo: blue glass, wallet-first. */
 .oslo-landing-active{background:#eff5ff!important}.oslo-landing{--ink:#152c54;--muted:#576d8e;--mint:#c8e3ff;background:radial-gradient(ellipse at 90% 15%,#d6e6ff 0,transparent 30%),radial-gradient(ellipse at 0% 23%,#dfeaff 0,transparent 28%),#f6f9ff}.oslo-header{border-color:#203d6b14}.oslo-mark{border-color:#2469db}.oslo-mark:after{background:#f6f9ff}.oslo-wordmark-dot{color:#3977db}.oslo-button{border-radius:24px}.oslo-button-dark{background:linear-gradient(150deg,#478dfb,#2764dd);box-shadow:0 6px 18px #2860d326,inset 0 1px 0 #ffffff50}.oslo-button-dark:hover{background:#2864dc}.oslo-hero{min-height:720px}.oslo-hero h1{font-weight:600;letter-spacing:-4px}.oslo-hero h1>span{font-family:inherit;font-weight:500;font-style:normal;color:#3978d8;letter-spacing:-4px}.oslo-eyebrow i,.oslo-demo-foot i{background:#4c8beb}.oslo-wallet-demo{background:linear-gradient(145deg,#ffffffc9,#e9f3ff90);backdrop-filter:blur(24px);border:1px solid #ffffffed;box-shadow:0 35px 80px #356ac42b,inset 0 1px 0 #fff;border-radius:35px;padding:30px 24px 25px;transform:rotate(-7deg);width:315px;min-height:460px}.oslo-wallet-demo:before{content:'';display:block;width:65px;height:6px;background:#8da6c74d;border-radius:10px;margin:-15px auto 20px}.oslo-visual:before{background:radial-gradient(ellipse at 65% 44%,#b5d2ff99,transparent 60%),radial-gradient(ellipse at 25% 75%,#d7ddffb0,transparent 55%)}.oslo-orbit{border-color:#92b5e72e}.oslo-floating-token{background:linear-gradient(140deg,#f2f8ffd9,#aacfff99);border:1px solid #fff;color:#397be4;box-shadow:0 20px 30px #5079b927,inset 0 2px 6px #fff;backdrop-filter:blur(16px);border-radius:25px}.oslo-float-label{background:#edf6ffb8;border-color:#fff;backdrop-filter:blur(20px);box-shadow:0 15px 35px #3158891a}.oslo-float-label>span{background:#d1e6ff;color:#3678d8}.oslo-demo-actions>span{background:#daeaff;border:1px solid #ffffffc0;color:#3068b6;border-radius:15px;flex-direction:column;gap:2px;font-size:23px}.oslo-demo-actions small{font-size:9px}.oslo-demo-assets i{background:#d3e9ff;color:#3177c2}.oslo-demo-assets>div{border-color:#29538412}.oslo-demo-balance>span,.oslo-demo-balance>p,.oslo-demo-assets small,.oslo-demo-foot,.oslo-demo-assets>div:first-child>span+span{color:#637a99}.oslo-demo-balance>strong{color:#214e8c;font-size:23px}.oslo-capabilities{border-color:#27578f1c;background:#ffffff60}.oslo-capabilities i{color:#78a2db}.oslo-capabilities>span:first-child{color:#617b9c}.oslo-feature-menu button[aria-selected=true]{background:#e0ecfc;color:#2864b9}.oslo-feature-menu button{border-color:#25538d1c}.oslo-feature-panel{background:linear-gradient(130deg,#e4efffa8,#f3f7ff85);border:1px solid #fff;box-shadow:0 18px 45px #507cba0d;border-radius:25px;backdrop-filter:blur(15px)}.oslo-feature-art>div{background:#bed7f5;border-color:#fff}.oslo-feature-art>div+div{background:linear-gradient(135deg,#f0f7ffbb,#bad9ff99);box-shadow:0 15px 35px #315d9b20;backdrop-filter:blur(12px)}.oslo-feature-art>span{color:#3b78c6}.oslo-how{background:radial-gradient(ellipse at 0% 100%,#244c8b,transparent 70%),#132b50;color:#eff6ff}.oslo-how .oslo-eyebrow,.oslo-how li>span{color:#a6cafa}.oslo-how h2 em{color:#b9dcff}.oslo-how>div>p,.oslo-how li p{color:#b8cce7}.oslo-how li{border-color:#c2dbff26}.oslo-button-mint{background:#c7e2ff;color:#1f4b85}.oslo-faq details{border-color:#234b7e25}.oslo-closing{background:radial-gradient(ellipse at 50% 100%,#b3d2ff88,transparent 65%),#e3edfc;border:1px solid #fff;border-radius:30px}.oslo-closing-word{color:#2754980b}.oslo-loading{background:#eff5ff;color:#245496}
 @media(max-width:700px){.oslo-hero{min-height:0}.oslo-hero h1,.oslo-hero h1>span{letter-spacing:-2.8px}.oslo-visual{height:490px}.oslo-wallet-demo{width:295px}.oslo-float-label{bottom:16px}.oslo-floating-token{right:0;top:10px}.oslo-preview-label{bottom:-12px}}
+
+/* White canvas; the blue glass lives inside the product. */
+.oslo-landing-active{background:#fff!important}
+.oslo-landing{background:#fff;--ink:#172333;--muted:#697380}
+.oslo-hero h1>span{color:inherit}
+.oslo-visual{height:590px}
+.oslo-visual:before,.oslo-orbit,.oslo-floating-token,.oslo-float-label{display:none}
+.oslo-wallet-demo{box-sizing:border-box;width:320px;min-height:560px;padding:18px 22px 20px;transform:rotate(-4deg);border:7px solid #e4e8ef;border-radius:48px;background:radial-gradient(ellipse at 10% 15%,#b9d9ff,transparent 65%),linear-gradient(155deg,#f0f7ff,#d7e9ff 60%,#a6caff);box-shadow:0 35px 60px #182b4520,inset 0 0 0 2px #ffffffb0;color:#18385f}
+.oslo-wallet-demo:before{display:none}
+.oslo-phone-status{display:flex;align-items:center;justify-content:space-between;font-size:10px;font-weight:600;margin:0 2px 28px}
+.oslo-phone-status i{width:80px;height:22px;background:#192431;border-radius:20px}
+.oslo-demo-balance{padding:30px 0 23px}
+.oslo-demo-balance>strong{font-size:35px;letter-spacing:-1.5px}
+.oslo-demo-actions{gap:7px}
+.oslo-demo-actions>span{padding:10px 5px;background:#ffffff70;box-shadow:0 4px 12px #4f7fc412}
+.oslo-demo-assets{padding:16px 14px 7px;border-radius:20px;background:#ffffff65;border:1px solid #ffffffb0}
+.oslo-demo-assets>div{padding:13px 0}
+.oslo-demo-nav{display:flex;justify-content:space-between;border-top:1px solid #ffffffb0;margin-top:22px;padding-top:15px;text-align:center;font-size:18px;color:#6b83a1}
+.oslo-demo-nav>b{color:#286adb;font-weight:500}
+.oslo-demo-nav small{display:block;font-size:8px;margin-top:3px}
+.oslo-preview-label{bottom:-4px;color:#87909c}
+.oslo-feature-panel{background:#fafbfc;border:1px solid #e8ecf1;box-shadow:none}
+.oslo-feature-menu button[aria-selected=true]{background:#f3f5f8;color:#172333}
+.oslo-how{background:#fff;color:var(--ink);border-top:1px solid #e8ecf1;border-bottom:1px solid #e8ecf1}
+.oslo-how .oslo-eyebrow,.oslo-how li>span,.oslo-how>div>p,.oslo-how li p{color:var(--muted)}
+.oslo-how h2 em{color:var(--ink)}
+.oslo-how li{border-color:#e8ecf1}
+.oslo-closing{background:#fff;border:1px solid #e8ecf1}
+.oslo-closing-word{color:#17233308}
+@media(max-width:700px){.oslo-visual{height:590px;margin:0;transform:scale(.95)}.oslo-wallet-demo{width:300px}.oslo-preview-label{bottom:-10px}}

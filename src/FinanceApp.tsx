@@ -87,8 +87,7 @@ function AppContent() {
         <nav className="nav">
           <div className="nav-left">
             <NavLink to="/" className="logo">
-              <img src={`${import.meta.env.BASE_URL}logo.svg`} width="25" height="25" alt="" />
-              Oslo
+              oslo
             </NavLink>
             <div className="nav-tabs">
               {[['/wallet', 'Wallet'], ['/payments', 'Payments'], ['/lending', 'Lending'], ['/perps', 'Trade']].map(([to, label]) => <NavLink key={to} to={to} className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>{label}</NavLink>)}
