@@ -1,3 +1,4 @@
+import { InAppBrowser } from './components/shared/InAppBrowser'
 import { useState, useRef, useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom'
 import { WagmiProvider } from 'wagmi'
@@ -111,6 +112,7 @@ function AppContent() {
   return (
       <div className="app oslo-workspace">
         <Sidebar />
+        <InAppBrowser />
         <nav className="nav">
           <div className="nav-left">
             <NavLink to="/" className="logo">

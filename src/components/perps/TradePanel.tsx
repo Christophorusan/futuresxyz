@@ -1,3 +1,4 @@
+import { openInOslo } from '../shared/InAppBrowser'
 import { useState, useCallback } from 'react'
 import { useMarket } from '../../contexts/MarketContext'
 import { useHyperliquid } from '../../contexts/HyperliquidContext'
@@ -260,7 +261,7 @@ export function TradePanel() {
 
       {/* Deposit — full width like Hyperliquid */}
       {isConnected && (
-        <button className="tp-hl-deposit" onClick={() => window.open('https://app.hyperunit.xyz/deposit', '_blank')}>
+        <button className="tp-hl-deposit" onClick={() => openInOslo('https://app.hyperunit.xyz/deposit')}>
           Deposit
         </button>
       )}
@@ -273,7 +274,7 @@ export function TradePanel() {
           }}>
             Perps &#x21C4; Spot
           </button>
-          <button className="tp-hl-action-btn" onClick={() => window.open('https://app.hyperunit.xyz/withdraw', '_blank')}>
+          <button className="tp-hl-action-btn" onClick={() => openInOslo('https://app.hyperunit.xyz/withdraw')}>
             Withdraw
           </button>
         </div>
