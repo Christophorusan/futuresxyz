@@ -79,11 +79,36 @@ function NavMore() {
   )
 }
 
+const sidebarItems = [
+  ['/wallet', 'Wallet', 'M3 7h18v14H3z M3 7V4h15v3 M16 12h5v5h-5z'],
+  ['/payments', 'Payments', 'M5 19 19 5 M5 5h14v14'],
+  ['/lending', 'Lending', 'M4 20h16 M7 16v-5 M12 16V7 M17 16V3'],
+  ['/perps', 'Trade', 'M3 17 8 12l4 3 9-11 M15 4h6v6'],
+  ['/spot', 'Swap', 'M4 7h16l-4-4 M20 17H4l4 4'],
+  ['/portfolio', 'Portfolio', 'M12 3v9h9 M9 4a9 9 0 1 0 11 11'],
+  ['/docs', 'Docs', 'M5 3h14v18H5z M8 7h8 M8 11h8 M8 15h5'],
+]
+
+function Sidebar() {
+  return <aside className="oslo-sidebar">
+    <NavLink to="/wallet" className="oslo-sidebar-brand" aria-label="Oslo wallet">oslo</NavLink>
+    <nav className="oslo-sidebar-links" aria-label="Main navigation">
+      {sidebarItems.map(([to, label, path]) => <NavLink key={to} to={to} className={({ isActive }) => `oslo-sidebar-link${isActive ? ' active' : ''}`}>
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={path} /></svg>
+        <span>{label}</span>
+      </NavLink>)}
+      <div className="oslo-sidebar-more"><NavMore /></div>
+    </nav>
+    <span className="oslo-sidebar-foot">YOUR MONEY.<br />YOUR MOVE.</span>
+  </aside>
+}
+
 function AppContent() {
   useSoundNotifications()
 
   return (
-      <div className="app">
+      <div className="app oslo-workspace">
+        <Sidebar />
         <nav className="nav">
           <div className="nav-left">
             <NavLink to="/" className="logo">
