@@ -1,3 +1,4 @@
+import { useFavorites } from '../../hooks/useFavorites'
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useMarketMeta, type MarketInfo } from '../../hooks/useMarketMeta'
 import { useMarket } from '../../contexts/MarketContext'
@@ -62,12 +63,7 @@ export function MarketSelector() {
   const [mainTab, setMainTab] = useState<MainTab>('All')
   const [sortField, setSortField] = useState<SortField>('volume')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
-  const [favorites, setFavorites] = useState<Set<string>>(() => {
-    try {
-      const saved = localStorage.getItem('fav-markets')
-      return saved ? new Set(JSON.parse(saved)) : new Set<string>()
-    } catch { return new Set<string>() }
-  })
+  const { favorites, toggleFav } = useFavorites()
 
   // Close on Escape
   useEffect(() => {
@@ -88,16 +84,6 @@ export function MarketSelector() {
     if (sortField === field) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
     else { setSortField(field); setSortDir('desc') }
   }, [sortField])
-
-  const toggleFav = (name: string) => {
-    setFavorites(prev => {
-      const next = new Set(prev)
-      if (next.has(name)) next.delete(name)
-      else next.add(name)
-      localStorage.setItem('fav-markets', JSON.stringify([...next]))
-      return next
-    })
-  }
 
   const filtered = useMemo(() => {
     let list = [...markets]
