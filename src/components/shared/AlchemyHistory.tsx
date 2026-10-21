@@ -15,7 +15,7 @@ export function AlchemyHistory({ address }: { address?: Address }) {
   if (!alchemyApiKey || !address) return null
   const entries = [...new Map(history.data?.pages.flatMap(p => p.transfers).map(t => [t.id, t])).values()]
   return <section className="lending-card"><h3>Onchain transfer history</h3>
-    <p>Indexed by Alchemy · HyperEVM native and ERC-20 transfers. Internal transfers, NFTs and HyperCore activity are excluded. Token names are unverified; amounts are approximate.</p>
+    <p>Recent coin transfers on HyperEVM. Some transfers, collectibles and trading activity are not shown. Amounts are approximate, and asset names have not been verified.</p>
     <div className="lending-actions"><button aria-pressed={direction === 'incoming'} onClick={() => setDirection('incoming')}>Received</button><button aria-pressed={direction === 'outgoing'} onClick={() => setDirection('outgoing')}>Sent</button><button disabled={history.isFetching} onClick={() => void history.refetch()}>Refresh</button></div>
     {history.isLoading && <p role="status">Loading transfer history…</p>}
     {history.isError && <p role="alert">Transfer history is unavailable or incomplete. <a href={`https://hyperevmscan.io/address/${address}`} target="_blank" rel="noopener noreferrer">Open account explorer</a></p>}

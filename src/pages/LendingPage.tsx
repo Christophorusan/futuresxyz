@@ -38,35 +38,35 @@ export function LendingPage() {
     finally { setLoadingAccount(false) }
   }
   return <main className="lending-page">
-    <header className="lending-heading"><div><h1>Lending</h1><p>HyperEVM pooled markets · live onchain rates and positions</p></div>
-      <a href={protocols[protocol].source} target="_blank" rel="noreferrer">Protocol documentation ↗</a>
+    <header className="lending-heading"><div><h1>Lending</h1><p>Earn by lending your assets, or explore borrowing.</p></div>
+      <a href={protocols[protocol].source} target="_blank" rel="noreferrer">How lending works</a>
     </header>
     <div className="lending-toolbar">
       <div className="lending-actions"><button disabled={busy || loadingAccount} className={!smart ? 'active' : ''} onClick={() => setSmart(false)}>Connected wallet</button>
-        <button disabled={busy || loadingAccount || !smartWalletsEnabled || !signer} className={smart ? 'active' : ''} onClick={enableSmartAccount}>{loadingAccount ? 'Loading…' : 'Alchemy smart account'}</button></div>
+        <button disabled={busy || loadingAccount || !smartWalletsEnabled || !signer} className={smart ? 'active' : ''} onClick={enableSmartAccount}>{loadingAccount ? 'Loading…' : 'Additional wallet'}</button></div>
     </div>
-    {smart && <div className="lending-notice"><strong>Separate smart account</strong><p className="evm-address">{currentSmartAccount || 'Reconnect the owner wallet to continue.'}</p><p>Only assets at this address can be supplied or repaid. Your connected wallet’s existing deposits and debts remain there. Fund this address on HyperEVM before use. {gasPolicyId ? 'Eligible transaction gas is sponsored.' : 'Gas sponsorship is not configured.'}</p></div>}
+    {smart && <div className="lending-notice"><strong>Your additional wallet</strong><p className="evm-address">{currentSmartAccount || 'Reconnect the owner wallet to continue.'}</p><p>This wallet has its own balance. Add funds on the HyperEVM network before using it. Deposits and loans in your other wallet stay there. {gasPolicyId ? 'Network fees may be covered for eligible transactions.' : 'You pay the network fees.'}</p></div>}
     {error && <p role="alert">{error}</p>}
     <div className="lending-layout"><section className="lending-card">
       <div className="lending-heading"><h2>{protocols[protocol].name} markets</h2><button disabled={query.isFetching} onClick={() => query.refetch()}>{query.isFetching ? 'Refreshing…' : 'Refresh'}</button></div>
-      {query.data && <p>Observed block {query.data.blockNumber.toString()} · refreshed {new Date(query.dataUpdatedAt).toLocaleTimeString()}</p>}
+      {query.data && <p>Last updated {new Date(query.dataUpdatedAt).toLocaleTimeString()}</p>}
       {query.isError && <p role="alert">Live market data is unavailable. Actions require fresh data. <button onClick={() => query.refetch()}>Retry</button></p>}
-      {query.isPending && <p role="status">Loading reserves from HyperEVM…</p>}
-      <div className="lending-table-scroll"><table className="lending-table"><thead><tr><th>Asset</th><th>Supply APY</th><th>Borrow APY</th><th>Supplied</th><th>Borrowed</th><th>Status</th></tr></thead><tbody>
+      {query.isPending && <p role="status">Loading lending options…</p>}
+      <div className="lending-table-scroll"><table className="lending-table"><thead><tr><th>Asset</th><th>Yearly earning rate</th><th>Yearly borrowing rate</th><th>Total deposited</th><th>Borrowed</th><th>Status</th></tr></thead><tbody>
         {markets.map(m => <tr key={m.asset} className={m.asset === market?.asset ? 'selected' : ''}>
           <td><button disabled={busy} onClick={() => setSelected(m.asset)}>{m.symbol}</button></td>
           <td className="green">{rateToApy(m.supplyRate).toFixed(2)}%</td><td>{rateToApy(m.borrowRate).toFixed(2)}%</td>
           <td>{Number(formatUnits(m.supply, m.decimals)).toLocaleString(undefined, { maximumFractionDigits: 2 })} {m.symbol}</td>
           <td>{Number(formatUnits(m.debt, m.decimals)).toLocaleString(undefined, { maximumFractionDigits: 2 })} {m.symbol}</td>
-          <td>{m.paused ? 'Paused' : !m.active ? 'Inactive' : m.frozen ? 'Frozen' : !m.borrowing ? 'Supply only' : m.borrowCap > 0n && m.debt >= m.borrowCap * 10n ** BigInt(m.decimals) ? 'Borrow cap full' : 'Active'}</td>
+          <td>{m.paused ? 'Paused' : !m.active ? 'Inactive' : m.frozen ? 'Frozen' : !m.borrowing ? 'Deposits only' : m.borrowCap > 0n && m.debt >= m.borrowCap * 10n ** BigInt(m.decimals) ? 'Borrowing limit reached' : 'Active'}</td>
         </tr>)}
-      </tbody></table></div><p>APYs are annualized current rates, exclude rewards, and change with utilization. Totals are denominated in each asset.</p>
+      </tbody></table></div><p>These are estimated yearly rates based on current conditions. Rates can change and do not include extra rewards. Amounts are shown in each asset.</p>
     </section>
       {market && <LendingTrade key={`${market.protocol}-${market.asset}-${account}-${smart}`} market={market} account={account} smart={smart} disabled={busy} onBusy={setBusy} />}
     </div>
     <HypeWrap key={`${account}-${smart}`} account={account} smart={smart} disabled={busy} onBusy={setBusy} />
     {address && currentSmartAccount && <SmartAccountTransfer key={`${address}-${currentSmartAccount}-${market?.asset}`} owner={address} smartAccount={currentSmartAccount} market={market} disabled={busy} onBusy={setBusy} />}
     <EvmActivity />
-    <section className="lending-card"><h3>Felix</h3><p>Felix CDPs and isolated markets use different contracts and risk models. Manage those positions in their protocol app.</p><a href="https://www.usefelix.xyz/portfolio" target="_blank" rel="noreferrer">Open Felix ↗</a></section>
+    <section className="lending-card"><h3>Felix</h3><p>Felix offers other borrowing options, with its own terms and risks. View and manage your Felix loans here.</p><a href="https://www.usefelix.xyz/portfolio" target="_blank" rel="noreferrer">Open Felix ↗</a></section>
   </main>
 }
