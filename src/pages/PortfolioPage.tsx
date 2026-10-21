@@ -1,3 +1,4 @@
+import { MarketWatchlist } from '../components/MarketWatchlist'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useAccount } from 'wagmi'
 import { useEvmBalances } from '../hooks/useEvmBalances'
@@ -133,6 +134,7 @@ export function PortfolioPage() {
     return (
       <div className="page-container">
         <div className="page-empty">Connect wallet to view portfolio</div>
+        <MarketWatchlist />
       </div>
     )
   }
@@ -237,6 +239,7 @@ export function PortfolioPage() {
         {evm.balances.map(b => <div className="portfolio-row" key={b.symbol}><span>{b.symbol}</span><span>{b.balance}</span></div>)}
         {!evm.isLoading && !evm.isError && !evm.balances.length && <p>No supported token balances.</p>}
       </section>
+      <MarketWatchlist />
       <EvmActivity />
       {/* Recent Trades */}
       <div className="portfolio-section-card">
