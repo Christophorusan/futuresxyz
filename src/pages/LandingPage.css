@@ -38,18 +38,83 @@
 .oslo-closing-word{color:#17233308}
 @media(max-width:700px){.oslo-visual{height:590px;margin:0;transform:scale(.95)}.oslo-wallet-demo{width:300px}.oslo-preview-label{bottom:-10px}}
 
-/* Upright dark Oslo portfolio preview. The surrounding page stays white. */
+/* Compact portfolio preview using the perps dark theme. */
 .oslo-hero{padding-top:20px;padding-bottom:30px;min-height:0}
 .oslo-visual{height:600px;transform:none}
-.oslo-wallet-demo{width:280px;aspect-ratio:9/19.5;min-height:0;padding:14px 14px 12px;display:flex;flex-direction:column;font-size:10px;line-height:1.25;transform:none;border:6px solid #202833;border-radius:38px;background:radial-gradient(ellipse at 10% 0%,#1b345a80,transparent 65%),#0e1727;color:#e8f1ff;box-shadow:0 32px 65px #13223825,inset 0 0 0 1px #64758c55;color-scheme:dark}
-.oslo-phone-status{margin:0 4px 8px;color:#edf3ff}.oslo-phone-status i{background:#060a11;height:17px;width:66px}
-.oslo-demo-head>b{color:#f0f5ff;font-size:22px;letter-spacing:-1.6px}.oslo-demo-head>span:nth-child(2){color:#8fa7c9;font-size:7px}.oslo-demo-avatar{background:#243c60;color:#a8ccff;border:1px solid #607da140}
-.oslo-demo-title{margin:10px 0 8px}.oslo-demo-title>small{font-size:7px;color:#90accf;letter-spacing:1.5px}.oslo-demo-title h3{font-size:21px;font-weight:600;letter-spacing:-.8px;margin:3px 0}.oslo-demo-title p{font-size:9px;color:#9aabc4;margin:0}
-.oslo-demo-summary{padding:10px 10px 0;background:linear-gradient(135deg,#23395790,#17263c85);border:1px solid #7ea8e026;border-radius:19px}
-.oslo-demo-balance{padding:0 0 10px}.oslo-demo-balance>span{font-size:9px;color:#a6b7ce}.oslo-demo-balance>strong{display:block;font-size:25px;color:#f3f7ff;letter-spacing:-1px;margin:3px 0}.oslo-demo-balance strong small{font-size:10px;color:#93a9c8;letter-spacing:0;font-weight:400}.oslo-demo-balance>p{font-size:8px;color:#63c9a7;margin-top:4px}.oslo-demo-balance p span{color:#91a6c2;margin-left:3px}
-.oslo-demo-actions{margin:0;gap:7px}.oslo-demo-actions>span{background:linear-gradient(140deg,#40649355,#28426845);border:1px solid #779ed42e;color:#a8cdff;padding:5px 3px;font-size:17px;box-shadow:inset 0 1px 0 #bad5ff0d;border-radius:12px}.oslo-demo-actions small{font-size:8px;color:#d0dded}
-.oslo-demo-chart-title{display:flex;justify-content:space-between;margin-top:10px;font-size:7px;color:#a5b7cf}.oslo-demo-chart-title>span+span{word-spacing:5px}.oslo-demo-chart-title b{background:#4674ad45;color:#cfdeef;padding:3px;border-radius:4px}.oslo-demo-chart{display:block;width:100%;height:42px;margin-top:8px}
-.oslo-demo-assets{padding:5px 10px;margin-top:10px;background:#1a2a4099;border:1px solid #7ea8e026;border-radius:18px}.oslo-demo-assets>div{padding:3px 0;border-color:#9ab9e11a}.oslo-demo-assets>div:first-child{font-size:10px;color:#e0eafa}.oslo-demo-assets>div:first-child>span+span{color:#92a9c8;font-size:8px}.oslo-demo-assets b{font-size:10px;color:#e5effd}.oslo-demo-assets small{font-size:8px;color:#91a6c2}.oslo-demo-asset-value{margin-left:auto;text-align:right}.oslo-demo-asset-value b{font-weight:500}.oslo-demo-asset-value small{display:block}
-.oslo-demo-favorites{display:flex;justify-content:space-between;font-size:7px;padding:10px 2px 0;color:#c2d3e9}.oslo-demo-favorites i{color:#8ab7ff;font-style:normal}.oslo-demo-favorites b{color:#63c9a7;font-weight:400;margin-left:3px}
-.oslo-demo-foot{font-size:6.5px;color:#849ab9;text-align:center;justify-content:center;padding:0;margin-top:8px}.oslo-demo-nav{border-color:#7997bd26;margin-top:auto;padding:8px 6px 0;color:#8d9fba;font-size:16px}.oslo-demo-nav>b{color:#8cbaff}.oslo-demo-nav small{font-size:8px}
+.oslo-wallet-demo {
+  width:280px;
+  aspect-ratio:9/19.5;
+  min-height:0;
+  padding:14px 14px 12px;
+  display:flex;
+  flex-direction:column;
+  font-size:10px;
+  line-height:1.25;
+  transform:none;
+  border:6px solid #202833;
+  border-radius:38px;
+  background:
+    radial-gradient(ellipse at 25% 15%,rgba(59,130,246,.25) 0%,transparent 50%),
+    radial-gradient(ellipse at 75% 80%,rgba(99,102,241,.18) 0%,transparent 50%),
+    radial-gradient(ellipse at 50% 45%,rgba(45,212,191,.08) 0%,transparent 50%),
+    radial-gradient(ellipse at 85% 20%,rgba(139,92,246,.12) 0%,transparent 40%),
+    linear-gradient(145deg,#050a18 0%,#0a1530 30%,#101e40 50%,#0c1832 70%,#060b1a 100%);
+  color:var(--text-0);
+  box-shadow:0 32px 65px #13223825,inset 0 0 0 1px var(--border-hover);
+  color-scheme:dark;
+}
+.oslo-phone-status{margin:0 4px 8px;color:var(--text-0)}
+.oslo-phone-status i{background:#060a11;height:17px;width:66px}
+.oslo-demo-head>b{color:var(--text-0);font-size:22px;letter-spacing:-1.6px}
+.oslo-demo-head>span:nth-child(2){color:var(--text-2);font-size:7px}
+.oslo-demo-avatar{background:var(--blue-bg);color:var(--blue-hover);border:1px solid var(--border-hover)}
+.oslo-demo-title{margin:10px 0 8px}
+.oslo-demo-title>small{font-size:7px;color:var(--blue-hover);letter-spacing:1.5px}
+.oslo-demo-title h3{font-size:21px;font-weight:600;letter-spacing:-.8px;margin:3px 0}
+.oslo-demo-title p{font-size:9px;color:var(--text-1);margin:0}
+.oslo-demo-summary,.oslo-demo-assets {
+  background:var(--bg-1);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+.oslo-demo-summary{padding:10px 10px 0}
+.oslo-demo-balance{padding:0 0 10px}
+.oslo-demo-balance>span{font-size:9px;color:var(--text-1)}
+.oslo-demo-balance>strong{display:block;font-size:25px;color:var(--text-0);letter-spacing:-1px;margin:3px 0}
+.oslo-demo-balance strong small{font-size:10px;color:var(--text-2);letter-spacing:0;font-weight:400}
+.oslo-demo-balance>p{font-size:8px;color:var(--green);margin-top:4px}
+.oslo-demo-balance p span{color:var(--text-2);margin-left:3px}
+.oslo-demo-actions{margin:0;gap:7px}
+.oslo-demo-actions>span {
+  background:linear-gradient(145deg,rgba(68,132,241,.22),rgba(81,144,255,.08));
+  border:1px solid rgba(113,167,255,.22);
+  color:#85baff;
+  padding:5px 3px;
+  font-size:17px;
+  box-shadow:inset 0 1px 0 #ffffff12;
+  border-radius:var(--radius-sm);
+}
+.oslo-demo-actions small{font-size:8px;color:var(--text-0)}
+.oslo-demo-chart-title{display:flex;justify-content:space-between;margin-top:10px;font-size:7px;color:var(--text-1)}
+.oslo-demo-chart-title>span+span{word-spacing:5px}
+.oslo-demo-chart-title b{background:var(--blue-bg);color:var(--blue-hover);padding:3px;border-radius:4px}
+.oslo-demo-chart{display:block;width:100%;height:42px;margin-top:8px}
+.oslo-demo-assets{padding:5px 10px;margin-top:10px}
+.oslo-demo-assets>div{padding:3px 0;border-color:var(--border)}
+.oslo-demo-assets>div:first-child{font-size:10px;color:var(--text-0)}
+.oslo-demo-assets>div:first-child>span+span{color:var(--text-2);font-size:8px}
+.oslo-demo-assets b{font-size:10px;color:var(--text-0)}
+.oslo-demo-assets small{font-size:8px;color:var(--text-2)}
+.oslo-demo-asset-value{margin-left:auto;text-align:right}
+.oslo-demo-asset-value b{font-weight:500}
+.oslo-demo-asset-value small{display:block}
+.oslo-demo-favorites{display:flex;justify-content:space-between;font-size:7px;padding:10px 2px 0;color:var(--text-1)}
+.oslo-demo-favorites i{color:var(--blue-hover);font-style:normal}
+.oslo-demo-favorites b{color:var(--green);font-weight:400;margin-left:3px}
+.oslo-demo-foot{font-size:6.5px;color:var(--text-2);text-align:center;justify-content:center;padding:0;margin-top:8px}
+.oslo-demo-nav{border-color:var(--border);margin-top:auto;padding:8px 6px 0;color:var(--text-2);font-size:16px}
+.oslo-demo-nav>b{color:#85baff}
+.oslo-demo-nav small{font-size:8px}
 @media(max-width:700px){.oslo-visual{height:auto;min-height:0;margin:10px -8px 0;transform:none}.oslo-wallet-demo{width:min(280px,100%);transform:none}.oslo-hero{gap:30px}}
