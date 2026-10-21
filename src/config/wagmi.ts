@@ -34,7 +34,7 @@ export const config = createConfig({
   connectors: [
     injected(),
     ...(walletConnectProjectId ? [walletConnect({ projectId: walletConnectProjectId, showQrModal: true,
-      metadata: { name: 'Futuresxyz', description: 'HyperEVM payments, lending and trading', url: appUrl, icons: [new URL('logo.svg', appUrl).href] },
+      metadata: { name: 'Oslo', description: 'HyperEVM payments, lending and trading', url: appUrl, icons: [new URL('logo.svg', appUrl).href] },
     })] : []),
   ],
   transports: {

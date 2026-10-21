@@ -1,4 +1,4 @@
-name: Verify and deploy Futuresxyz
+name: Verify and deploy Oslo
 on:
   push:
     branches: [main]

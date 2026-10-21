@@ -1,13 +1,1 @@
-<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Candlestick logo: first SOLID, next two HOLLOW -->
-
-  <!-- Candle 1 (SOLID filled body) -->
-  <line x1="6" y1="2" x2="6" y2="30" stroke="currentColor" stroke-width="1.5"/>
-  <rect x="2.5" y="7" width="7" height="15" rx="1" fill="currentColor"/>
-
-  <!-- Candle 2 (HOLLOW - stroke only, no fill, no wick) -->
-  <rect x="12.5" y="9" width="7" height="9" rx="1" stroke="currentColor" stroke-width="1.5"/>
-
-  <!-- Candle 3 (HOLLOW - stroke only, no fill, no wick) -->
-  <rect x="22.5" y="5" width="7" height="11" rx="1" stroke="currentColor" stroke-width="1.5"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#2469db"/><circle cx="32" cy="32" r="16" fill="none" stroke="#d4eaff" stroke-width="8"/><path d="M43 20l9 8-9 9" fill="none" stroke="#2469db" stroke-width="7"/></svg>

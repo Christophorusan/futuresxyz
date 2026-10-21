@@ -105,7 +105,7 @@ function PaymentWorkspace({ hash, receive }: { hash: string; receive: boolean })
     catch { setMessage('Clipboard unavailable. Select and copy the displayed text.') }
   }
   return <main className="lending-page payments-page">
-    <header className="payment-hero"><div><span className="payment-eyebrow">FUTURESXYZ PAY · HYPEREVM</span><h1>Your money. Your wallet.</h1><p>Send tokens directly. Share a request. Stay in control.</p></div><span className="payment-network">HyperEVM · Chain 999</span></header>
+    <header className="payment-hero"><div><span className="payment-eyebrow">OSLO PAY · HYPEREVM</span><h1>Your money. Your wallet.</h1><p>Send tokens directly. Share a request. Stay in control.</p></div><span className="payment-network">HyperEVM · Chain 999</span></header>
     <div className="payment-layout"><section className="lending-card payment-main">
       <div className="payment-tabs" role="tablist" aria-label="Payment mode">{(['send', 'receive'] as const).map(t => <button role="tab" aria-selected={tab === t} className={tab === t ? 'active' : ''} disabled={busy} onClick={() => { setTab(t); reset() }} key={t}>{t === 'send' ? '↗ Send' : '↙ Receive & request'}</button>)}</div>
       <div className="lending-actions payment-account"><button disabled={busy} className={!isSmart ? 'active' : ''} onClick={() => { setSmart(undefined); reset() }}>Connected wallet</button><button title={!alchemyApiKey ? 'Alchemy account setup required' : 'Separate account; compatibility must be verified'} disabled={busy || !address || !smartWalletsEnabled} className={isSmart ? 'active' : ''} onClick={smartAccount}>Alchemy smart account</button></div>
@@ -124,7 +124,7 @@ function PaymentWorkspace({ hash, receive }: { hash: string; receive: boolean })
         <label className="payment-label">Requested amount (optional)<input disabled={busy} inputMode="decimal" placeholder="Any amount" value={requestAmount} onChange={e => setRequestAmount(e.target.value)} /></label>
         {requestError && <p role="alert">{requestError}</p>}
         {account && <div className="payment-receive"><div className="payment-qr"><QRCodeSVG value={account} size={176} marginSize={3} title="HyperEVM receiving address" /></div><strong>Wallet address QR</strong><p className="evm-address">{account}</p><button onClick={() => copy(account)}>Copy address</button></div>}
-        {requestLink && <details className="payment-request"><summary>Share payment request</summary><div className="payment-qr"><QRCodeSVG value={requestLink} size={200} marginSize={3} title="Open payment request in Futuresxyz" /></div><p>This QR opens a payment review in Futuresxyz. It never sends automatically.</p><p className="evm-address">{requestLink}</p><button onClick={() => copy(requestLink)}>Copy request link</button></details>}
+        {requestLink && <details className="payment-request"><summary>Share payment request</summary><div className="payment-qr"><QRCodeSVG value={requestLink} size={200} marginSize={3} title="Open payment request in Oslo" /></div><p>This QR opens a payment review in Oslo. It never sends automatically.</p><p className="evm-address">{requestLink}</p><button onClick={() => copy(requestLink)}>Copy request link</button></details>}
       </>}
       {message && <p role="status" className="payment-message">{message}</p>}
     </section><aside>

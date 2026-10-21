@@ -2,20 +2,19 @@ export function DocsPage() {
   return (
     <div className="docs-page">
       <div className="docs-content">
-        <h1>Futuresxyz</h1>
-        <p className="docs-subtitle">Perpetual futures trading on Hyperliquid L1</p>
+        <h1>Oslo</h1>
+        <p className="docs-subtitle">Wallet, payments, lending, and trading</p>
 
         <section className="docs-section">
           <h2>Overview</h2>
           <p>
-            Futuresxyz is a high-performance trading interface built on Hyperliquid — the fastest
-            on-chain order book for perpetual futures. Trade 229+ markets including crypto, indices,
-            and commodities with up to 50x leverage, sub-second execution, and zero gas fees.
+            Oslo brings together a connected-wallet overview, HyperEVM payments, lending,
+            and Hyperliquid trading. Start in your wallet, then explore the tools you need.
           </p>
           <p>
-            The frontend connects directly to Hyperliquid's L1 via REST and WebSocket APIs.
-            No backend server, no custodial risk — your wallet signs every order locally
-            using EIP-712 typed data.
+            HyperEVM assets and HyperCore trading balances are separate. Connect a supported
+            wallet to view your assets and review transactions before signing. Lending and
+            trading involve risk, and product availability and fees vary.
           </p>
         </section>
 
@@ -74,7 +73,7 @@ export function DocsPage() {
           <div className="docs-code">
             <pre>{`User Wallet (Rabby / MetaMask / Phantom)
       | signTypedData (EIP-712)
-  Futuresxyz Frontend (React)
+  Oslo Frontend (React)
       |
   Hyperliquid L1 API
   |-- POST /info      -> market data, balances, positions
@@ -109,7 +108,7 @@ export function DocsPage() {
         <section className="docs-section">
           <h2>Builder Codes</h2>
           <p>
-            Futuresxyz earns revenue through Hyperliquid's Builder Codes system. Every trade
+            Oslo earns revenue through Hyperliquid's Builder Codes system. Every trade
             placed through the frontend automatically includes a small builder fee.
           </p>
           <ul>
@@ -228,7 +227,7 @@ trades     -> trade stream (price, size, side, time)`}</pre>
           <h2>Self-Hosting</h2>
           <div className="docs-code">
             <pre>{`# Clone
-git clone https://github.com/Chrisportugal/futuresxyz.git
+git clone https://github.com/Christophorusan/futuresxyz.git
 cd futuresxyz
 
 # Install + run
@@ -248,7 +247,7 @@ npx vercel --prod  # Deploy to Vercel (free)`}</pre>
         <section className="docs-section">
           <h2>Links</h2>
           <ul>
-            <li><strong>GitHub</strong> — github.com/Chrisportugal/futuresxyz</li>
+            <li><strong>GitHub</strong> — github.com/Christophorusan/futuresxyz</li>
             <li><strong>Hyperliquid API</strong> — hyperliquid.gitbook.io/hyperliquid-docs</li>
             <li><strong>Hyperliquid SDK</strong> — github.com/nktkas/hyperliquid</li>
             <li><strong>Builder Codes</strong> — hyperliquid.gitbook.io/.../builder-codes</li>

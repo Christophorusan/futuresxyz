@@ -15,7 +15,7 @@ export function BuilderApprovalBanner() {
       <div className="builder-banner-text">
         <span className="builder-banner-title">Enable Trading</span>
         <span className="builder-banner-desc">
-          One-time gasless signature to trade through Futuresxyz.
+          One-time gasless signature to trade through Oslo.
         </span>
       </div>
       <div style={{ display: 'flex', gap: 8 }}>
