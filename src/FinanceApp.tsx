@@ -82,7 +82,7 @@ const sidebarItems = [
   ['/lending', 'Lending', 'M4 20h16 M7 16v-5 M12 16V7 M17 16V3'],
   ['/perps', 'Trade', 'M3 17 8 12l4 3 9-11 M15 4h6v6'],
   ['/spot', 'Swap', 'M4 7h16l-4-4 M20 17H4l4 4'],
-  ['/docs', 'Docs', 'M5 3h14v18H5z M8 7h8 M8 11h8 M8 15h5'],
+  ['/predictions', 'Prediction markets', 'M4 20h16 M6 16V9 M12 16V4 M18 16v-5'],
 ]
 
 function Sidebar() {
