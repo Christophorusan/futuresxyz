@@ -1,3 +1,4 @@
+import { AppDiscovery } from '../components/AppDiscovery'
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { useHyperliquid } from '../contexts/HyperliquidContext'
 import { useUserState } from '../hooks/useUserState'
@@ -332,7 +333,7 @@ export function SpotPage() {
   }
 
   return (
-    <div className="perps-page">
+    <div className="finance-product-page"><div className="perps-page"><div className="perps-discover-bar"><strong>Hyperliquid · Spot trading</strong><span>Swap directly in Oslo</span></div>
       <TickerBar />
       {/* Market header */}
       <div className="market-header">
@@ -383,6 +384,6 @@ export function SpotPage() {
           <SpotTradePanel market={selected} />
         </div>
       </div>
-    </div>
+    </div><div className="finance-product-discovery"><AppDiscovery category="swap" /></div></div>
   )
 }

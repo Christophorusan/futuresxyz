@@ -18,6 +18,7 @@ const PerpsPage = lazy(() => import('./pages/PerpsPage').then(m => ({ default: m
 const SpotPage = lazy(() => import('./pages/SpotPage').then(m => ({ default: m.SpotPage })))
 const DocsPage = lazy(() => import('./pages/DocsPage').then(m => ({ default: m.DocsPage })))
 const PredictionsPage = lazy(() => import('./pages/PredictionsPage').then(m => ({ default: m.PredictionsPage })))
+const LendingProviderPage = lazy(() => import('./pages/LendingProviderPage').then(m => ({ default: m.LendingProviderPage })))
 const LendingPage = lazy(() => import('./pages/LendingPage').then(m => ({ default: m.LendingPage })))
 const OptionsPage = lazy(() => import('./pages/OptionsPage').then(m => ({ default: m.OptionsPage })))
 const StakingPage = lazy(() => import('./pages/StakingPage').then(m => ({ default: m.StakingPage })))
@@ -144,6 +145,7 @@ function AppContent() {
           <Route path="/discover" element={<DiscoverPage />} />
           <Route path="/payments" element={<LegacyPaymentRedirect />} />
           <Route path="/lending" element={<LendingPage />} />
+          <Route path="/lending/:provider" element={<LendingProviderPage />} />
           <Route path="/options" element={<OptionsPage />} />
           <Route path="/staking" element={<StakingPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />

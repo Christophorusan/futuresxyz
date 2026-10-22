@@ -42,8 +42,8 @@ export function LendingPage() {
     <header className="lending-heading"><div><h1>Lending</h1><p>Earn by lending your assets, or explore borrowing.</p></div>
       <a href={protocols[protocol].source} target="_blank" rel="noreferrer">How lending works</a>
     </header>
-    <AppDiscovery category="lending" />
-    <h2 style={{ marginBottom: 16 }}>Lend in Oslo · HyperLend on HyperEVM</h2>
+    <h2 style={{ marginBottom: 16 }}>Hyperliquid ecosystem · Lending</h2>
+    <p className="finance-discovery-note">Supply and borrow with HyperLend, an independent lending app on HyperEVM.</p>
     <div className="lending-toolbar">
       <div className="lending-actions"><button disabled={busy || loadingAccount} className={!smart ? 'active' : ''} onClick={() => setSmart(false)}>Connected wallet</button>
         <button disabled={busy || loadingAccount || !smartWalletsEnabled || !signer} className={smart ? 'active' : ''} onClick={enableSmartAccount}>{loadingAccount ? 'Loading…' : 'Additional wallet'}</button></div>
@@ -70,6 +70,7 @@ export function LendingPage() {
     <HypeWrap key={`${account}-${smart}`} account={account} smart={smart} disabled={busy} onBusy={setBusy} />
     {address && currentSmartAccount && <SmartAccountTransfer key={`${address}-${currentSmartAccount}-${market?.asset}`} owner={address} smartAccount={currentSmartAccount} market={market} disabled={busy} onBusy={setBusy} />}
     <EvmActivity />
-    <section className="lending-card"><h3>Felix</h3><p>Felix offers other borrowing options, with its own terms and risks. View and manage your Felix loans here.</p><a href="https://www.usefelix.xyz/portfolio" target="_blank" rel="noreferrer">Open Felix ↗</a></section>
+    <section className="lending-card"><h3>Felix</h3><p>Felix offers other borrowing options, with its own terms and risks. View and manage your Felix loans on its official site.</p><a data-external="true" href="https://www.usefelix.xyz/portfolio" target="_blank" rel="noreferrer">Open Felix ↗</a></section>
+    <AppDiscovery category="lending" />
   </main>
 }

@@ -18,6 +18,15 @@ describe('finance discovery', () => {
   it('preserves discover deep links through the entry screen', () => {
     expect(entryDestination({pathname:'/discover',search:'?category=lending',hash:''})).toBe('/discover?category=lending')
   })
+  it('opens provider lending guides through the entry screen', () => {
+    for (const id of ['aave', 'morpho', 'kamino']) {
+      const app = financeApps.find(app => app.id === id)!
+      expect(app.detailPath).toBe(`/lending/${id}`)
+      expect(entryDestination({ pathname: app.detailPath!, search: '', hash: '' })).toBe(app.detailPath)
+      expect(app.integrated).toBe(false)
+    }
+    expect(entryDestination({ pathname: '/lending/unknown', search: '', hash: '' })).toBe('/wallet')
+  })
   it('separates Oslo routes from HTTPS provider destinations', () => {
     for (const app of financeApps) {
       expect(app.destination.startsWith(app.integrated ? '/' : 'https://')).toBe(true)

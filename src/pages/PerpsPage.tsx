@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { AppDiscovery } from '../components/AppDiscovery'
 import '../components/AppDiscovery.css'
 import { useState } from 'react'
 import { TickerBar } from '../components/perps/TickerBar'
@@ -14,8 +14,8 @@ export function PerpsPage() {
   const [mView, setMView] = useState<MobileView>('chart')
 
   return (
-    <div className="perps-page">
-      <div className="perps-discover-bar"><span>Trading with Hyperliquid · Oslo’s default</span><Link to="/discover?category=perps">Discover other trading apps ↗</Link></div>
+    <div className="finance-product-page"><div className="perps-page">
+      <div className="perps-discover-bar"><strong>Hyperliquid · Perpetuals</strong><span>Trade directly in Oslo</span></div>
       <TickerBar />
       <MarketHeader />
 
@@ -47,6 +47,6 @@ export function PerpsPage() {
           <TradePanel />
         </div>
       </div>
-    </div>
+    </div><div className="finance-product-discovery"><AppDiscovery category="perps" /></div></div>
   )
 }
