@@ -1,3 +1,4 @@
+import { visibleHoldings } from '../lib/visibleHoldings'
 import { MarketWatchlist } from '../components/MarketWatchlist'
 import { useEffect, useRef, useState, lazy, Suspense } from 'react'
 import { useUnifiedPortfolio, validAccount, normalizeAccount, networks } from '../hooks/useUnifiedPortfolio'
@@ -30,9 +31,10 @@ export function WalletPage() {
   const [accountError,setAccountError]=useState('')
   const accounts=[...new Set([...(address?[normalizeAccount(address)]:[]),...tracked.map(normalizeAccount)])].sort()
   const {data,isLoading,isError}=useUnifiedPortfolio(accounts)
-  const holdings=data?.assets??[]
-  const incomplete=isError||!!data?.errors.length||holdings.some(a=>a.value===null)
-  const total=accounts.length&&!isLoading&&data&&!incomplete?holdings.reduce((sum,a)=>sum+(a.value??0),0):null
+  const assets=data?.assets??[]
+  const holdings=visibleHoldings(assets)
+  const incomplete=isError||!!data?.errors.length||assets.some(a=>a.value===null)
+  const total=accounts.length&&!isLoading&&data&&!incomplete?assets.reduce((sum,a)=>sum+(a.value??0),0):null
   const saveAccounts=(next:string[])=>{setTracked(next);try{localStorage.setItem('oslo-tracked-accounts',JSON.stringify(next))}catch{setAccountError('Saved for this session only.')}}
   const addAccount=()=>{const value=accountInput.trim();if(!validAccount(value)){setAccountError('Enter a valid Ethereum or Solana wallet address.');return}saveAccounts([...new Set([...tracked,normalizeAccount(value)])]);setAccountInput('');setAccountError('')}
   const money = (value: number) => value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -46,10 +48,10 @@ export function WalletPage() {
       <details className="wallet-details"><summary>Wallets and networks · {accounts.length} accounts</summary><p>Track Ethereum, Base, Arbitrum, Optimism, Polygon, HyperEVM, HyperCore and Solana together.</p><form onSubmit={e=>{e.preventDefault();addAccount()}} className="wallet-account-form"><input aria-label="Public wallet address" placeholder="Paste your wallet address" value={accountInput} onChange={e=>setAccountInput(e.target.value)} /><button type="submit">Add wallet</button></form>{accountError&&<p role="alert">{accountError}</p>}{tracked.map(a=><p key={a}><code>{a}</code> <button onClick={()=>saveAccounts(tracked.filter(v=>v!==a))}>Remove</button></p>)}<small>You can view added wallets here. To send or receive, use your connected wallet on the HyperEVM network.</small></details>
       {!!data?.errors.length&&<details className="wallet-details"><summary>Some networks could not be loaded · Retry by refreshing</summary>{data.errors.map(error=><p key={error}>{error}</p>)}</details>}
     </section>
-    <section className="lending-card wallet-holdings"><div className="wallet-assets-heading"><div><h2>Holdings</h2><p>The assets you own, at a glance.</p></div><span className="wallet-chain-label">{holdings.length} assets</span></div>
+    <section className="lending-card wallet-holdings"><div className="wallet-assets-heading"><div><h2>Holdings</h2><p>Holdings worth $0.01 or more.</p></div><span className="wallet-chain-label">{holdings.length} assets</span></div>
       <div className="wallet-table-scroll"><table className="wallet-portfolio-table"><thead><tr><th>Asset</th><th>Balance</th><th>Price · USD</th><th>Value · USD</th><th>Allocation</th></tr></thead><tbody>{holdings.map(asset => <tr key={asset.id}><td><div className="wallet-coin-cell"><TokenIcon symbol={asset.symbol} logo={asset.logo} size={36}/><div><strong>{asset.name}</strong><small>{asset.symbol} · {networks[asset.network as keyof typeof networks]??asset.network} · {asset.account.slice(0,6)}…</small></div></div></td><td title={asset.balance}>{Number(asset.balance).toLocaleString(undefined,{maximumSignificantDigits:8})}</td><td>{asset.price !== null ? money(asset.price) : '—'}</td><td>{asset.value === null ? '—' : money(asset.value)}</td><td>{total && asset.value !== null ? `${(asset.value/total*100).toFixed(1)}%` : '—'}</td></tr>)}</tbody></table></div>
-      {!holdings.length && <div className="wallet-section-empty">{!accounts.length ? 'Connect or add a wallet to see your assets across networks.' : isLoading ? 'Loading holdings…' : isError ? 'Balances are unavailable. Please reload to retry.' : 'No assets returned for these accounts.'}</div>}
-      <p className="wallet-assets-note">See your coins across supported networks and your Hyperliquid trading balance together. Trading values estimate 1 USDC as $1. Collectibles, lending balances and other networks are not included yet. If a balance or price is missing, your total and chart wait for it to return.</p>
+      {!holdings.length && <div className="wallet-section-empty">{!accounts.length ? 'Connect or add a wallet to see your assets across networks.' : isLoading ? 'Loading holdings…' : isError ? 'Balances are unavailable. Please reload to retry.' : 'No holdings worth $0.01 or more were found.'}</div>}
+      <p className="wallet-assets-note">Zero-value tokens, holdings below $0.01, and tokens without an available price are hidden. See your coins across supported networks and your Hyperliquid trading balance together. Trading values estimate 1 USDC as $1. Collectibles, lending balances and other networks are not included yet. If a balance or price is missing, your total and chart wait for it to return.</p>
     </section>
     <MarketWatchlist />
     <details className="wallet-details"><summary>Activity and connection</summary><AlchemyConnection /><EvmActivity /><AlchemyHistory address={address} /></details>
