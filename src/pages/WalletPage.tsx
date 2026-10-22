@@ -1,3 +1,4 @@
+import { WalletTrading } from '../components/WalletTrading'
 import { WalletSearch } from '../components/WalletSearch'
 import { visibleHoldings } from '../lib/visibleHoldings'
 import { MarketWatchlist } from '../components/MarketWatchlist'
@@ -41,8 +42,7 @@ export function WalletPage() {
   const addAccount=()=>{const value=accountInput.trim();if(!validAccount(value)){setAccountError('Enter a valid Ethereum or Solana wallet address.');return}saveAccounts([...new Set([...tracked,normalizeAccount(value)])]);setAccountInput('');setAccountError('')}
   const money = (value: number) => value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   return <main className="lending-page payments-page mobile-wallet-page oslo-wallet-home wallet-portfolio-home">
-    <WalletSearch />
-    <header className="payment-hero"><div><span className="payment-eyebrow">YOUR OSLO</span><h1>Portfolio</h1><p>One place for your digital assets.</p></div></header>
+    <header className="payment-hero"><div><span className="payment-eyebrow">YOUR OSLO</span><h1>Wallet</h1><p>Your balances, performance, and trading activity in one place.</p></div></header>
     <section className="lending-card wallet-summary">
       <div className="wallet-overview-top"><div><span className="wallet-total-label">{unpriced ? 'Priced holdings value' : 'Estimated portfolio value'}</span><strong className="wallet-total">{total === null ? '—' : money(total)} <small>USD</small></strong><p>{!accounts.length ? 'Connect a wallet or add a public address.' : isLoading ? 'Loading your holdings…' : incomplete ? 'Some balances or prices are unavailable.' : `${holdings.length} assets in your wallet${unpriced ? ` · ${unpriced} unpriced tokens excluded` : ''}`}</p></div>
       <div className="wallet-quick-actions"><Link to="/wallet?action=send"><span aria-hidden="true">↗</span>Send</Link><Link to="/wallet?action=receive"><span aria-hidden="true">↙</span>Receive</Link><Link to="/spot"><span aria-hidden="true">⇄</span>Swap</Link><Link to="/lending"><span aria-hidden="true">＋</span>Lend</Link></div></div>
@@ -56,7 +56,9 @@ export function WalletPage() {
       {!holdings.length && <div className="wallet-section-empty">{!accounts.length ? 'Connect or add a wallet to see your assets across networks.' : isLoading ? 'Loading holdings…' : isError ? 'Balances are unavailable. Please reload to retry.' : 'No holdings worth $0.01 or more were found.'}</div>}
       <p className="wallet-assets-note">Zero-value tokens, holdings below $0.01, and tokens without an available price are hidden. See your coins across supported networks and your Hyperliquid trading balance together. Trading values estimate 1 USDC as $1. Collectibles, lending balances and other networks are not included yet. Tokens without prices are excluded from this value and chart. If a network fails to load, chart recording pauses until it recovers.</p>
     </section>
+    <WalletTrading />
     <MarketWatchlist />
+    <WalletSearch />
     <details className="wallet-details"><summary>Activity and connection</summary><AlchemyConnection /><EvmActivity /><AlchemyHistory address={address} /></details>
     <dialog ref={dialogRef} className="wallet-dialog wallet-payment-dialog" aria-labelledby="wallet-payment-title" onCancel={closePayment} onClose={() => { if (paymentMode) closePayment() }}>
       <header><div><h2 id="wallet-payment-title">{paymentMode === 'receive' ? 'Receive' : 'Send'}</h2><small>HyperEVM</small></div><button className="wallet-close" aria-label="Close" onClick={closePayment}>×</button></header>

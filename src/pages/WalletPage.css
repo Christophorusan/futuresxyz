@@ -111,3 +111,5 @@
 .oslo-wallet-home .wallet-summary .wallet-details{margin-top:12px;padding:12px 16px;border-radius:14px}
 .wallet-portfolio-home .wallet-history-dates{margin:5px 0 8px}
 @media(max-width:800px){.oslo-wallet-home .wallet-summary{padding:18px 16px}.wallet-overview-top{gap:12px}.wallet-balance-chart .wallet-chart-stage svg{height:140px}}
+
+.wallet-trading-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:24px 0}.wallet-trading-stats span{display:block;font-size:12px;color:var(--text-1);margin-bottom:8px}.wallet-trading-stats strong{font-size:22px;font-weight:500}.wallet-trading a{color:var(--blue-hover)}.wallet-trading h3{font-size:16px;margin:24px 0 12px}@media(max-width:700px){.wallet-trading-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.wallet-trading-stats strong{font-size:19px}}

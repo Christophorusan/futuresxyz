@@ -3893,7 +3893,7 @@ body {
 @media (max-width: 800px) {
   .app { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
   .nav { padding-top: env(safe-area-inset-top); }
-  .mobile-bottom-nav { display: grid; grid-template-columns: repeat(4,1fr); position: fixed; bottom: 0; left: 0; right: 0; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); background: var(--bg-1); border-top: 1px solid var(--border); z-index: 90; min-height: 64px; }
+  .mobile-bottom-nav { display: grid; grid-template-columns: repeat(3,1fr); position: fixed; bottom: 0; left: 0; right: 0; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); background: var(--bg-1); border-top: 1px solid var(--border); z-index: 90; min-height: 64px; }
   .mobile-bottom-nav a { display: grid; justify-items: center; align-content: center; gap: 4px; color: var(--text-2); text-decoration: none; font-size: 11px; border-radius: 8px; min-height: 48px; }
   .mobile-bottom-nav a > span { font-size: 21px; line-height: 1; }
   .mobile-bottom-nav a.active { background: #185c4e; color: #d4fff4; }

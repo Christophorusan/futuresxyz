@@ -12,7 +12,6 @@ import { PageErrorBoundary } from './components/shared/PageErrorBoundary'
 import { ConnectButton } from './components/shared/ConnectButton'
 const ThousandXPerpsPage = lazy(() => import('./pages/ThousandXPerpsPage').then(m => ({ default: m.ThousandXPerpsPage })))
 const DiscoverPage = lazy(() => import('./pages/DiscoverPage').then(m => ({ default: m.DiscoverPage })))
-const PortfolioPage = lazy(() => import('./pages/PortfolioPage').then(m => ({ default: m.PortfolioPage })))
 const WalletPage = lazy(() => import('./pages/WalletPage').then(m => ({ default: m.WalletPage })))
 const PerpsPage = lazy(() => import('./pages/PerpsPage').then(m => ({ default: m.PerpsPage })))
 const SpotPage = lazy(() => import('./pages/SpotPage').then(m => ({ default: m.SpotPage })))
@@ -83,7 +82,6 @@ function NavMore() {
 
 const sidebarItems = [
   ['/wallet', 'Wallet', 'M3 7h18v14H3z M3 7V4h15v3 M16 12h5v5h-5z'],
-  ['/portfolio', 'Portfolio', 'M4 20h16 M6 16V9 M12 16V4 M18 16v-5'],
   ['/lending', 'Lending', 'M4 20h16 M7 16v-5 M12 16V7 M17 16V3'],
   ['/perps', 'Trade', 'M3 17 8 12l4 3 9-11 M15 4h6v6'],
   ['/spot', 'Swap', 'M4 7h16l-4-4 M20 17H4l4 4'],
@@ -123,7 +121,7 @@ function AppContent() {
               oslo
             </NavLink>
             <div className="nav-tabs">
-              {[['/wallet', 'Wallet'], ['/portfolio', 'Portfolio'], ['/lending', 'Lending'], ['/perps', 'Trade']].map(([to, label]) => <NavLink key={to} to={to} className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>{label}</NavLink>)}
+              {[['/wallet', 'Wallet'], ['/lending', 'Lending'], ['/perps', 'Trade']].map(([to, label]) => <NavLink key={to} to={to} className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>{label}</NavLink>)}
               <NavMore />
             </div>
           </div>
@@ -148,13 +146,13 @@ function AppContent() {
           <Route path="/lending/:provider" element={<LendingProviderPage />} />
           <Route path="/options" element={<OptionsPage />} />
           <Route path="/staking" element={<StakingPage />} />
-          <Route path="/portfolio" element={<PortfolioPage />} />
+          <Route path="/portfolio" element={<Navigate to="/wallet" replace />} />
           <Route path="/docs" element={<DocsPage />} />
           <Route path="*" element={<Navigate to="/wallet" replace />} />
         </Routes>
         </Suspense></PageErrorBoundary>
         <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
-          {[['/wallet', 'Wallet', '◈'], ['/portfolio', 'Portfolio', '▥'], ['/perps', 'Trade', '≋'], ['/lending', 'Lend', '＋']].map(([to, label, icon]) => <NavLink key={to} to={to} className={({ isActive }) => isActive ? 'active' : ''}><span aria-hidden="true">{icon}</span>{label}</NavLink>)}
+          {[['/wallet', 'Wallet', '◈'], ['/perps', 'Trade', '≋'], ['/lending', 'Lend', '＋']].map(([to, label, icon]) => <NavLink key={to} to={to} className={({ isActive }) => isActive ? 'active' : ''}><span aria-hidden="true">{icon}</span>{label}</NavLink>)}
         </nav>
       </div>
   )
