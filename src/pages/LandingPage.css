@@ -5,3 +5,30 @@
 @media(max-width:1050px){.oslo-side-screen{width:270px;top:125px}.oslo-side-left{left:0}.oslo-side-right{right:0}.oslo-product-grid{grid-template-columns:1fr}.oslo-product-grid article{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:30px;padding:32px}.oslo-feature-copy{min-height:0}.oslo-product-preview{width:100%}.oslo-discover-section{padding:65px 40px;gap:35px}.oslo-discover-copy h2{font-size:42px}.oslo-principles{gap:16px}.oslo-principles article{padding:24px}.oslo-network-grid{grid-template-columns:repeat(4,1fr)}.oslo-network-grid>div{padding:15px;gap:9px;font-size:12px}.oslo-faq{gap:35px}}
 @media(max-width:700px){.oslo-header{padding:20px 22px}.oslo-header nav{display:none}.oslo-header .oslo-button{padding:11px 18px;min-height:44px;font-size:12px!important}.oslo-wordmark{font-size:32px}.oslo-hero{margin:0 10px;padding:48px 18px 24px;border-radius:24px}.oslo-hero h1{font-size:clamp(42px,10vw,64px);letter-spacing:-2px}.oslo-hero-copy>p{font-size:15px;max-width:350px}.oslo-screen-stage{height:auto;min-height:0;margin-top:32px;padding-top:8px}.oslo-side-screen{display:none}.oslo-wallet-demo{width:min(300px,100%);padding:18px 14px}.oslo-stage-caption{margin-top:24px}.oslo-section-nav{gap:24px;justify-content:flex-start;overflow-x:auto;white-space:nowrap;font-size:12px;padding:18px 24px}.oslo-overview,.oslo-ownership,.oslo-networks,.oslo-faq{padding:64px 24px}.oslo-landing h2{font-size:38px;letter-spacing:-1.7px}.oslo-section-heading{margin-bottom:35px}.oslo-section-heading>p{font-size:15px}.oslo-product-grid article{display:flex;padding:24px;gap:12px}.oslo-feature-copy h3{font-size:29px}.oslo-product-preview{padding:20px}.oslo-product-total{font-size:28px}.oslo-discover-section{grid-template-columns:1fr;margin:0 10px;padding:48px 24px;gap:32px;border-radius:24px}.oslo-discover-copy>p{font-size:15px}.oslo-discovery-preview{padding:20px;transform:none}.oslo-principles{grid-template-columns:1fr}.oslo-principles article{padding:28px}.oslo-principles article>span{margin-bottom:22px}.oslo-network-grid{grid-template-columns:repeat(2,1fr)}.oslo-network-grid>div{font-size:13px}.oslo-faq{grid-template-columns:1fr;gap:18px}.oslo-closing{padding:55px 24px;margin:0 10px 10px}.oslo-footer{flex-wrap:wrap;padding:28px 24px;gap:20px}.oslo-footer>p{width:calc(100% - 85px)}.oslo-footer>span{margin-left:auto}.oslo-demo-balance>strong{font-size:26px}}
 @media(prefers-reduced-motion:reduce){.oslo-landing *{scroll-behavior:auto!important;transition:none!important}}
+
+/* Monochrome marketing shell; product previews retain Oslo's blue UI. */
+.oslo-landing{--ink:#171717;--muted:#646464}
+.oslo-header nav a:hover,.oslo-section-nav a:hover,.oslo-principles a{color:#111}
+.oslo-button{background:#171717;color:#fff}.oslo-button:hover{background:#383838}
+.oslo-hero{background:radial-gradient(ellipse at 50% 90%,#383838,transparent 60%),#111}
+.oslo-hero .oslo-button,.oslo-discover-section .oslo-button{background:#fff;color:#151515}.oslo-hero .oslo-button:hover,.oslo-discover-section .oslo-button:hover{background:#dedede}
+.oslo-hero-copy .oslo-eyebrow,.oslo-hero-copy>small,.oslo-stage-caption{color:#aaa}
+.oslo-hero h1 span{color:#a4a4a4}.oslo-hero-copy>p{color:#c7c7c7}
+.oslo-landing h2 span{color:#828282}.oslo-section-heading .oslo-eyebrow,.oslo-feature-copy .oslo-eyebrow{color:#696969}
+.oslo-section-nav,.oslo-networks,.oslo-faq{border-color:#e5e5e5}
+.oslo-product-grid article{background:#f5f5f5;border-color:#e7e7e7}
+.oslo-discover-section{background:radial-gradient(ellipse at 95% 80%,#333,transparent 65%),#151515}
+.oslo-discover-copy>.oslo-eyebrow,.oslo-discover-copy .oslo-fine-print{color:#aaa}.oslo-discover-copy>p{color:#ccc}.oslo-discover-copy h2 span{color:#a4a4a4}
+.oslo-discovery-preview{background:linear-gradient(145deg,#1c2d50,#101c32)}
+.oslo-principles article,.oslo-closing{background:#f4f4f4}.oslo-principles article>span{background:linear-gradient(145deg,#fff,#ddd);border-color:#ddd;color:#333;box-shadow:0 6px 14px #0000000b}
+.oslo-network-grid>div,.oslo-faq details{border-color:#e2e2e2}.oslo-faq summary span,.oslo-closing>.oslo-wordmark{color:#686868}
+.oslo-landing button:focus-visible,.oslo-landing a:focus-visible,.oslo-landing summary:focus-visible{outline-color:#888}
+/* A readable 300 × 630 handset, with space around the call to action. */
+.oslo-screen-stage{min-height:0;padding:16px 0 12px;margin-top:34px}
+.oslo-wallet-demo{width:300px;height:630px;display:flex;flex-direction:column;padding:16px 14px;border-radius:40px;line-height:1.35}
+.oslo-wallet-demo>*{flex-shrink:0}.oslo-phone-status{margin-bottom:12px;height:20px}.oslo-demo-head{margin-bottom:12px;height:32px}
+.oslo-demo-balance>p{margin:0 0 12px}.oslo-demo-balance>strong{margin:7px 0}.oslo-demo-chart-title{margin-top:14px}.oslo-demo-chart{display:block;height:58px;margin-top:8px}
+.oslo-demo-assets{margin-top:12px}.oslo-demo-assets>div{padding:8px 0}.oslo-demo-assets>div:first-child{padding-bottom:8px}.oslo-demo-foot{margin:9px 0;font-size:8px}.oslo-demo-nav{margin-top:auto;padding-top:10px}
+.oslo-side-screen{top:94px;width:310px}.oslo-side-left{left:35px}.oslo-side-right{right:35px}
+@media(max-width:1050px){.oslo-side-screen{width:260px;top:105px}.oslo-side-left{left:0}.oslo-side-right{right:0}}
+@media(max-width:700px){.oslo-wallet-demo{width:min(300px,100%);height:630px}.oslo-screen-stage{margin-top:28px;padding-top:8px}.oslo-hero{padding-left:14px;padding-right:14px}}
