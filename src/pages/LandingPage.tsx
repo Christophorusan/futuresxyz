@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import './LandingPage.css'
 import { TokenIcon } from '../components/TokenIcon'
 
@@ -16,35 +16,20 @@ function ProductPreview({ selected }: { selected: number }) {
 }
 
 export function LandingPage({ onEnter }: { onEnter: () => void }) {
-  const [selected, setSelected] = useState(0)
-  const feature = features[selected]
   useEffect(() => {
     document.body.classList.add('oslo-landing-active')
     return () => document.body.classList.remove('oslo-landing-active')
   }, [])
-
+  const enter = <button className="oslo-button" onClick={onEnter}>Explore app <span aria-hidden="true">↗</span></button>
   return <div className="oslo-landing">
     <a className="oslo-skip" href="#oslo-main">Skip to content</a>
-    <header className="oslo-header">
-      <a href="#" className="oslo-wordmark" aria-label="Oslo home">oslo.</a>
-      <nav aria-label="Landing page navigation"><a href="#possibilities">Explore Oslo</a><a href="#community">Our principles</a><a href="#questions">Questions</a></nav>
-      <button className="oslo-button oslo-button-dark" onClick={onEnter}>Explore app <span aria-hidden="true">↗</span></button>
-    </header>
-
+    <header className="oslo-header"><a href="#" className="oslo-wordmark" aria-label="Oslo home">oslo.</a><nav aria-label="Main navigation"><a href="#possibilities">The wallet</a><a href="#discover">Discover DeFi</a><a href="#community">Our principles</a></nav>{enter}</header>
     <main id="oslo-main">
       <section className="oslo-hero">
-        <div className="oslo-hero-copy"><span className="oslo-eyebrow"><i /> Open finance. Shared possibilities.</span>
-          <h1>Making finance<br /><span>accessible.</span></h1>
-          <p>Your starting point for decentralized finance. Find apps across networks, track your crypto, and choose your next move—with your wallet in your control.</p>
-          <div className="oslo-hero-actions"><button className="oslo-button oslo-button-dark" onClick={onEnter}>Explore app <span aria-hidden="true">↗</span></button><a href="#possibilities">See how it works <span aria-hidden="true">↓</span></a></div>
-          <div className="oslo-hero-note"><span aria-hidden="true">◎</span> Explore first. Connect your wallet when you’re ready.</div>
-        </div>
-        <div className="oslo-visual" aria-label="Illustrative Oslo wallet preview, not live account data">
-          <div className="oslo-orbit oslo-orbit-one" /><div className="oslo-orbit oslo-orbit-two" /><div className="oslo-orbit oslo-orbit-three" />
-          <div className="oslo-floating-token oslo-token-top" aria-hidden="true">↗</div>
-          <div className="oslo-wallet-demo" data-theme="dark">
+        <div className="oslo-hero-copy"><span className="oslo-eyebrow">oslo / open finance</span><h1>Making finance<br /><span>accessible.</span></h1><p>Your crypto, a clearer view. One place to follow your balances, find DeFi apps, and make your next move.</p>{enter}<small>Explore freely. Connect when you’re ready.</small></div>
+        <div className="oslo-screen-stage" aria-label="Illustrative Oslo interfaces with sample data"><div className="oslo-side-screen oslo-side-left"><ProductPreview selected={1}/></div>          <div className="oslo-wallet-demo" data-theme="dark">
             <div className="oslo-phone-status" aria-hidden="true"><span>9:41</span><i /><span>••• ▰</span></div>
-            <div className="oslo-demo-head"><b>oslo</b><span>Portfolio</span><span className="oslo-demo-avatar">O</span></div>
+            <div className="oslo-demo-head"><b>oslo</b><span>Wallet</span><span className="oslo-demo-avatar">O</span></div>
 
             <div className="oslo-demo-summary">
               <div className="oslo-demo-balance"><span>Estimated portfolio value</span><strong>$12,480.50 <small>USD</small></strong><p>+$284.32 (2.33%) <span>today</span></p></div>
@@ -58,44 +43,24 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
             <div className="oslo-demo-nav"><b>◈<small>Wallet</small></b><span>⇄<small>Swap</small></span><span>≋<small>Trade</small></span><span>＋<small>Lend</small></span></div>
 
           </div>
-          <div className="oslo-float-label"><span>↗</span><div>Less switching.<br /><b>More living.</b></div></div>
-        </div>
+<div className="oslo-side-screen oslo-side-right"><ProductPreview selected={2}/></div></div>
+        <p className="oslo-stage-caption">One familiar interface. More possibilities.</p>
       </section>
-
-      <div className="oslo-capabilities"><span>ONE WALLET. OPEN POSSIBILITIES.</span><span>Hold <i>↗</i></span><span>Send <i>↗</i></span><span>Lend <i>↗</i></span><span>Trade <i>↗</i></span></div>
-
-      <section className="oslo-possibilities" id="possibilities">
-        <div className="oslo-section-heading"><span className="oslo-eyebrow">Inside Oslo</span><h2>A clearer way to<br />see, send, and trade.</h2><p>Start with your goal. Discover apps, explore markets, and keep your assets in view.</p></div>
-        <div className="oslo-feature-layout"><div className="oslo-feature-menu" role="tablist" aria-label="Explore Oslo features">{features.map((item, i) => <button key={item.name} role="tab" id={`feature-tab-${i}`} aria-selected={selected === i} aria-controls="feature-panel" tabIndex={selected === i ? 0 : -1} onKeyDown={event => {
-          const next = event.key === 'ArrowDown' || event.key === 'ArrowRight' ? (i + 1) % features.length : event.key === 'ArrowUp' || event.key === 'ArrowLeft' ? (i + features.length - 1) % features.length : event.key === 'Home' ? 0 : event.key === 'End' ? features.length - 1 : null
-          if (next !== null) { event.preventDefault(); setSelected(next); document.getElementById(`feature-tab-${next}`)?.focus() }
-        }} onClick={() => setSelected(i)}><span>0{i + 1}</span>{item.name}<span aria-hidden="true">↗</span></button>)}</div>
-          <div className="oslo-feature-panel" id="feature-panel" role="tabpanel" aria-labelledby={`feature-tab-${selected}`} tabIndex={0}><div><span className="oslo-eyebrow">{feature.eyebrow}</span><h3>{feature.title}</h3><p>{feature.text}</p><button className="oslo-text-button" onClick={onEnter}>Explore app <span aria-hidden="true">↗</span></button></div><ProductPreview selected={selected} /></div>
-        </div>
+      <nav className="oslo-section-nav" aria-label="On this page"><a href="#possibilities">Overview</a><a href="#discover">Discover</a><a href="#community">Ownership</a><a href="#networks">Networks</a><a href="#questions">Questions</a></nav>
+      <section className="oslo-overview" id="possibilities"><div className="oslo-section-heading"><span className="oslo-eyebrow">Less scattered. More connected.</span><h2>Your financial world.<br /><span>In one place.</span></h2><p>From a clear view of what you own to the tools for what comes next.</p></div>
+        <div className="oslo-product-grid">{features.map((feature,i)=><article key={feature.name}><div className="oslo-feature-copy"><span className="oslo-eyebrow">0{i+1} / {feature.name}</span><h3>{feature.title}</h3><p>{feature.text}</p></div><ProductPreview selected={i}/></article>)}</div>
       </section>
-
-      <section className="oslo-community" id="community" aria-labelledby="oslo-community-title">
-        <div className="oslo-section-heading"><span className="oslo-eyebrow">The ideas behind Oslo</span><h2 id="oslo-community-title">Open finance starts<br />with people.</h2><p>Our aim: make crypto easier to use while keeping ownership, transparency, and community at the center.</p></div>
-        <div className="oslo-principles">
-          <article><span>01</span><h3>Access with clarity.</h3><p>Understand what you hold and what you can do. Explore supported networks and markets from one interface.</p></article>
-          <article><span>02</span><h3>Ownership with choice.</h3><p>Connect your own wallet. Review transaction details and approve the actions you choose to take.</p></article>
-          <article><span>03</span><h3>Progress together.</h3><p>Better tools start with the people using them. Share an idea, report an issue, or contribute to Oslo’s code.</p><a href="https://github.com/christophorusan/futuresxyz" target="_blank" rel="noopener noreferrer">Explore the project ↗</a></article>
-        </div>
-      </section>
-
-      <section className="oslo-how" id="how-it-works"><div><span className="oslo-eyebrow">Get started</span><h2>Your wallet.<br />Your decisions.</h2><p>Start by exploring. Connect when you’re ready, understand the details, and choose your next step.</p><button className="oslo-button oslo-button-mint" onClick={onEnter}>Explore app <span aria-hidden="true">↗</span></button></div>
-        <ol><li><span>01</span><div><h3>Bring your wallet.</h3><p>Connect a supported wallet to access your account.</p></div></li><li><span>02</span><div><h3>Find your starting point.</h3><p>View supported assets, receive tokens, or explore a market.</p></div></li><li><span>03</span><div><h3>Make your move.</h3><p>Review transaction details and approve with your connected wallet.</p></div></li></ol>
-      </section>
-
-      <section className="oslo-faq" id="questions"><div><span className="oslo-eyebrow">Questions</span><h2>Good questions.<br />Straight answers.</h2></div><div>
-        <details><summary>What is Oslo?<span aria-hidden="true">+</span></summary><p>Oslo is a wallet-centered finance interface bringing together supported balances, payments, lending, and trading. Previously Futures XYZ, Oslo aims to make decentralized finance more accessible, with community participation and individual ownership at its center.</p></details>
-        <details><summary>Do I need a wallet to explore?<span aria-hidden="true">+</span></summary><p>You can enter the app and explore without connecting. Viewing your balances or approving transactions requires a supported wallet.</p></details>
-        <details><summary>Which networks does Oslo support?<span aria-hidden="true">+</span></summary><p>Your portfolio brings together Ethereum, Base, Arbitrum, Optimism, Polygon, HyperEVM, Solana and HyperCore accounts. Add public addresses to track additional wallets. Payments currently use HyperEVM; NFTs and lending positions are not included in portfolio totals yet.</p></details>
-        <details><summary>What should I know before using it?<span aria-hidden="true">+</span></summary><p>Oslo is not a bank. Network fees may apply. Lending and trading have risks, including loss of funds. Review each product and transaction before you approve.</p></details>
-      </div></section>
-
-      <section className="oslo-closing"><span className="oslo-eyebrow">Making finance accessible</span><h2>Finance for people.<br />Ownership for you.</h2><button className="oslo-button oslo-button-dark" onClick={onEnter}>Explore app <span aria-hidden="true">↗</span></button><div className="oslo-closing-word" aria-hidden="true">oslo.</div></section>
-    </main>
-    <footer className="oslo-footer"><a href="#" className="oslo-wordmark">oslo.</a><p>Making finance accessible.</p><span>© {new Date().getFullYear()} Oslo</span><a href="#questions">About Oslo ↗</a></footer>
+      <section className="oslo-discover-section" id="discover"><div className="oslo-discover-copy"><span className="oslo-eyebrow">An open door to DeFi</span><h2>Start with a goal.<br /><span>Find your next app.</span></h2><p>Lend, trade, or explore. Discover apps across networks without changing your wallet just to browse.</p>{enter}<p className="oslo-fine-print">Aave and Morpho market views are read-only in Oslo. Other apps open their official sites. Transactions and funding may require a network change.</p></div><div className="oslo-discovery-preview" aria-label="Illustrative Discover interface"><header><b>oslo.</b><span>Discover</span></header><div className="oslo-search-preview">⌕ <span>What do you want to do?</span><span>↗</span></div><div className="oslo-search-pills"><span>Lending</span><span>Trading</span><span>All networks</span></div>{[['A','Aave','Lending · Ethereum, Arbitrum & more'],['M','Morpho','Lending · Ethereum & Base'],['H','Hyperliquid','Perpetual trading · Hyperliquid']].map(([mark,name,detail])=><div className="oslo-discovery-row" key={name}><span>{mark}</span><div><strong>{name}</strong><small>{detail}</small></div><span>↗</span></div>)}<footer>Listings: $20M+ TVL or $2K+ daily revenue<br /><span>Data from DeFiLlama. Activity filters are not a safety endorsement.</span></footer></div></section>
+      <section className="oslo-ownership" id="community"><div className="oslo-section-heading"><span className="oslo-eyebrow">Built around you</span><h2>Open finance.<br /><span>Your decisions.</span></h2><p>Accessibility, ownership, and community belong together.</p></div><div className="oslo-principles"><article><span aria-hidden="true">↗</span><h3>Bring your own wallet.</h3><p>Connect a supported wallet or add a public address to follow your assets. Oslo does not ask you to import a recovery phrase.</p></article><article><span aria-hidden="true">◎</span><h3>See it. Then approve it.</h3><p>Review the recipient, asset, and amount before sending. You choose which transactions to approve with your wallet.</p></article><article><span aria-hidden="true">＋</span><h3>Build it together.</h3><p>Useful tools start with the people using them. Share ideas, report issues, or contribute to Oslo’s code.</p><a href="https://github.com/christophorusan/futuresxyz" target="_blank" rel="noopener noreferrer">Explore the project ↗</a></article></div></section>
+      <section className="oslo-networks" id="networks"><div className="oslo-section-heading"><span className="oslo-eyebrow">Connected perspectives</span><h2>Many networks.<br /><span>One wallet view.</span></h2><p>Track supported balances across these networks. Add public addresses to keep more of your crypto in view.</p></div><div className="oslo-network-grid">{[['ETH','Ethereum'],['SOL','Solana'],['ARB','Arbitrum'],['HYPE','HyperEVM'],['HYPE','HyperCore'],['BASE','Base'],['OP','Optimism'],['POL','Polygon']].map(([symbol,name])=><div key={name}><TokenIcon symbol={symbol} size={32}/><span>{name}</span></div>)}</div><p className="oslo-network-note">Support varies by action. Payments currently use HyperEVM. Automatic bridging, NFTs, and lending positions in wallet totals are not supported yet.</p></section>
+      <section className="oslo-faq" id="questions"><div><span className="oslo-eyebrow">A little clarity</span><h2>Good questions.<br /><span>Straight answers.</span></h2></div><div>{[
+        ['What is Oslo?','Oslo brings wallet balances, payments, lending, trading, and DeFi discovery into one interface. Our aim is to make open finance easier to access while keeping your choices in your hands.'],
+        ['Do I need to connect a wallet?','You can browse apps and markets without connecting. Add public addresses to track balances, or connect a supported wallet when you want to approve transactions.'],
+        ['Can I use every app directly in Oslo?','Hyperliquid trading and HyperLend lending have native interfaces. Aave and Morpho offer read-only market views. Most Discover listings open the provider’s official site. Cross-network transfers are not automatically routed.'],
+        ['How are Discover apps selected?','Apps qualify with at least $20 million in TVL or $2,000 in reported daily protocol revenue from DeFiLlama. Known rugged, inactive, or dead-site entries flagged in the feed are excluded. These filters do not guarantee an app is safe.'],
+        ['What should I know before using Oslo?','Oslo is not a bank. Network fees may apply, and lending and trading can result in loss of funds. Review each product and transaction before approving.'],
+      ].map(([q,a])=><details key={q}><summary>{q}<span aria-hidden="true">+</span></summary><p>{a}</p></details>)}</div></section>
+      <section className="oslo-closing"><span className="oslo-wordmark" aria-hidden="true">oslo.</span><h2>More possibility.<br /><span>On your terms.</span></h2><p>Explore open finance with more clarity.</p>{enter}</section>
+    </main><footer className="oslo-footer"><a href="#" className="oslo-wordmark">oslo.</a><p>Making finance accessible.</p><a href="#questions">Questions</a><span>© {new Date().getFullYear()} Oslo</span></footer>
   </div>
 }
