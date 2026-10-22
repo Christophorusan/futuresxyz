@@ -1,3 +1,4 @@
+import { AppDiscovery } from '../components/AppDiscovery'
 import { useState } from 'react'
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi'
 import { useQuery } from '@tanstack/react-query'
@@ -41,6 +42,8 @@ export function LendingPage() {
     <header className="lending-heading"><div><h1>Lending</h1><p>Earn by lending your assets, or explore borrowing.</p></div>
       <a href={protocols[protocol].source} target="_blank" rel="noreferrer">How lending works</a>
     </header>
+    <AppDiscovery category="lending" />
+    <h2 style={{ marginBottom: 16 }}>Lend in Oslo · HyperLend on HyperEVM</h2>
     <div className="lending-toolbar">
       <div className="lending-actions"><button disabled={busy || loadingAccount} className={!smart ? 'active' : ''} onClick={() => setSmart(false)}>Connected wallet</button>
         <button disabled={busy || loadingAccount || !smartWalletsEnabled || !signer} className={smart ? 'active' : ''} onClick={enableSmartAccount}>{loadingAccount ? 'Loading…' : 'Additional wallet'}</button></div>

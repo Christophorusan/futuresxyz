@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Oslo",
   "short_name": "Oslo",
-  "description": "Your wallet. Your next move. Payments, lending and trading.",
+  "description": "Making finance accessible. Community, ownership, and a simpler way into decentralized finance.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

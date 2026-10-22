@@ -17,7 +17,7 @@ export function InAppBrowser() {
     }
     const intercept = (event: MouseEvent) => {
       const anchor = event.target instanceof Element ? event.target.closest('a[href]') : null
-      if (!(anchor instanceof HTMLAnchorElement) || anchor.hasAttribute('download')) return
+      if (!(anchor instanceof HTMLAnchorElement) || anchor.hasAttribute('download') || anchor.dataset.external === 'true') return
       const destination = new URL(anchor.href)
       if (destination.protocol !== 'https:' || destination.origin === location.origin) return
       event.preventDefault()

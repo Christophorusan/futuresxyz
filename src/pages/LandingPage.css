@@ -118,3 +118,122 @@
 .oslo-demo-nav>b{color:#85baff}
 .oslo-demo-nav small{font-size:8px}
 @media(max-width:700px){.oslo-visual{height:auto;min-height:0;margin:10px -8px 0;transform:none}.oslo-wallet-demo{width:min(280px,100%);transform:none}.oslo-hero{gap:30px}}
+
+/* Consistent type, spacious phone, and focused product previews. */
+.oslo-landing{--muted:#526071}
+.oslo-hero h1{font-size:clamp(44px,4.8vw,68px);font-weight:450;letter-spacing:-3px;line-height:1.1}
+.oslo-hero h1>span{font-weight:450;letter-spacing:inherit}
+.oslo-eyebrow{font-size:13px;letter-spacing:0;font-weight:500}
+.oslo-hero-note{font-size:12px}
+.oslo-button-dark,.oslo-button-mint{background:#2563eb;color:#fff;box-shadow:none;border-radius:8px;font-size:14px}
+.oslo-button-dark:hover,.oslo-button-mint:hover{background:#1d4ed8}
+.oslo-phone-status{margin-bottom:14px}
+.oslo-demo-head{margin-bottom:20px}
+.oslo-demo-head>span:nth-child(2){font-size:11px;letter-spacing:0;color:#c4d0e2}
+.oslo-demo-summary{padding:13px 10px 0}
+.oslo-demo-balance>span{font-size:11px}
+.oslo-demo-balance>strong{font-size:28px;margin:8px 0}
+.oslo-demo-balance>p{font-size:10px;margin-bottom:12px}
+.oslo-demo-actions>span{padding:8px 3px}
+.oslo-demo-actions small{font-size:10px}
+.oslo-demo-chart-title{font-size:9px;margin-top:15px}
+.oslo-demo-chart{height:63px;margin-top:12px}
+.oslo-demo-assets{margin-top:14px;padding:10px}
+.oslo-demo-assets>div{padding:9px 0}
+.oslo-demo-assets>div:first-child{font-size:11px;padding-bottom:8px}
+.oslo-demo-assets>div:first-child>span+span{font-size:9px}
+.oslo-demo-assets b{font-size:11px}
+.oslo-demo-assets small{font-size:9px;margin-top:3px;color:#aabbd2}
+.oslo-demo-foot{font-size:8px;margin-top:10px;margin-bottom:10px}
+.oslo-demo-nav small{font-size:9px}
+.oslo-possibilities{max-width:none;background:#0b1730;color:#f5f8ff;padding:85px max(5%,calc((100vw - 1296px)/2))}
+.oslo-possibilities .oslo-section-heading>p,.oslo-feature-panel p{color:#bac8de;font-size:15px}
+.oslo-feature-layout{grid-template-columns:170px minmax(0,1fr);gap:30px;margin-top:40px}
+.oslo-feature-menu button{color:#bccae0;border-color:#ffffff1a;font-size:17px}
+.oslo-feature-menu button[aria-selected=true]{background:#20375b;color:#fff}
+.oslo-feature-menu button>span:first-child{color:#9db3d1}
+.oslo-feature-panel{background:#101f39;border:1px solid #ffffff14;padding:32px;grid-template-columns:.9fr 1.2fr;gap:32px;min-height:400px}
+.oslo-feature-panel h3{font-size:32px;letter-spacing:-1px}
+.oslo-text-button{color:#93bdff;font-size:14px}
+.oslo-product-preview{border:1px solid #30415d;border-radius:12px;background:#0b1425;padding:22px;color:#f1f5fc;min-width:0;box-shadow:0 18px 40px #0003;font-size:12px}
+.oslo-product-top{display:flex;align-items:center;gap:14px;border-bottom:1px solid #ffffff14;padding-bottom:17px;margin-bottom:22px}
+.oslo-product-top>b{font-size:24px;letter-spacing:-1.5px}.oslo-product-top>span{color:#becce0}.oslo-product-top .oslo-sample{margin-left:auto;font-size:10px;color:#a7b6cd}
+.oslo-product-preview p{font-size:12px;margin:12px 0;max-width:none;line-height:1.5;color:#aebed5}
+.oslo-product-total{font-size:30px;letter-spacing:-1px;font-weight:500;display:block}.oslo-product-total small{font-size:12px;letter-spacing:0;color:#aebed5}
+.oslo-product-tools{display:flex;gap:8px;margin:20px 0}.oslo-product-tools>span{background:#1d3153;padding:8px;border-radius:6px;flex:1;text-align:center;color:#b2d1ff}
+.oslo-product-table>div{display:grid;grid-template-columns:1.2fr .8fr 1fr;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #ffffff12}.oslo-product-table>div:first-child{color:#aebed5;font-size:11px}.oslo-product-table>div>span:first-child{display:flex;align-items:center;gap:8px}.oslo-product-table>div>:last-child{text-align:right}.oslo-product-table b{font-weight:500}
+.oslo-payment-title,.oslo-market-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.oslo-payment-title h4,.oslo-market-title h4{font-size:20px;font-weight:500;margin:0}.oslo-payment-title>span,.oslo-market-title>span{color:#adc1df;font-size:11px}
+.oslo-preview-field{border:1px solid #2a3b55;padding:12px;border-radius:7px;margin:10px 0;display:flex;justify-content:space-between;align-items:center;color:#aebed5}.oslo-preview-field b{display:flex;align-items:center;gap:8px;color:#fff;font-weight:500}.oslo-preview-review{background:#2563eb;padding:12px;border-radius:7px;margin-top:18px;display:flex;justify-content:space-between}
+.oslo-product-preview .oslo-positive{color:#61d8b1}.oslo-positive span{color:#aebed5;margin-left:8px}.oslo-market-chart{width:100%;height:105px;margin:10px 0}.oslo-preview-trade{display:flex;gap:8px;margin-top:18px}.oslo-preview-trade>span{flex:1;padding:10px;text-align:center;background:#123e37;color:#8ae5c5;border-radius:6px}.oslo-preview-trade>span+span{background:#442433;color:#f1a8b6}
+@media(max-width:1000px){.oslo-feature-layout{grid-template-columns:130px minmax(0,1fr);gap:18px}.oslo-feature-panel{padding:24px;grid-template-columns:1fr}.oslo-feature-panel p{max-width:100%}.oslo-feature-menu button{padding:20px 10px;gap:12px}}
+@media(max-width:700px){.oslo-hero h1{font-size:clamp(40px,9vw,58px);letter-spacing:-2px}.oslo-hero h1>span{letter-spacing:inherit}.oslo-possibilities{padding:60px 6%}.oslo-feature-layout{display:block}.oslo-feature-menu button{font-size:14px}.oslo-feature-panel{padding:22px 16px;gap:28px}.oslo-product-preview{padding:16px}.oslo-product-total{font-size:27px}.oslo-product-table{font-size:11px}.oslo-feature-panel h3{font-size:29px}.oslo-hero-note{font-size:11px}}
+.oslo-demo-head{margin-bottom:12px}
+.oslo-demo-summary{padding-top:10px}
+.oslo-demo-balance>p{margin-bottom:7px}
+.oslo-demo-chart{height:54px;margin-top:8px}
+.oslo-demo-assets{margin-top:10px;padding:8px 10px}
+.oslo-demo-assets>div{padding:6px 0}
+.oslo-demo-foot{margin:7px 0}
+.oslo-wallet-demo>*{flex-shrink:0}
+
+/* Responsive proportions across desktop, tablet, and phone. */
+.oslo-header,.oslo-hero{max-width:1240px;padding-left:40px;padding-right:40px}
+.oslo-header{padding-top:22px;padding-bottom:22px}
+.oslo-hero{grid-template-columns:minmax(0,1.2fr) minmax(280px,1fr);gap:48px;padding-top:40px;padding-bottom:48px}
+.oslo-hero h1{font-size:clamp(44px,4.6vw,64px);line-height:1.08;letter-spacing:-2.8px;margin:22px 0 24px}
+.oslo-hero-copy>p{font-size:17px;line-height:1.65;max-width:420px}
+.oslo-hero-actions{gap:22px;margin-top:28px}
+.oslo-hero-actions>a{font-size:13px}
+.oslo-hero-note{margin-top:22px;line-height:1.5}
+.oslo-visual{height:570px}
+.oslo-wallet-demo{transform:scale(.94);transform-origin:center}
+.oslo-capabilities{padding:22px max(40px,calc((100vw - 1160px)/2));gap:22px}
+.oslo-capabilities>span:not(:first-child){font-size:19px}
+.oslo-capabilities i{margin-left:16px}
+.oslo-possibilities{padding:72px max(40px,calc((100vw - 1160px)/2))}
+.oslo-landing h2{font-size:clamp(32px,3.3vw,46px);letter-spacing:-1.8px;line-height:1.15}
+.oslo-section-heading>p{margin:18px 0 32px}
+.oslo-feature-layout{grid-template-columns:150px minmax(0,1fr);gap:24px;margin-top:32px}
+.oslo-feature-panel{padding:28px;gap:28px;grid-template-columns:1fr 1.15fr;min-height:390px}
+.oslo-feature-panel h3{font-size:30px;line-height:1.2}
+.oslo-product-preview{width:100%;box-sizing:border-box;max-width:460px;justify-self:center}
+.oslo-how,.oslo-faq{padding:72px max(40px,calc((100vw - 1160px)/2));gap:64px}
+.oslo-how ol{padding-left:0}.oslo-how li{padding:24px 0}
+.oslo-closing{max-width:1160px;margin:0 auto 28px;padding:56px 24px 100px}
+.oslo-footer{max-width:1240px;margin:auto;padding:24px 40px 36px}
+@media(max-width:1050px){
+ .oslo-header,.oslo-hero{padding-left:32px;padding-right:32px}
+ .oslo-header nav{gap:20px}
+ .oslo-hero{gap:26px;grid-template-columns:minmax(0,1.2fr) minmax(250px,.9fr);padding-top:24px;padding-bottom:32px}
+ .oslo-hero h1{font-size:clamp(40px,5.3vw,54px);letter-spacing:-2px}
+ .oslo-hero-copy>p{font-size:16px}.oslo-visual{height:535px}.oslo-wallet-demo{transform:scale(.88)}
+ .oslo-hero-actions{gap:16px;flex-wrap:wrap}.oslo-hero-actions>a{font-size:12px}
+ .oslo-capabilities{padding:22px 32px}.oslo-capabilities>span:first-child{max-width:140px;line-height:1.7}
+ .oslo-possibilities{padding:60px 32px}.oslo-feature-layout{display:block}
+ .oslo-feature-menu{flex-direction:row;gap:8px;margin-bottom:20px}.oslo-feature-menu button{flex:1;padding:15px 18px;font-size:15px}
+ .oslo-feature-panel{grid-template-columns:1fr 1.1fr;padding:26px;gap:26px}.oslo-feature-panel h3{font-size:27px}.oslo-feature-panel p{font-size:14px}
+ .oslo-how,.oslo-faq{padding:60px 32px;gap:36px}.oslo-closing{margin-left:32px;margin-right:32px}
+}
+@media(max-width:700px){
+ .oslo-header{padding:20px 24px}.oslo-header .oslo-button{font-size:12px;min-height:44px}
+ .oslo-hero{grid-template-columns:1fr;padding:40px 24px 28px;gap:12px}
+ .oslo-hero h1{font-size:clamp(38px,9.5vw,54px);letter-spacing:-1.8px;line-height:1.1}
+ .oslo-hero-copy>p{font-size:16px;max-width:420px}.oslo-hero-actions{gap:20px}.oslo-hero-note{font-size:12px}
+ .oslo-visual{height:550px;min-height:550px;margin:0}.oslo-wallet-demo{width:280px;transform:scale(.9)}
+ .oslo-capabilities{padding:20px 24px;gap:16px}.oslo-capabilities>span:first-child{max-width:none;width:100%}.oslo-capabilities>span:not(:first-child){font-size:17px}.oslo-capabilities i{margin-left:6px}
+ .oslo-possibilities{padding:48px 24px}.oslo-landing h2{font-size:34px;letter-spacing:-1.3px}
+ .oslo-feature-menu button{padding:13px 8px;font-size:14px}.oslo-feature-panel{grid-template-columns:1fr;padding:24px 18px;gap:26px}
+ .oslo-feature-panel h3{font-size:28px;margin:14px 0}.oslo-feature-panel p{font-size:14px}.oslo-product-preview{padding:16px;max-width:420px}
+ .oslo-how,.oslo-faq{padding:48px 24px;grid-template-columns:1fr;gap:24px}.oslo-how li{padding:20px 0}
+ .oslo-closing{margin:0 24px 20px;padding:44px 20px 80px}.oslo-footer{padding:24px}
+}
+
+.oslo-community{max-width:1240px;margin:auto;padding:76px 40px 20px}
+.oslo-community .oslo-section-heading>p{max-width:570px;margin:20px auto 40px;font-size:16px;line-height:1.7}
+.oslo-principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px}
+.oslo-principles article{border-top:1px solid #dfe5ed;padding:24px 0}
+.oslo-principles article>span{font-size:13px;color:#2563eb}
+.oslo-principles h3{font-size:23px;font-weight:500;letter-spacing:-.6px;margin:18px 0 12px}
+.oslo-principles p{font-size:15px;line-height:1.75;color:var(--muted)}
+.oslo-principles a{display:inline-block;font-size:14px;color:#2563eb;margin-top:16px}
+@media(max-width:700px){.oslo-community{padding:48px 24px 0}.oslo-principles{grid-template-columns:1fr;gap:8px}.oslo-community .oslo-section-heading>p{font-size:15px;margin-bottom:28px}}

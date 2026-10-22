@@ -3,7 +3,7 @@ import { appendSnapshot, parseHistory, type BalancePoint } from '../lib/walletHi
 const ranges = [{days:1/24,label:'1H'},{days:1,label:'1D'},{days:7,label:'1W'},{days:30,label:'1M'},{days:0,label:'ALL'}]
 const previewValues = [100,101,100.4,103,105,104,106,105,104,106,109,108,112,115,114,116,115,114,116,118,117,121,120,119,122,123,122,124]
 const amount = (n: number) => n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})
-export function WalletHistory({ address, value }: { address?: string; value: number | null }) {
+export function WalletHistory({ address, value, status }: { address?: string; value: number | null; status?: string }) {
   const key = `oslo-wallet-history:${address ?? 'disconnected'}`
   const [history, setHistory] = useState<{key:string;points:BalancePoint[]}>({key:'',points:[]})
   const current = useRef(value)
@@ -25,7 +25,7 @@ export function WalletHistory({ address, value }: { address?: string; value: num
     record()
     const timer=window.setInterval(record,15000)
     return () => window.clearInterval(timer)
-  }, [key,address])
+  }, [key,address,value])
   const recorded = history.key===key ? history.points.filter(p=>range===0 || p.time>=Date.now()-range*86400000) : []
   const isPreview = preview && !address
   const points = isPreview ? previewValues.map((v,i)=>({time:Date.now()-((previewValues.length-1-i)*3600000),value:v})) : recorded
@@ -57,7 +57,7 @@ export function WalletHistory({ address, value }: { address?: string; value: num
         {selected && <><line x1={x(selected)} x2={x(selected)} y1="20" y2="250" stroke="#6c9be0" strokeDasharray="4 5" opacity=".5"/><circle cx={x(selected)} cy={y(selected)} r="4" fill="#4a8fee" stroke="white" strokeWidth="2"/></>}
       </svg>
       {selected && <output className="wallet-chart-value">{amount(selected.value)} <small>USD · {new Date(selected.time).toLocaleString()}</small></output>}
-      {!points.length && <div className="wallet-chart-overlay"><strong>{address?'Waiting for your first balance snapshot':'Connect to track your balance'}</strong><p>{address?'Your chart starts when your balances and prices load.':'Your portfolio value will update here over time.'}</p>{!address&&<button onClick={()=>setPreview(true)}>Preview the chart ↗</button>}</div>}
+      {!points.length && <div className="wallet-chart-overlay"><strong>{address?'Waiting for your first balance snapshot':'Connect to track your balance'}</strong><p>{address ? status ?? 'Your chart starts when your balances load.' : 'Your portfolio value will update here over time.'}</p>{!address&&<button onClick={()=>setPreview(true)}>Preview the chart ↗</button>}</div>}
       {points.length===1 && <span className="wallet-chart-first">First snapshot recorded. The line grows as new balances arrive.</span>}
     </div>
     {first && last && <div className="wallet-history-dates"><span>{new Date(first.time).toLocaleString()}</span><span>{new Date(last.time).toLocaleString()}</span></div>}

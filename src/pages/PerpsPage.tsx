@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+import '../components/AppDiscovery.css'
 import { useState } from 'react'
 import { TickerBar } from '../components/perps/TickerBar'
 import { MarketHeader } from '../components/perps/MarketHeader'
@@ -13,6 +15,7 @@ export function PerpsPage() {
 
   return (
     <div className="perps-page">
+      <div className="perps-discover-bar"><span>Trading with Hyperliquid · Oslo’s default</span><Link to="/discover?category=perps">Discover other trading apps ↗</Link></div>
       <TickerBar />
       <MarketHeader />
 
