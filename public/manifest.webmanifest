@@ -6,17 +6,17 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#eff5ff",
-  "theme_color": "#2469db",
+  "background_color": "#181818",
+  "theme_color": "#282828",
   "icons": [
     {
-      "src": "wallet-icon-192.png",
+      "src": "wallet-icon-192.png?v=3",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "wallet-icon-512.png",
+      "src": "wallet-icon-512.png?v=3",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
