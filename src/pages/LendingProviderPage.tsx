@@ -1,3 +1,4 @@
+import { AppLogo } from '../components/AppLogo'
 import { ProviderMarkets } from '../components/ProviderMarkets'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
@@ -18,7 +19,7 @@ export function LendingProviderPage() {
   const guide = guides[app.id]
   return <main className="finance-discover-page finance-provider-page">
     <Link className="finance-back" to="/lending">← Lending</Link>
-    <header className="finance-provider-heading"><span className="finance-app-monogram" aria-hidden="true">{app.name[0]}</span><div><p>Discover / Lending</p><h1>{app.name} lending</h1><p>{app.description}</p></div></header>
+    <header className="finance-provider-heading"><AppLogo name={app.name} src={app.logo} /><div><p>Discover / Lending</p><h1>{app.name} lending</h1><p>{app.description}</p></div></header>
     <div className="finance-network-tags" aria-label="Networks">{app.networks.map(network => <span key={network}>{network}</span>)}</div>
     {(app.id === 'aave' || app.id === 'morpho') && <ProviderMarkets key={app.id} provider={app.id} />}
     <div className="finance-provider-layout">

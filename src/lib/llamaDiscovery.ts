@@ -1,11 +1,11 @@
 export interface LlamaProtocol {
   id?: string; defillamaId?: string; slug?: string; name?: string; category?: string
-  chains?: string[]; description?: string; url?: string; tvl?: number; total24h?: number | null
+  logo?: string; chains?: string[]; description?: string; url?: string; tvl?: number; total24h?: number | null
   rugged?: boolean; deadFrom?: number; deadUrl?: boolean; parentProtocol?: string; protocolType?: string
 }
 export interface DiscoveryListing {
   id: string; slug: string; name: string; category: string; networks: string[]; description: string
-  url?: string; tvl: number | null; revenue: number | null; detailPath?: string
+  logo?: string; url?: string; tvl: number | null; revenue: number | null; detailPath?: string
 }
 export const listingThresholds = { tvl: 20_000_000, revenue: 2_000 }
 const amount = (value: unknown) => typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : null
@@ -29,7 +29,7 @@ export function buildListings(protocols: LlamaProtocol[], revenues: LlamaProtoco
     const revenue = amount(revenueById.get(id)?.total24h)
     const tvl = amount(p.tvl)
     if (!qualifies(tvl, revenue) || !p.name || !p.slug) continue
-    result.push({ id, slug: p.slug, name: p.name, category: p.category ?? 'Other', networks: (p.chains ?? []).filter(n => typeof n === 'string'), description: p.description ?? `Explore ${p.category ?? 'DeFi'} products and protocol information.`, url: officialUrl(p.url), tvl, revenue, detailPath: internalViews[p.slug] })
+    result.push({ id, slug: p.slug, name: p.name, category: p.category ?? 'Other', networks: (p.chains ?? []).filter(n => typeof n === 'string'), description: p.description ?? `Explore ${p.category ?? 'DeFi'} products and protocol information.`, logo: officialUrl(p.logo), url: officialUrl(p.url), tvl, revenue, detailPath: internalViews[p.slug] })
   }
   return result.sort((a, b) => (b.tvl ?? 0) - (a.tvl ?? 0) || (b.revenue ?? 0) - (a.revenue ?? 0) || a.name.localeCompare(b.name))
 }
