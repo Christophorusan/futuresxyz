@@ -6,7 +6,7 @@ import './BridgePage.css'
 
 export function BridgePage() {
   const [provider, setProvider] = useState<'debridge' | 'across'>('debridge')
-  return <main className="bridge-page"><header><div><h1>Swap across networks</h1><p>Your assets, where you need them.</p></div><Link to="/spot">Hyperliquid spot trading ↗</Link></header>
+  return <main className="bridge-page"><header><div><h1>Bridge</h1><p>Move assets across networks.</p></div><Link to="/spot">Swap on Hyperliquid →</Link></header>
     <nav className="bridge-provider-tabs" aria-label="Cross-chain provider"><button aria-pressed={provider === 'debridge'} onClick={() => setProvider('debridge')}>deBridge</button><button aria-pressed={provider === 'across'} onClick={() => setProvider('across')}>Across</button></nav>
     <div hidden={provider !== 'debridge'}><DeBridgeSwap /></div>
     <div hidden={provider !== 'across'}><AcrossSwap /></div>

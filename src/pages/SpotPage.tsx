@@ -336,7 +336,7 @@ export function SpotPage() {
   }
 
   return (
-    <div className="finance-product-page"><div className="bridge-spot-link"><Link to="/bridge">⇄ Swap across networks with deBridge or Across →</Link></div><div className="perps-page"><div className="perps-discover-bar"><strong>Hyperliquid · Spot trading</strong><span>Swap directly in Oslo</span></div>
+    <div className="finance-product-page"><div className="bridge-spot-link"><Link to="/bridge">Bridge assets across networks →</Link></div><div className="perps-page"><div className="perps-discover-bar"><strong>Swap · Hyperliquid Spot</strong><span>Buy and sell spot assets directly in Oslo</span></div>
       <TickerBar />
       {/* Market header */}
       <div className="market-header">

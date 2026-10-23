@@ -55,7 +55,7 @@ export function WalletPage() {
       <nav className="wallet-portfolio-actions" aria-label="Portfolio actions">
         <Link to="/wallet?action=send"><span aria-hidden="true">↗</span>Send</Link>
         <Link to="/wallet?action=receive"><span aria-hidden="true">↙</span>Receive</Link>
-        <Link to="/bridge"><span aria-hidden="true">⇄</span>Swap</Link>
+        <Link to="/spot"><span aria-hidden="true">⇄</span>Swap</Link>
       </nav>
       {!isConnected && <ConnectButton />}
       <WalletHistory address={accounts.length?`multi-priced-usd-v2:${accounts.join('|')}`:undefined} value={total} status={isLoading ? 'Loading your balances…' : incomplete ? 'Some networks could not load. Chart recording resumes when they recover.' : undefined} />
