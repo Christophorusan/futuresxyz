@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 :root {
+  --feature-send:#a7b7ff; --feature-receive:#64d9ad; --feature-swap:#d2b0ff; --feature-earn:#64d9ad;
   --neutral-canvas:#181818; --neutral-panel:#212121; --neutral-raised:#282828;
   --neutral-selected:#303030; --neutral-text:#f1f1ef; --neutral-muted:#a4a4a0;
   --neutral-border:#ffffff14; --neutral-action:#ececea;

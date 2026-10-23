@@ -106,3 +106,19 @@
 .oslo-closing::before{left:-150px}.oslo-closing::after{right:-150px}
 @media(max-width:800px){.oslo-hero-linework{opacity:.1}.oslo-finance-actions article:nth-child(3){border-left:0}.oslo-finance-actions article:nth-child(n+3){border-top:1px solid #00000020}}
 @media(max-width:480px){.oslo-hero-linework{display:none}.oslo-finance-actions article+article{border-left:0;border-top:1px solid #00000020}}
+
+/* Color identifies a feature; surfaces and typography stay quiet. */
+.oslo-landing .oslo-demo-actions>span:nth-child(1),.oslo-landing .oslo-product-tools>span:nth-child(1){color:var(--feature-send);background:#a7b7ff14}
+.oslo-landing .oslo-demo-actions>span:nth-child(2),.oslo-landing .oslo-product-tools>span:nth-child(2){color:var(--feature-receive);background:#64d9ad14}
+.oslo-landing .oslo-demo-actions>span:nth-child(3),.oslo-landing .oslo-product-tools>span:nth-child(3){color:var(--feature-swap);background:#d2b0ff14}
+.oslo-landing .oslo-demo-actions>span:nth-child(4){color:var(--feature-earn);background:#64d9ad14}
+.oslo-landing .oslo-demo-actions small{color:var(--neutral-text)}
+.oslo-landing .oslo-preview-review{background:var(--feature-send);color:#172044}
+.oslo-finance-actions article:nth-child(1){--feature-dot:#6276ce}
+.oslo-finance-actions article:nth-child(2){--feature-dot:#9262c8}
+.oslo-finance-actions article:nth-child(3){--feature-dot:#b47b27}
+.oslo-finance-actions article:nth-child(4){--feature-dot:#21825e}
+.oslo-finance-actions h3::before{background:var(--feature-dot);border-color:var(--feature-dot);box-shadow:0 0 0 5px color-mix(in srgb,var(--feature-dot) 10%,transparent)}
+.oslo-landing .oslo-principles article:nth-child(1)>span{background:#e4e9fb;color:#4c60b4}
+.oslo-landing .oslo-principles article:nth-child(2)>span{background:#e0efe7;color:#246c4c}
+.oslo-landing .oslo-principles article:nth-child(3)>span{background:#eee4f7;color:#8050a5}

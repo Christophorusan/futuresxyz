@@ -155,3 +155,12 @@
 :root .wallet-payment-dialog{background:var(--bg-1);color:var(--text-0)}
 :root .wallet-payment-dialog input,:root .wallet-payment-dialog select{background:var(--bg-0);border-color:var(--border);color:var(--text-0)}
 :root .wallet-payment-dialog .payment-primary,:root .wallet-account-form button{background:var(--action-bg);color:var(--action-fg)}
+
+/* Match the feature accents in the landing-page wallet preview. */
+.wallet-portfolio-actions a:nth-child(1)>span{color:var(--feature-send)}
+.wallet-portfolio-actions a:nth-child(2)>span{color:var(--feature-receive)}
+.wallet-portfolio-actions a:nth-child(3)>span{color:var(--feature-swap)}
+[data-theme="light"] .wallet-portfolio-actions a:nth-child(1)>span{color:#4c60b4}
+[data-theme="light"] .wallet-portfolio-actions a:nth-child(2)>span{color:#246c4c}
+[data-theme="light"] .wallet-portfolio-actions a:nth-child(3)>span{color:#8050a5}
+.wallet-portfolio-actions a:hover>span{color:inherit}
