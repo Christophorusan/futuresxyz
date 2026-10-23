@@ -4,6 +4,8 @@ import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom'
 import { WagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { config } from './config/wagmi'
+import { privyAppId } from './contexts/EmailWalletContext'
+const EmailWalletProvider = lazy(() => import('./components/auth/EmailWalletProvider'))
 import { HyperliquidProvider } from './contexts/HyperliquidContext'
 import { MarketProvider } from './contexts/MarketContext'
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
@@ -159,21 +161,9 @@ function AppContent() {
 }
 
 function App() {
-  return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <HyperliquidProvider>
-          <MarketProvider>
-            <ThemeProvider>
-              <ToastProvider>
-                <AppContent />
-              </ToastProvider>
-            </ThemeProvider>
-          </MarketProvider>
-        </HyperliquidProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
-  )
+  const content = <HyperliquidProvider><MarketProvider><ThemeProvider><ToastProvider><AppContent /></ToastProvider></ThemeProvider></MarketProvider></HyperliquidProvider>
+  if (privyAppId) return <Suspense fallback={<div className="oslo-loading" role="status">Loading wallet sign-in…</div>}><EmailWalletProvider queryClient={queryClient}>{content}</EmailWalletProvider></Suspense>
+  return <WagmiProvider config={config}><QueryClientProvider client={queryClient}>{content}</QueryClientProvider></WagmiProvider>
 }
 
 export default App

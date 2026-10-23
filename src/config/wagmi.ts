@@ -31,7 +31,8 @@ const appUrl = new URL(import.meta.env.BASE_URL, typeof window === 'undefined' ?
 
 export const config = createConfig({
   chains: [arbitrum, mainnet, hyperEVM, hyperliquidL1],
-  connectors: [
+  multiInjectedProviderDiscovery: !import.meta.env.VITE_PRIVY_APP_ID?.trim(),
+  connectors: import.meta.env.VITE_PRIVY_APP_ID?.trim() ? [] : [
     injected(),
     ...(walletConnectProjectId ? [walletConnect({ projectId: walletConnectProjectId, showQrModal: true,
       metadata: { name: 'Oslo', description: 'One place for your digital assets', url: appUrl, icons: [new URL('logo.svg', appUrl).href] },
