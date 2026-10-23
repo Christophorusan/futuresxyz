@@ -1,0 +1,3 @@
+.token-network-icon{position:relative;display:inline-flex;width:40px;height:40px;flex:0 0 40px;margin-right:3px}
+.token-network-badge{position:absolute;right:-3px;bottom:-3px;display:grid;place-items:center;width:22px;height:22px;border:3px solid var(--bg-1);border-radius:50%;background:var(--bg-1);box-sizing:border-box}
+.token-network-badge>span{display:flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;overflow:hidden}

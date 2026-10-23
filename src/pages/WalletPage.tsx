@@ -3,7 +3,7 @@ import { visibleHoldings } from '../lib/visibleHoldings'
 import { useEffect, useRef, useState, lazy, Suspense } from 'react'
 import { networks } from '../hooks/useUnifiedPortfolio'
 import './WalletPage.css'
-import { TokenIcon } from '../components/TokenIcon'
+import { TokenNetworkIcon } from '../components/TokenNetworkIcon'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAccount } from 'wagmi'
 import { ConnectButton } from '../components/shared/ConnectButton'
@@ -48,7 +48,7 @@ export function WalletPage() {
       <section className="lending-card wallet-holdings"><div className="wallet-assets-heading"><div><h2>Your tokens</h2><p>Holdings worth $0.01 or more.</p></div><span className="wallet-chain-label">{holdings.length} assets</span></div>
       <div className="wallet-holdings-filters"><input aria-label="Search tokens" type="search" placeholder="Search tokens" value={assetSearch} onChange={e => setAssetSearch(e.target.value)} /><select aria-label="Filter tokens by network" value={network} onChange={e => setNetwork(e.target.value)}><option value="all">All networks</option>{Object.entries({ ...networks, HyperCore: 'HyperCore' }).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></div>
       <ul className="wallet-simple-tokens">{filteredHoldings.map(asset => <li key={asset.id}>
-        <TokenIcon symbol={asset.network === 'HyperCore' && asset.symbol === 'Equity' ? 'HYPE' : asset.symbol} logo={asset.logo} preferLogo fallback="icon" size={40}/>
+        <TokenNetworkIcon network={asset.network} symbol={asset.network === 'HyperCore' && asset.symbol === 'Equity' ? 'HYPE' : asset.symbol} logo={asset.logo}/>
         <div className="wallet-simple-token-name"><strong>{asset.name}</strong><small>{Number(asset.balance).toLocaleString(undefined,{maximumSignificantDigits:8})} {asset.symbol} · {networks[asset.network as keyof typeof networks]??asset.network}</small></div>
         <strong className="wallet-simple-token-value">{asset.value === null ? '—' : `$${money(asset.value)}`}</strong>
       </li>)}</ul>
