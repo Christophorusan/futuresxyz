@@ -113,8 +113,8 @@ export function TradePanel() {
 
       {/* Buy / Long | Sell / Short */}
       <div className="trade-side-toggle">
-        <button className={`trade-side-btn ${side === 'buy' ? 'active buy' : ''}`} onClick={() => setSide('buy')}>Buy / Long</button>
-        <button className={`trade-side-btn ${side === 'sell' ? 'active sell' : ''}`} onClick={() => setSide('sell')}>Sell / Short</button>
+        <button className={`trade-side-btn buy ${side === 'buy' ? 'active' : ''}`} aria-pressed={side === 'buy'} onClick={() => setSide('buy')}>Buy / Long</button>
+        <button className={`trade-side-btn sell ${side === 'sell' ? 'active' : ''}`} aria-pressed={side === 'sell'} onClick={() => setSide('sell')}>Sell / Short</button>
       </div>
 
       {/* Available to Trade + Current Position */}

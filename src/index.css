@@ -3873,3 +3873,11 @@ body {
 /* One neutral treatment for general actions; green/red remain market signals. */
 :root .app .nav-deposit-btn{background:var(--bg-2);color:var(--text-0);border-color:var(--border-hover)}
 :root .app .nav-deposit-btn:hover{background:var(--bg-3);color:var(--text-0)}
+
+/* Solid trading actions retain color in both selected and unselected states. */
+:root{--buy-action:#137b50;--sell-action:#bd3545}
+:root .app .trade-side-btn.buy,:root .app .trade-submit.buy,:root .app .ocm-btn-confirm.buy{background:var(--buy-action);color:#fff;border-color:transparent}
+:root .app .trade-side-btn.sell,:root .app .trade-submit.sell,:root .app .ocm-btn-confirm.sell{background:var(--sell-action);color:#fff;border-color:transparent}
+:root .app .trade-side-btn.active{box-shadow:inset 0 0 0 2px #fff;font-weight:700}
+:root .app .trade-side-btn:hover,:root .app .trade-submit:not(:disabled):hover{filter:brightness(1.12)}
+:root .app .trade-side-btn:focus-visible{outline:2px solid var(--text-0);outline-offset:3px}

@@ -233,8 +233,8 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
 
       {/* Buy / Sell */}
       <div className="trade-side-toggle">
-        <button className={`trade-side-btn ${side === 'buy' ? 'active buy' : ''}`} onClick={() => setSide('buy')}>Buy</button>
-        <button className={`trade-side-btn ${side === 'sell' ? 'active sell' : ''}`} onClick={() => setSide('sell')}>Sell</button>
+        <button className={`trade-side-btn buy ${side === 'buy' ? 'active' : ''}`} aria-pressed={side === 'buy'} onClick={() => setSide('buy')}>Buy</button>
+        <button className={`trade-side-btn sell ${side === 'sell' ? 'active' : ''}`} aria-pressed={side === 'sell'} onClick={() => setSide('sell')}>Sell</button>
       </div>
 
       {/* Available + Price */}
