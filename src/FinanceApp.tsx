@@ -87,7 +87,7 @@ function NavMore() {
 const sidebarItems = [
   ['/wallet', 'Wallet', 'M3 7h18v14H3z M3 7V4h15v3 M16 12h5v5h-5z'],
   ['/lending', 'Lending', 'M4 20h16 M7 16v-5 M12 16V7 M17 16V3'],
-  ['/perps', 'Trade', 'M3 17 8 12l4 3 9-11 M15 4h6v6'],
+  ['/perps', 'Perps', 'M3 17 8 12l4 3 9-11 M15 4h6v6'],
   ['/bridge', 'Swap', 'M4 7h16l-4-4 M20 17H4l4 4'],
   ['/predictions', 'Prediction markets', 'M4 20h16 M6 16V9 M12 16V4 M18 16v-5'],
 ]
@@ -125,7 +125,7 @@ function AppContent() {
               oslo
             </NavLink>
             <div className="nav-tabs">
-              {[['/wallet', 'Wallet'], ['/lending', 'Lending'], ['/perps', 'Trade']].map(([to, label]) => <NavLink key={to} to={to} className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>{label}</NavLink>)}
+              {[['/wallet', 'Wallet'], ['/lending', 'Lending'], ['/perps', 'Perps']].map(([to, label]) => <NavLink key={to} to={to} className={({ isActive }) => `nav-tab ${isActive ? 'active' : ''}`}>{label}</NavLink>)}
               <NavMore />
             </div>
           </div>
@@ -157,7 +157,7 @@ function AppContent() {
         </Routes>
         </Suspense></PageErrorBoundary>
         <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
-          {[['/wallet', 'Wallet', '◈'], ['/perps', 'Trade', '≋'], ['/lending', 'Lend', '＋']].map(([to, label, icon]) => <NavLink key={to} to={to} className={({ isActive }) => isActive ? 'active' : ''}><span aria-hidden="true">{icon}</span>{label}</NavLink>)}
+          {[['/wallet', 'Wallet', '◈'], ['/perps', 'Perps', '≋'], ['/lending', 'Lend', '＋']].map(([to, label, icon]) => <NavLink key={to} to={to} className={({ isActive }) => isActive ? 'active' : ''}><span aria-hidden="true">{icon}</span>{label}</NavLink>)}
         </nav>
       </div>
   )
