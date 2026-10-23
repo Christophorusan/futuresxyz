@@ -164,3 +164,17 @@
 [data-theme="light"] .wallet-portfolio-actions a:nth-child(2)>span{color:#246c4c}
 [data-theme="light"] .wallet-portfolio-actions a:nth-child(3)>span{color:#8050a5}
 .wallet-portfolio-actions a:hover>span{color:inherit}
+
+.wallet-simple{max-width:760px!important}
+.wallet-simple .wallet-summary{text-align:center;padding:32px 24px}
+.wallet-simple .wallet-overview-top{justify-content:center}
+.wallet-simple .wallet-total{font-size:48px;letter-spacing:-2px}
+.wallet-simple .wallet-portfolio-actions{justify-content:center}
+.wallet-simple .wallet-content-card{margin-top:16px}
+.wallet-simple-tokens{list-style:none;margin:12px 0}
+.wallet-simple-tokens li{display:flex;align-items:center;gap:12px;padding:18px 0;border-bottom:1px solid var(--border)}
+.wallet-simple-token-name{min-width:0;flex:1}.wallet-simple-token-name strong,.wallet-simple-token-name small{display:block;overflow-wrap:anywhere}
+.wallet-simple-token-name strong{font-size:14px;font-weight:500}.wallet-simple-token-name small{font-size:12px;color:var(--text-2);margin-top:5px}
+.wallet-simple-token-value{font-size:14px;font-weight:500;font-variant-numeric:tabular-nums}
+.wallet-value-details{font-size:12px;color:var(--text-2);margin-top:18px;line-height:1.7}.wallet-value-details summary{cursor:pointer}.wallet-value-details p{margin-top:10px}
+@media(max-width:600px){.wallet-simple .wallet-total{font-size:40px}.wallet-simple .wallet-summary{padding:24px 16px}.wallet-simple-tokens li{gap:10px}}
