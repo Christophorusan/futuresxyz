@@ -32,3 +32,20 @@
 .oslo-side-screen{top:94px;width:310px}.oslo-side-left{left:35px}.oslo-side-right{right:35px}
 @media(max-width:1050px){.oslo-side-screen{width:260px;top:105px}.oslo-side-left{left:0}.oslo-side-right{right:0}}
 @media(max-width:700px){.oslo-wallet-demo{width:min(300px,100%);height:630px}.oslo-screen-stage{margin-top:28px;padding-top:8px}.oslo-hero{padding-left:14px;padding-right:14px}}
+
+/* Keep the opening section compact, with copy beside the product on desktop. */
+.oslo-hero{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;column-gap:32px;padding:36px max(32px,calc((100vw - 1320px)/2)) 20px;text-align:left}
+.oslo-hero-copy{max-width:480px;margin:0}
+.oslo-hero h1{font-size:clamp(42px,4.4vw,64px);letter-spacing:-2.8px;margin:18px 0}
+.oslo-hero-copy>p{font-size:16px;line-height:1.6;margin:0 0 22px;max-width:410px}
+.oslo-hero-copy>small{margin-top:12px}
+.oslo-screen-stage{width:100%;height:510px;margin:0;padding:0;max-width:640px}
+.oslo-screen-stage .oslo-wallet-demo{transform:scale(.8);transform-origin:top center}
+.oslo-side-screen{width:230px;top:80px}.oslo-side-left{left:0}.oslo-side-right{right:0}
+.oslo-side-screen .oslo-product-preview{padding:16px}
+.oslo-stage-caption{grid-column:1/-1;text-align:center;margin:10px 0 0}
+@media(max-width:1050px) and (min-width:701px){.oslo-hero{grid-template-columns:1fr 300px;gap:20px;padding:30px}.oslo-side-screen{display:none}.oslo-hero h1{font-size:48px}}
+@media(max-width:700px){.oslo-hero{display:block;padding:30px 18px 18px;text-align:center}.oslo-hero-copy{margin:auto;max-width:420px}.oslo-hero h1{font-size:40px;letter-spacing:-1.8px;margin:14px 0}.oslo-hero-copy>p{font-size:14px;margin:0 auto 18px;max-width:330px}.oslo-hero-copy>small{font-size:10px;margin-top:10px}.oslo-screen-stage{height:415px;margin-top:24px;padding:0}.oslo-screen-stage .oslo-wallet-demo{transform:scale(.65);transform-origin:top center;width:300px;max-width:none}.oslo-stage-caption{font-size:11px;margin:8px 0 0}}
+.oslo-hero .oslo-side-screen{width:280px}
+.oslo-hero .oslo-side-left{transform:perspective(1200px) rotateY(13deg) rotate(-7deg) scale(.72);transform-origin:top left}
+.oslo-hero .oslo-side-right{transform:perspective(1200px) rotateY(-13deg) rotate(7deg) scale(.72);transform-origin:top right}
