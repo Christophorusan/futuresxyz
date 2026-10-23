@@ -58,9 +58,9 @@ export function TradePanel() {
     clearError()
     await placeOrder({
       coin: selectedMarket, side,
-      size: tokenSize.toFixed(market?.szDecimals ?? 4),
+      size: String(tokenSize),
       orderType,
-      price: orderType === 'market' ? midPrice.toFixed(6) : price,
+      price: orderType === 'market' ? String(midPrice) : price,
       tif: orderType === 'limit' ? tif : undefined,
       reduceOnly,
       tpPrice: showTpSl && tpPrice ? tpPrice : undefined,

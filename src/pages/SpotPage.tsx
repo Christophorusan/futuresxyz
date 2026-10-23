@@ -1,3 +1,4 @@
+import { orderPrice, orderSize, orderOutcome } from '../lib/orderValidation'
 import { AssetLabel } from '../components/AssetLabel'
 import './BridgePage.css'
 import { Link } from 'react-router-dom'
@@ -51,8 +52,12 @@ function SpotChart({ coin, theme }: { coin: string; theme: 'dark' | 'light' }) {
   useEffect(() => {
     if (!seriesRef.current || !volRef.current) return
     const isDark = theme === 'dark'
+    let cancelled = false
+    seriesRef.current.setData([])
+    volRef.current.setData([])
     const now = Date.now()
     info.candleSnapshot({ coin, interval: chartInterval, startTime: now - 7 * 86400000, endTime: now }).then((raw: unknown) => {
+      if (cancelled) return
       const candles = raw as Array<{ t: number; o: string; h: string; l: string; c: string; v: string }>
       const cd: CandlestickData<Time>[] = candles.map(c => ({ time: Math.floor(c.t / 1000) as Time, open: parseFloat(c.o), high: parseFloat(c.h), low: parseFloat(c.l), close: parseFloat(c.c) }))
       const vd: HistogramData<Time>[] = candles.map(c => ({ time: Math.floor(c.t / 1000) as Time, value: parseFloat(c.v), color: parseFloat(c.c) >= parseFloat(c.o) ? (isDark ? 'rgba(34,197,94,0.25)' : 'rgba(20,184,166,0.25)') : (isDark ? 'rgba(239,68,68,0.25)' : 'rgba(220,38,38,0.25)') }))
@@ -60,6 +65,7 @@ function SpotChart({ coin, theme }: { coin: string; theme: 'dark' | 'light' }) {
       volRef.current?.setData(vd)
       chartRef.current?.timeScale().fitContent()
     }).catch(() => {})
+    return () => { cancelled = true }
   }, [coin, chartInterval, info, theme])
 
   return (
@@ -137,7 +143,7 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
 // ── Spot Trade Panel ──
 function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
   const { isConnected, exchange, agentApproved, approving, approveAgent, switchToArbitrum } = useHyperliquid()
-  const { state } = useUserState()
+  const { state, refetch, error: balanceError } = useUserState()
   const [side, setSide] = useState<'buy' | 'sell'>('buy')
   const [orderType, setOrderType] = useState<'market' | 'limit'>('market')
   const [limitPrice, setLimitPrice] = useState('')
@@ -149,8 +155,10 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
 
   const price = market ? parseFloat(market.markPx) : 0
   const usdcNum = parseFloat(usdcAmount) || 0
-  const tokenAmount = price > 0 ? usdcNum / price : 0
-  const spotBalance = state ? parseFloat(state.spotUSDC) : 0
+  const sizingPrice = orderType === 'limit' ? Number(limitPrice) : price
+  const tokenAmount = sizingPrice > 0 ? usdcNum / sizingPrice : 0
+  const baseBalance = state?.spotBalances[String(market?.baseIndex)] ?? 0
+  const spotBalance = side === 'buy' ? Number(state?.spotUSDC ?? 0) : baseBalance * sizingPrice
 
   const handleSpotOrder = async () => {
     if (!market || tokenAmount <= 0 || price <= 0) return
@@ -169,34 +177,26 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
       const assetIndex = 10000 + market.index
       const isMarketOrder = orderType === 'market'
 
-      let limitPx: string
-      if (isMarketOrder) {
-        const slippedPx = isBuy ? price * 1.05 : price * 0.95
-        if (slippedPx >= 10000) limitPx = slippedPx.toFixed(0)
-        else if (slippedPx >= 100) limitPx = slippedPx.toFixed(1)
-        else if (slippedPx >= 1) limitPx = slippedPx.toFixed(2)
-        else if (slippedPx >= 0.001) limitPx = slippedPx.toFixed(5)
-        else limitPx = slippedPx.toFixed(8)
-      } else {
-        if (!limitPrice || parseFloat(limitPrice) <= 0) { setError('Enter a limit price'); setPlacing(false); return }
-        limitPx = limitPrice
-      }
+      if (market.quoteToken !== 'USDC') throw new Error('This swap currently supports USDC-quoted markets only')
+      const limitPx = orderPrice(isMarketOrder ? price * (isBuy ? 1.05 : 0.95) : Number(limitPrice), market.szDecimals, true)
+      const roundedSize = orderSize(isBuy && isMarketOrder ? usdcNum / Number(limitPx) : tokenAmount, market.szDecimals)
+      if (!isBuy && Number(roundedSize) > baseBalance) throw new Error('Insufficient available token balance')
+      if (isBuy && Number(roundedSize) * Number(limitPx) > spotBalance) throw new Error('Insufficient available USDC balance')
 
-      const roundedSize = tokenAmount.toFixed(4)
-
-      await exchange.order({
+      const result = await exchange.order({
         orders: [{
           a: assetIndex,
           b: isBuy,
           p: limitPx,
           s: roundedSize,
           r: false,
-          t: { limit: { tif: isMarketOrder ? 'FrontendMarket' : 'Gtc' } },
+          t: { limit: { tif: isMarketOrder ? 'Ioc' : 'Gtc' } },
         }],
         grouping: 'na',
       })
 
-      setSuccess(`${isBuy ? 'Bought' : 'Sold'} ${roundedSize} ${market.baseToken}`)
+      setSuccess(`${orderOutcome(result)} · ${market.baseToken}`)
+      void refetch()
       setUsdcAmount('')
     } catch (e) {
       console.error('Spot order failed:', e)
@@ -216,6 +216,7 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
   }
 
   const handleSizePct = (pct: number) => {
+    pct = Math.max(0, Math.min(100, Number.isFinite(pct) ? pct : 0))
     setSizePct(pct)
     if (spotBalance > 0) {
       const usd = (spotBalance * pct / 100)
@@ -241,7 +242,7 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
       <div className="tp-info-rows">
         <div className="tp-info-row">
           <span>Available to Trade</span>
-          <span>{spotBalance > 0 ? `${spotBalance.toFixed(2)} USDC` : '0.00 USDC'}</span>
+          <span>{side === 'buy' ? `${Number(state?.spotUSDC ?? 0).toFixed(2)} USDC` : `${baseBalance} ${market?.baseToken ?? ''}`}</span>
         </div>
         <div className="tp-info-row">
           <span>Price</span>
@@ -298,7 +299,7 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
       <div className="tp-summary">
         <div className="tp-summary-row"><span>Order Value</span><span>{usdcNum > 0 ? `$${usdcNum.toFixed(2)}` : 'N/A'}</span></div>
         <div className="tp-summary-row"><span>You {side === 'buy' ? 'receive' : 'sell'}</span><span>{tokenAmount > 0 ? `${tokenAmount.toFixed(tokenAmount >= 100 ? 0 : 2)} ${market?.baseToken ?? ''}` : 'N/A'}</span></div>
-        <div className="tp-summary-row"><span>Fee</span><span>0.0560% / 0.0400%</span></div>
+        <div className="tp-summary-row"><span>Fee</span><span>Varies by account tier</span></div>{orderType === 'market' && <div className="tp-summary-row"><span>Market price limit</span><span>5% slippage cap</span></div>}
       </div>
 
       {/* Submit */}
@@ -309,11 +310,12 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
           {approving ? 'Setting up...' : 'Enable Trading'}
         </button>
       ) : (
-        <button className={`trade-submit ${side}`} disabled={placing || tokenAmount <= 0} onClick={handleSpotOrder}>
+        <button className={`trade-submit ${side}`} disabled={placing || !state || !Number.isFinite(tokenAmount) || tokenAmount <= 0 || market?.quoteToken !== 'USDC'} onClick={handleSpotOrder}>
           {placing ? 'Swapping...' : side === 'buy' ? `Swap to ${market?.baseToken ?? ''}` : `Swap ${market?.baseToken ?? ''} to USDC`}
         </button>
       )}
 
+      {balanceError && <div className="trade-error">{balanceError} <button onClick={() => void refetch()}>Retry</button></div>}
       {error && <div className="trade-error">{error}</div>}
       {success && <div className="dw-success">{success}</div>}
 
@@ -323,7 +325,8 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
 
 // ── Main Page ──
 export function SpotPage() {
-  const { markets, loading } = useSpotMarkets()
+  const { markets: allMarkets, loading, error: marketsError } = useSpotMarkets()
+  const markets = allMarkets.filter(m => m.quoteToken === 'USDC')
   const { theme } = useTheme()
   const [selectedPair, setSelectedPair] = useState('PURR/USDC')
 
@@ -334,6 +337,8 @@ export function SpotPage() {
   if (loading && markets.length === 0) {
     return <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-3)' }}>Loading spot markets...</div>
   }
+
+  if (!markets.length) return <main className="lending-page" role="status">{marketsError ?? 'No supported spot markets are available. Please refresh to retry.'}</main>
 
   return (
     <div className="finance-product-page"><div className="bridge-spot-link"><Link to="/bridge">Bridge assets across networks →</Link></div><div className="perps-page"><div className="perps-discover-bar"><strong>Swap · Hyperliquid Spot</strong><span>Buy and sell spot assets directly in Oslo</span></div>
@@ -384,7 +389,7 @@ export function SpotPage() {
           </div>
         </div>
         <div className="perps-trade-area">
-          <SpotTradePanel market={selected} />
+          <SpotTradePanel key={selected?.name} market={selected} />
         </div>
       </div>
     </div><div className="finance-product-discovery"><AppDiscovery category="swap" /></div></div>

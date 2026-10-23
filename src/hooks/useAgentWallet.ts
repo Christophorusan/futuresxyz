@@ -70,12 +70,9 @@ export function useAgentWallet() {
       return
     }
 
-    // First check localStorage (fast)
+    setAgentApproved(false)
+    let cancelled = false
     const key = `${AGENT_APPROVED_STORAGE}-${address.toLowerCase()}-${agentAccount.address.toLowerCase()}`
-    if (localStorage.getItem(key) === 'true') {
-      setAgentApproved(true)
-      return
-    }
 
     // Then check on-chain
     const checkOnChain = async () => {
@@ -85,7 +82,7 @@ export function useAgentWallet() {
         })
         const agents = await info.extraAgents({ user: address as `0x${string}` }) as Array<{ address: string; name: string }>
         const found = agents.some(a => a.address.toLowerCase() === agentAccount.address.toLowerCase())
-        if (found) {
+        if (found && !cancelled) {
           localStorage.setItem(key, 'true')
           setAgentApproved(true)
         }
@@ -94,6 +91,7 @@ export function useAgentWallet() {
       }
     }
     checkOnChain()
+    return () => { cancelled = true }
   }, [address, agentAccount])
 
   // Approve agent — user signs once with browser wallet

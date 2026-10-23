@@ -15,7 +15,7 @@ export function StakingPage() {
   const walletBalance = useHyperEvmBalance(mode === 'stake' ? 'HYPE' : 'stHYPE')
 
   return (
-    <div className="protocol-page">
+    <div className="protocol-page"><p className="integration-preview-notice">Staking preview · Rates, validator statistics and protocol totals are illustrative. Wallet balances are fetched live; staking is completed on the provider’s site.</p>
       <div className="protocol-main">
         {/* Left: Stats + Validators table */}
         <div className="protocol-content">

@@ -7,6 +7,7 @@ export interface SpotMarket {
   index: number
   baseToken: string
   quoteToken: string
+  szDecimals: number
   baseIndex: number
   markPx: string
   volume24h: string
@@ -22,6 +23,7 @@ export function useSpotMarkets() {
   const { info } = useHyperliquid()
   const [markets, setMarkets] = useState<SpotMarket[]>(cachedSpot)
   const [loading, setLoading] = useState(cachedSpot.length === 0)
+  const [error, setError] = useState<string | null>(null)
   const infoRef = useRef(info)
   infoRef.current = info
 
@@ -37,7 +39,7 @@ export function useSpotMarkets() {
       const data = await infoRef.current.spotMetaAndAssetCtxs()
       const meta = (data as unknown[])[0] as {
         universe: Array<{ name: string; tokens: number[]; index: number }>
-        tokens: Array<{ name: string; index: number; evmContract: { address: string } | null }>
+        tokens: Array<{ name: string; index: number; szDecimals: number; evmContract: { address: string } | null }>
       }
       const ctxs = (data as unknown[])[1] as Array<{
         markPx: string
@@ -46,10 +48,11 @@ export function useSpotMarkets() {
       }>
 
       // Build token lookup
-      const tokenMap = new Map<number, { name: string; evmContract: string | null }>()
+      const tokenMap = new Map<number, { name: string; szDecimals: number; evmContract: string | null }>()
       for (const t of meta.tokens) {
         tokenMap.set(t.index, {
           name: t.name,
+          szDecimals: t.szDecimals,
           evmContract: t.evmContract?.address ?? null,
         })
       }
@@ -72,6 +75,7 @@ export function useSpotMarkets() {
           baseToken: baseName,
           quoteToken: quoteName,
           baseIndex: pair.tokens[0],
+          szDecimals: baseInfo?.szDecimals ?? 0,
           markPx,
           volume24h: ctx?.dayNtlVlm ?? '0',
           change24h: change,
@@ -83,8 +87,10 @@ export function useSpotMarkets() {
       cachedSpot = spotList
       lastFetch = now
       setMarkets(spotList)
+      setError(null)
     } catch (e) {
       console.error('Failed to fetch spot markets:', e)
+      setError('Spot markets are unavailable. Please refresh to retry.')
     } finally {
       setLoading(false)
     }
@@ -96,5 +102,5 @@ export function useSpotMarkets() {
     return () => clearInterval(interval)
   }, [fetchData])
 
-  return { markets, loading }
+  return { markets, loading, error }
 }

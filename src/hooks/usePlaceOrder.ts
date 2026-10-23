@@ -1,3 +1,4 @@
+import { orderPrice, orderSize, orderOutcome } from '../lib/orderValidation'
 import { useState, useCallback } from 'react'
 import { useHyperliquid } from '../contexts/HyperliquidContext'
 import { useMarketMeta } from './useMarketMeta'
@@ -18,14 +19,6 @@ interface PlaceOrderParams {
   tpPrice?: string
   slPrice?: string
   leverage?: number
-}
-
-function roundPrice(price: number): string {
-  if (price >= 10000) return price.toFixed(0)
-  if (price >= 100) return price.toFixed(1)
-  if (price >= 1) return price.toFixed(2)
-  if (price >= 0.01) return price.toFixed(4)
-  return price.toFixed(6)
 }
 
 export function usePlaceOrder() {
@@ -56,6 +49,7 @@ export function usePlaceOrder() {
       }
 
       const market = markets[assetIndex]
+      const roundPrice = (price: number) => orderPrice(price, market.szDecimals)
       const isBuy = params.side === 'buy'
       const isMarket = params.orderType === 'market'
 
@@ -68,8 +62,7 @@ export function usePlaceOrder() {
             leverage: params.leverage,
           })
         } catch (e) {
-          console.warn('Failed to update leverage:', e)
-          // Continue with order — leverage may already be set
+          throw new Error(`Leverage update failed: ${e instanceof Error ? e.message : 'try again'}`)
         }
       }
 
@@ -99,7 +92,7 @@ export function usePlaceOrder() {
         setPlacing(false)
         return null
       }
-      const roundedSize = rawSize.toFixed(market.szDecimals)
+      const roundedSize = orderSize(rawSize, market.szDecimals)
 
       // Check if we need TP/SL trigger orders
       const hasTp = params.tpPrice && parseFloat(params.tpPrice) > 0
@@ -116,7 +109,7 @@ export function usePlaceOrder() {
             p: limitPx,
             s: roundedSize,
             r: params.reduceOnly ?? false,
-            t: { limit: { tif: isMarket ? 'FrontendMarket' : (params.tif || 'Gtc') } },
+            t: { limit: { tif: isMarket ? 'Ioc' : (params.tif || 'Gtc') } },
           },
         ]
 
@@ -146,6 +139,7 @@ export function usePlaceOrder() {
           grouping: 'normalTpsl',
           builder: { b: BUILDER_ADDRESS, f: BUILDER_FEE },
         })
+        orderOutcome(result)
         setLastResult(result)
         return result
       } else {
@@ -156,11 +150,12 @@ export function usePlaceOrder() {
             p: limitPx,
             s: roundedSize,
             r: params.reduceOnly ?? false,
-            t: { limit: { tif: isMarket ? 'FrontendMarket' : (params.tif || 'Gtc') } },
+            t: { limit: { tif: isMarket ? 'Ioc' : (params.tif || 'Gtc') } },
           }],
           grouping: 'na',
           builder: { b: BUILDER_ADDRESS, f: BUILDER_FEE },
         })
+        orderOutcome(result)
         setLastResult(result)
         return result
       }

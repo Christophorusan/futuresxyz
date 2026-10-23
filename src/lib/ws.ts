@@ -6,6 +6,7 @@ interface Subscription {
   id: string
   channel: string
   coin?: string
+  interval?: string
   handler: MessageHandler
 }
 
@@ -52,7 +53,7 @@ class WebSocketManager {
         }
 
         for (const sub of this.subscriptions.values()) {
-          if (sub.channel === channel && (!sub.coin || sub.coin === coin)) {
+          if (sub.channel === channel && (!sub.coin || sub.coin === coin) && (!sub.interval || sub.interval === data?.i)) {
             sub.handler(data)
           }
         }
@@ -82,7 +83,7 @@ class WebSocketManager {
   }
 
   private scheduleReconnect() {
-    if (this.reconnectTimeout) return
+    if (this.reconnectTimeout || this.subscriptions.size === 0) return
     this.reconnectTimeout = setTimeout(() => {
       this.reconnectTimeout = null
       this.reconnectDelay = Math.min(this.reconnectDelay * 2, this.maxReconnectDelay)
@@ -111,6 +112,7 @@ class WebSocketManager {
     if (sub && this.ws?.readyState === WebSocket.OPEN) {
       const subscription: Record<string, unknown> = { type: sub.channel }
       if (sub.coin) subscription.coin = sub.coin
+      if (sub.interval) subscription.interval = sub.interval
       this.ws.send(JSON.stringify({ method: 'unsubscribe', subscription }))
     }
     this.subscriptions.delete(id)
@@ -124,7 +126,7 @@ class WebSocketManager {
       clearTimeout(this.reconnectTimeout)
       this.reconnectTimeout = null
     }
-    this.ws?.close()
+    if (this.ws) { this.ws.onclose = null; this.ws.close() }
     this.ws = null
   }
 }

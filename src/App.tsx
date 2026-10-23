@@ -1,3 +1,4 @@
+import { PageErrorBoundary } from './components/shared/PageErrorBoundary'
 import { lazy, Suspense, useState } from 'react'
 import { BrowserRouter, useLocation, useNavigate } from 'react-router-dom'
 import { LandingPage } from './pages/LandingPage'
@@ -17,7 +18,7 @@ function Entry() {
     window.scrollTo(0, 0)
   }
   return landing ? <LandingPage onEnter={enter} /> :
-    <Suspense fallback={<div className="oslo-loading" role="status">Opening Oslo…</div>}><FinanceApp /></Suspense>
+    <PageErrorBoundary><Suspense fallback={<div className="oslo-loading" role="status">Opening Oslo…</div>}><FinanceApp /></Suspense></PageErrorBoundary>
 }
 
 export default function App() {

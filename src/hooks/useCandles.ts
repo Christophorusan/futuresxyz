@@ -18,9 +18,13 @@ export function useCandles(market: string, interval: CandleInterval = '1h') {
   const [candles, setCandles] = useState<Candle[]>([])
   const [loading, setLoading] = useState(true)
   const candlesRef = useRef<Candle[]>([])
+  const requestId = useRef(0)
 
   // Fetch historical candles
   const fetchHistory = useCallback(async () => {
+    const id = ++requestId.current
+    candlesRef.current = []
+    setCandles([])
     try {
       setLoading(true)
       const now = Date.now()
@@ -41,17 +45,20 @@ export function useCandles(market: string, interval: CandleInterval = '1h') {
         volume: parseFloat(c.v),
       }))
 
-      candlesRef.current = parsed
-      setCandles(parsed)
+      if (id !== requestId.current) return
+      const merged = [...new Map([...parsed, ...candlesRef.current].map(c => [c.time, c])).values()].sort((a,b) => a.time-b.time)
+      candlesRef.current = merged
+      setCandles(merged)
     } catch (e) {
       console.error('Failed to fetch candles:', e)
     } finally {
-      setLoading(false)
+      if (id === requestId.current) setLoading(false)
     }
   }, [info, market, interval])
 
   useEffect(() => {
     fetchHistory()
+    return () => { requestId.current++ }
   }, [fetchHistory])
 
   // Live candle updates via WebSocket
@@ -83,6 +90,7 @@ export function useCandles(market: string, interval: CandleInterval = '1h') {
         } else {
           updated = [...existing, newCandle]
         }
+        updated.sort((a,b) => a.time-b.time)
         candlesRef.current = updated
         setCandles(updated)
       }

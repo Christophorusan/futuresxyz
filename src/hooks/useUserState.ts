@@ -21,6 +21,7 @@ export interface UserState {
   totalNtlPos: string
   withdrawable: string
   // Spot USDC available
+  spotBalances: Record<string, number>
   spotUSDC: string
   positions: Position[]
 }
@@ -29,6 +30,7 @@ export function useUserState() {
   const { info, address, isConnected } = useHyperliquid()
   const [state, setState] = useState<UserState | null>(null)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const infoRef = useRef(info)
   const addressRef = useRef(address)
 
@@ -51,6 +53,7 @@ export function useUserState() {
         infoRef.current.spotClearinghouseState({ user: addr }).catch(() => null),
       ])
 
+      if (!perpsRaw || !spotRaw) throw new Error('Account data is temporarily unavailable')
       // Perps data
       const perpsWithdrawable = perpsRaw?.withdrawable ? parseFloat(perpsRaw.withdrawable) : 0
       const accountValue = perpsRaw?.marginSummary?.accountValue ?? '0'
@@ -85,6 +88,8 @@ export function useUserState() {
           marginUsed: p.position.marginUsed as string,
         }))
 
+      if (addressRef.current?.toLowerCase() !== addr) return
+      setError(null)
       setState({
         totalBalance: totalBalance.toFixed(2),
         accountValue,
@@ -92,10 +97,12 @@ export function useUserState() {
         totalNtlPos,
         withdrawable: perpsRaw?.withdrawable ?? '0',
         spotUSDC: spotUSDC.toFixed(2),
+        spotBalances: Object.fromEntries((spotRaw?.balances ?? []).map(b => [String(b.token), Math.max(0, Number(b.total) - Number(b.hold))])),
         positions,
       })
     } catch (e) {
       console.error('Failed to fetch user state:', e)
+      if (addressRef.current?.toLowerCase() === addr) { setState(null); setError('Account balances unavailable. Please retry.') }
     } finally {
       setLoading(false)
     }
@@ -106,10 +113,11 @@ export function useUserState() {
       setState(null)
       return
     }
+    setState(null)
     fetchState()
     const interval = setInterval(fetchState, 15000)
     return () => clearInterval(interval)
   }, [isConnected, address, fetchState])
 
-  return { state, loading, refetch: fetchState }
+  return { state, loading, error, refetch: fetchState }
 }

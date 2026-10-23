@@ -666,7 +666,7 @@ export function PredictionsPage() {
   // Detail view
   if (openMarket) {
     return (
-      <div className="pred-page">
+      <div className="pred-page"><p className="integration-preview-notice">Prediction markets preview · Markets, prices and charts are illustrative. External trading links open Outcome testnet.</p>
         {topbar}
         <MarketView market={openMarket} onBack={() => setOpenMarketId(null)} onOpenMarket={handleOpen} />
       </div>
@@ -675,7 +675,7 @@ export function PredictionsPage() {
 
   // List view
   return (
-    <div className="pred-page">
+    <div className="pred-page"><p className="integration-preview-notice">Prediction markets preview · Markets, prices and charts are illustrative. External trading links open Outcome testnet.</p>
       {topbar}
 
       <div className="pred-layout">

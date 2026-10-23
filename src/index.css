@@ -3891,3 +3891,5 @@ body {
 .pred-page .pred-card-bar{background:#ff637d}.pred-page .pred-card-bar-fill{background:#34df9b}
 .pred-page .pred-outcome-btn{font-weight:700}.pred-page .pred-outcome-btn:hover{opacity:1;filter:brightness(1.08)}
 .pred-page .pred-outcome-btn:focus-visible{outline:2px solid var(--text-0);outline-offset:3px}
+
+.integration-preview-notice{flex:0 0 auto;width:100%;padding:12px 20px;background:var(--bg-2);border-bottom:1px solid var(--border);color:var(--text-1);font-size:12px;line-height:1.6}

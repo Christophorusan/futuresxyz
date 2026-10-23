@@ -21,7 +21,7 @@ export function OptionsPage() {
     .filter(m => optionType === 'all' || m.type === optionType)
 
   return (
-    <div className="pred-page">
+    <div className="pred-page"><p className="integration-preview-notice">Options preview · Prices, expiries and open interest below are sample data. Open Rysk for live markets and execution.</p>
       <div className="pred-topbar">
         <button className={`pred-topbar-tab ${asset === 'all' ? 'active' : ''}`} onClick={() => setAsset('all')}>All</button>
         <button className={`pred-topbar-tab ${asset === 'BTC' ? 'active' : ''}`} onClick={() => setAsset('BTC')}><AssetLabel symbol="BTC" /></button>
