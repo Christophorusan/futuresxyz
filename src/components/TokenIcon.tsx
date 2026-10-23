@@ -1,18 +1,14 @@
 import { useState } from 'react'
+import { tokenIconUrls } from '../lib/tokenIcons'
 
 export function TokenIcon({ symbol, size = 18, logo }: { symbol: string; size?: number; logo?:string }) {
-  const [tryIndex, setTryIndex] = useState(0)
-  const raw = symbol.toUpperCase()
-  const clean = raw.replace(/^K/, '')
+  const urls = tokenIconUrls(symbol, import.meta.env.BASE_URL, logo)
+  return <TokenIconImage key={JSON.stringify(urls)} symbol={symbol} size={size} urls={urls} />
+}
 
-  // Verified local wallet assets, then the Hyperliquid market icon CDN.
-  const localSymbol = raw === 'WHYPE' ? 'HYPE' : raw
-  const urls = [
-    ...(logo ? [logo] : []),
-    ...(['HYPE', 'USDC', 'USDT0', 'USDH'].includes(localSymbol) ? [`${import.meta.env.BASE_URL}tokens/${localSymbol}.svg`] : []),
-    `https://app.hyperliquid.xyz/coins/${raw}.svg`,
-    `https://app.hyperliquid.xyz/coins/${clean}.svg`,
-  ]
+function TokenIconImage({ symbol, size, urls }: { symbol: string; size: number; urls: string[] }) {
+  const [tryIndex, setTryIndex] = useState(0)
+  const clean = symbol.split(':').pop() || symbol
 
   if (tryIndex >= urls.length) {
     const colors: Record<string, string> = {
@@ -47,7 +43,7 @@ export function TokenIcon({ symbol, size = 18, logo }: { symbol: string; size?: 
       width={size}
       height={size}
       className="token-icon"
-      style={{ borderRadius: '50%', flexShrink: 0, background: localSymbol === 'HYPE' ? '#072f2c' : undefined, padding: localSymbol === 'HYPE' ? size * 0.14 : 0, boxSizing: 'border-box' }}
+      style={{ borderRadius: '50%', flexShrink: 0, objectFit: 'contain', boxSizing: 'border-box' }}
       onError={() => setTryIndex(i => i + 1)}
     />
   )
