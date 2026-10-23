@@ -90,6 +90,10 @@ const sidebarItems = [
   ['/perps', 'Perps', 'M3 17 8 12l4 3 9-11 M15 4h6v6'],
   ['/bridge', 'Swap', 'M4 7h16l-4-4 M20 17H4l4 4'],
   ['/predictions', 'Prediction markets', 'M4 20h16 M6 16V9 M12 16V4 M18 16v-5'],
+  ['/staking', 'Staking', 'M12 3 3 8l9 5 9-5-9-5z M3 12l9 5 9-5 M3 16l9 5 9-5'],
+  ['/options', 'Options', 'M4 18h16 M6 14l4-4 4 2 4-7 M14 5h4v4'],
+  ['/1000x-perps', '1000x Perps', 'M13 2 4 14h7l-1 8 10-13h-7l1-7z'],
+  ['/docs', 'Docs', 'M5 3h10l4 4v14H5V3z M14 3v5h5 M8 12h8 M8 16h6'],
 ]
 
 function Sidebar() {
@@ -100,7 +104,7 @@ function Sidebar() {
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={path} /></svg>
         <span>{label}</span>
       </NavLink>)}
-      <div className="oslo-sidebar-more"><NavMore /></div>
+      <a href="https://github.com/Christophorusan/futuresxyz" target="_blank" rel="noopener noreferrer" className="oslo-sidebar-link"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5 M16 7l5 5-5 5 M14 4l-4 16" /></svg><span>GitHub</span></a>
     </nav>
     <span className="oslo-sidebar-foot">YOUR MONEY.<br />YOUR MOVE.</span>
   </aside>
