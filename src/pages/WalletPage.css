@@ -178,3 +178,5 @@
 .wallet-simple-token-value{font-size:14px;font-weight:500;font-variant-numeric:tabular-nums}
 .wallet-value-details{font-size:12px;color:var(--text-2);margin-top:18px;line-height:1.7}.wallet-value-details summary{cursor:pointer}.wallet-value-details p{margin-top:10px}
 @media(max-width:600px){.wallet-simple .wallet-total{font-size:40px}.wallet-simple .wallet-summary{padding:24px 16px}.wallet-simple-tokens li{gap:10px}}
+
+.wallet-retry{padding:9px 14px;margin:12px 0;border:1px solid var(--border-hover);border-radius:8px;background:var(--bg-3);color:var(--text-0);cursor:pointer}.wallet-retry:disabled{opacity:.5;cursor:wait}

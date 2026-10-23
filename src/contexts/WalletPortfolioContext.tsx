@@ -1,3 +1,4 @@
+import { portfolioValue } from '../lib/portfolioValue'
 import { createContext, useContext, type ReactNode } from 'react'
 import { useAccount } from 'wagmi'
 import { useUnifiedPortfolio, normalizeAccount } from '../hooks/useUnifiedPortfolio'
@@ -9,7 +10,7 @@ function usePortfolioState() {
   const assets = query.data?.assets ?? []
   const incomplete = query.isError || !!query.data?.errors.length
   const unpriced = assets.filter(a => a.value === null).length
-  const total = accounts.length && !query.isLoading && query.data && !incomplete ? assets.reduce((sum, a) => sum + (a.value ?? 0), 0) : null
+  const total = portfolioValue(accounts.length > 0, query.data?.assets, incomplete)
   return { ...query, accounts, assets, incomplete, unpriced, total }
 }
 const WalletPortfolioContext = createContext<ReturnType<typeof usePortfolioState> | null>(null)

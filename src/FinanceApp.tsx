@@ -119,9 +119,9 @@ function LegacyPaymentRedirect() {
 
 function WalletCornerValue() {
   const { total, accounts, isLoading, incomplete, unpriced } = useWalletPortfolio()
-  const label = !accounts.length ? 'Connect your wallet to see its value' : isLoading ? 'Loading wallet value' : incomplete ? 'Wallet value unavailable: some networks could not load' : unpriced ? 'Priced holdings value; unpriced tokens excluded' : 'Total wallet value'
+  const label = !accounts.length ? 'Connect your wallet to see its value' : isLoading ? 'Loading wallet value' : incomplete ? total !== null ? 'Partial wallet value: some networks could not load' : 'Wallet value unavailable: retry in Wallet' : unpriced ? 'Priced holdings value; unpriced tokens excluded' : 'Total wallet value'
   return <NavLink to="/wallet" className="wallet-corner-value" title={label} aria-label={`${label}${total !== null ? `: ${total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}` : ''}. Open wallet`}>
-    <span className="wallet-corner-label">Wallet</span><strong>{total === null ? '—' : total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</strong><span aria-hidden="true">↗</span>
+    <span className="wallet-corner-label">{incomplete && total !== null ? 'Wallet · partial' : 'Wallet'}</span><strong>{total === null ? '—' : total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</strong><span aria-hidden="true">↗</span>
   </NavLink>
 }
 

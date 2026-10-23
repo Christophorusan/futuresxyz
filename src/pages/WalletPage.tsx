@@ -25,7 +25,7 @@ export function WalletPage() {
 
   const [network, setNetwork] = useState('all')
   const [assetSearch, setAssetSearch] = useState('')
-  const { accounts, data, isLoading, isError, assets, incomplete, unpriced, total } = useWalletPortfolio()
+  const { accounts, data, isLoading, isError, assets, incomplete, unpriced, total, refetch, isFetching } = useWalletPortfolio()
   const holdings=visibleHoldings(assets)
   const filteredHoldings = holdings.filter(asset => (network === 'all' || asset.network === network) && `${asset.name} ${asset.symbol}`.toLowerCase().includes(assetSearch.toLowerCase().trim()))
   const money = (value: number) => value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -33,7 +33,7 @@ export function WalletPage() {
     <header className="payment-hero"><div><h1>Wallet</h1><p>One wallet. Your holdings across supported networks.</p></div></header>
     <div className="wallet-workspace"><div className="wallet-main-column">
     <section className="lending-card wallet-summary">
-      <div className="wallet-overview-top"><div><span className="wallet-total-label">{unpriced ? 'Priced holdings value' : 'Total balance'}</span><strong className="wallet-total">{total === null ? '—' : money(total)} <small>USD</small></strong><p>{!accounts.length ? 'Connect your wallet to see your holdings.' : isLoading ? 'Loading your holdings…' : incomplete ? 'Some balances or prices are unavailable.' : `${holdings.length} assets in your wallet${unpriced ? ` · ${unpriced} unpriced tokens excluded` : ''}`}</p></div>
+      <div className="wallet-overview-top"><div><span className="wallet-total-label">{incomplete && total !== null ? 'Partial balance' : unpriced ? 'Priced holdings value' : 'Total balance'}</span><strong className="wallet-total">{total === null ? '—' : money(total)} <small>USD</small></strong><p>{!accounts.length ? 'Connect your wallet to see your holdings.' : isLoading ? 'Loading your holdings…' : incomplete ? total !== null ? 'Showing available holdings. Some networks could not load.' : 'Balances could not load. Please retry.' : `${holdings.length} assets in your wallet${unpriced ? ` · ${unpriced} unpriced tokens excluded` : ''}`}</p></div>
 </div>
       <nav className="wallet-portfolio-actions" aria-label="Portfolio actions">
         <Link to="/wallet?action=send"><span aria-hidden="true">↗</span>Send</Link>
@@ -41,7 +41,8 @@ export function WalletPage() {
         <Link to="/swap"><span aria-hidden="true">⇄</span>Swap</Link>
       </nav>
       {!isConnected && <ConnectButton />}
-      {!!data?.errors.length&&<details className="wallet-details"><summary>Some networks could not be loaded · Retry by refreshing</summary>{data.errors.map(error=><p key={error}>{error}</p>)}</details>}
+      {incomplete && <button className="wallet-retry" disabled={isFetching} onClick={() => void refetch()}>{isFetching ? 'Refreshing…' : 'Retry balances'}</button>}
+      {!!data?.errors.length&&<details className="wallet-details"><summary>Some networks could not be loaded</summary>{data.errors.map(error=><p key={error}>{error}</p>)}</details>}
     </section>
     <section className="wallet-content-card">
       <section className="lending-card wallet-holdings"><div className="wallet-assets-heading"><div><h2>Your tokens</h2><p>Holdings worth $0.01 or more.</p></div><span className="wallet-chain-label">{holdings.length} assets</span></div>
