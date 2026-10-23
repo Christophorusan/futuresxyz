@@ -1,3 +1,4 @@
+import { spotContextMap } from '../lib/spotPricing'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useHyperliquid } from '../contexts/HyperliquidContext'
 
@@ -42,6 +43,7 @@ export function useSpotMarkets() {
         tokens: Array<{ name: string; index: number; szDecimals: number; evmContract: { address: string } | null }>
       }
       const ctxs = (data as unknown[])[1] as Array<{
+        coin: string
         markPx: string
         dayNtlVlm: string
         prevDayPx: string
@@ -57,8 +59,9 @@ export function useSpotMarkets() {
         })
       }
 
+      const byMarket = spotContextMap(ctxs)
       const spotList: SpotMarket[] = meta.universe.map((pair, i) => {
-        const ctx = ctxs[i]
+        const ctx = byMarket.get(pair.name)
         const baseInfo = tokenMap.get(pair.tokens[0])
         const quoteInfo = tokenMap.get(pair.tokens[1])
         const baseName = baseInfo?.name ?? `Token${pair.tokens[0]}`

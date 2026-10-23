@@ -1,3 +1,4 @@
+import { spotContextMap, spotValuationPrice } from '../lib/spotPricing'
 import { useQuery } from '@tanstack/react-query'
 import { formatUnits, isAddress } from 'viem'
 import { alchemyApiKey } from '../config/alchemy'
@@ -30,7 +31,7 @@ export function parseToken(token:Token, network:string, account:string):Holding|
 }
 export function useUnifiedPortfolio(accounts:string[]) {
   const {info}=useHyperliquid()
-  return useQuery({queryKey:['unified-portfolio-v1',accounts],enabled:accounts.length>0,refetchInterval:60000,queryFn:async()=>{
+  return useQuery({queryKey:['unified-portfolio-v2',accounts],enabled:accounts.length>0,refetchInterval:60000,queryFn:async()=>{
     const assets:Holding[]=[], errors:string[]=[]
     await Promise.all(accounts.map(async account=>{
       const chains=isAddress(account)?Object.keys(networks).filter(n=>n!=='solana-mainnet'):['solana-mainnet']
@@ -57,7 +58,8 @@ export function useUnifiedPortfolio(accounts:string[]) {
           const prices:Record<number,number>={}
           const usdc=meta.tokens.find(t=>t.name==='USDC')
           if(usdc)prices[usdc.index]=1
-          meta.universe.forEach((pair,i)=>{const price=Number(contexts[i]?.midPx??contexts[i]?.markPx);if(pair.tokens[1]===usdc?.index&&Number.isFinite(price)&&price>0)prices[pair.tokens[0]]=price})
+          const byMarket = spotContextMap(contexts)
+          meta.universe.forEach(pair=>{const price=spotValuationPrice(byMarket.get(pair.name));if(pair.tokens[1]===usdc?.index&&price!==null)prices[pair.tokens[0]]=price})
           for(const b of spot.balances){if(Number(b.total)===0)continue;const price=prices[b.token]??null;assets.push({id:`hypercore:${account}:${b.token}`,account,network:'HyperCore',symbol:b.coin,name:b.coin,balance:b.total,price,value:price===null?null:Number(b.total)*price})}
           if(mode!=='unifiedAccount'&&mode!=='portfolioMargin') {
             const dexes=await info.perpDexs()
