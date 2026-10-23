@@ -46,7 +46,7 @@ export function WalletPage() {
   const addAccount=()=>{const value=accountInput.trim();if(!validAccount(value)){setAccountError('Enter a valid Ethereum or Solana wallet address.');return}saveAccounts([...new Set([...tracked,normalizeAccount(value)])]);setAccountInput('');setAccountError('')}
   const money = (value: number) => value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   return <main className="lending-page payments-page mobile-wallet-page oslo-wallet-home wallet-portfolio-home">
-    <header className="payment-hero"><div><h1>Wallet</h1><p>All your wallets. One clear view.</p></div></header>
+    <header className="payment-hero"><div><h1>Wallet</h1><p>Hold your assets. Track your balances. Choose your next move.</p></div></header>
     <div className="wallet-workspace"><div className="wallet-main-column">
     <section className="lending-card wallet-summary">
       <div className="wallet-summary-heading"><h2>All wallets <span>{accounts.length}</span></h2><button onClick={() => { if (walletsRef.current) { walletsRef.current.open = true; walletsRef.current.querySelector('input')?.focus() } }}>＋ Add wallet</button></div>

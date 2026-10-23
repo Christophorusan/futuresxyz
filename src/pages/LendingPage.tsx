@@ -47,7 +47,7 @@ export function LendingPage() {
     finally { setLoadingAccount(false) }
   }
   return <main className="lending-page lending-earn-page">
-    <header className="lending-heading"><div><h1>Lending</h1><p>Earn by lending your assets, or explore borrowing.</p></div>
+    <header className="lending-heading"><div><h1>Lending</h1><p>Earn on supported assets or borrow against eligible collateral.</p></div>
       <a href={protocols[protocol].source} target="_blank" rel="noreferrer">How lending works</a>
     </header>
     <div className="lending-earn-context"><h2>Hyperliquid ecosystem</h2><p>Supply and borrow with HyperLend on HyperEVM.</p></div>
