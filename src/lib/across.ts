@@ -33,7 +33,7 @@ export function parseAcrossQuote(data: unknown, request: SwapRequest, now = Date
   const mismatch = input.chainId !== request.originChainId || output.chainId !== request.destinationChainId || String(input.address).toLowerCase() !== request.inputToken.address.toLowerCase() || String(output.address).toLowerCase() !== request.outputToken.address.toLowerCase()
   if (mismatch || r.inputAmount !== amount || r.maxInputAmount !== amount || r.amountType !== 'exactInput') throw new Error('The quote does not match this transfer. Refresh it.')
   if (!uint(r.expectedOutputAmount) || !uint(r.minOutputAmount) || BigInt(r.minOutputAmount) <= 0n || BigInt(r.expectedOutputAmount) < BigInt(r.minOutputAmount)) throw new Error('No valid output amount was returned.')
-  if (tx.chainId !== request.originChainId || !addr(tx.to) || !isHex(tx.data) || tx.data.length < 10 || typeof tx.simulationSuccess !== 'boolean') throw new Error('The route could not be safely simulated. Check your balance and refresh.')
+  if (tx.chainId !== request.originChainId || !addr(tx.to) || !isHex(tx.data) || tx.data.length < 10 || tx.data.length % 2 !== 0 || typeof tx.simulationSuccess !== 'boolean') throw new Error('The route could not be safely simulated. Check your balance and refresh.')
   const value = tx.value === undefined ? 0n : uint(tx.value) || (typeof tx.value === 'string' && /^0x[\da-f]+$/i.test(tx.value)) ? BigInt(tx.value) : -1n
   if (value < 0n || value > (isNative(request.inputToken.address) ? BigInt(amount) : 0n)) throw new Error('Unexpected native-token value in the quote.')
   const expiry = typeof r.quoteExpiryTimestamp === 'number' ? r.quoteExpiryTimestamp * 1000 : now + 60000

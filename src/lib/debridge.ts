@@ -57,14 +57,14 @@ export function parseDlnQuote(data: unknown, request: DlnRequest, startedAt = Da
   if (request.account) {
     // Published DLN source/router deployments on the supported EVM networks.
     const contracts = ['0xef4fb24ad0916217251f553c0596f8edc630eb66', '0x663dc15d3c1ac63ff12e45ab68fea3f0a883c251']
-    if (typeof tx.to !== 'string' || !contracts.includes(tx.to.toLowerCase()) || !isHex(tx.data) || tx.data.length < 10 || !uint(tx.value) || !/^0x[\da-f]{64}$/i.test(String(r.orderId))) throw new Error('Invalid route transaction.')
+    if (typeof tx.to !== 'string' || !contracts.includes(tx.to.toLowerCase()) || !isHex(tx.data) || tx.data.length < 10 || tx.data.length % 2 !== 0 || !uint(tx.value) || !/^0x[\da-f]{64}$/i.test(String(r.orderId))) throw new Error('Invalid route transaction.')
     const expectedValue = BigInt(r.fixFee) + (dlnNative(request.input.address) ? BigInt(amount) : 0n)
     if (BigInt(tx.value) !== expectedValue) throw new Error('Unexpected native-token charge. Refresh your quote.')
     transaction = { to: tx.to as Address, data: tx.data, value: BigInt(tx.value) }
   }
   const seconds = obj(r.order).approximateFulfillmentDelay
   return { request, expiresAt: startedAt + 30000, amount, output: output.amount, fixFee: r.fixFee, gas: uint(obj(r.estimatedTransactionFee).total) ? String(obj(r.estimatedTransactionFee).total) : null,
-    seconds: typeof seconds === 'number' && seconds > 0 ? seconds : null, priceImpact: typeof r.usdPriceImpact === 'number' && Number.isFinite(r.usdPriceImpact) ? r.usdPriceImpact : null,
+    seconds: typeof seconds === 'number' && Number.isFinite(seconds) && seconds > 0 ? seconds : null, priceImpact: typeof r.usdPriceImpact === 'number' && Number.isFinite(r.usdPriceImpact) ? r.usdPriceImpact : null,
     orderId: transaction ? String(r.orderId) : null, tx: transaction }
 }
 export async function getDlnQuote(request: DlnRequest) {
@@ -82,4 +82,21 @@ export function dlnStatus(status: unknown) {
   if (['OrderCancelled', 'SentOrderCancel'].includes(String(status))) return 'Cancellation in progress. Source refund is not confirmed yet.'
   if (status === 'Created') return 'Source order created. Waiting for destination delivery.'
   return 'Delivery not confirmed yet. Check again or open order details.'
+}
+
+export function availableDlnRoute(chains: number[], from: number, to: number) {
+  if (chains.length < 2) throw new Error('At least two networks are required.')
+  const source = chains.includes(from) ? from : chains[0]
+  const destination = chains.includes(to) && to !== source ? to : chains.find(id => id !== source)!
+  return { from: source, to: destination }
+}
+export type DlnTransfer = { hash: string; chain: number; orderId: string; status: string; sourceStatus?: 'pending' | 'confirmed' | 'reverted' }
+export function restoreDlnTransfer(raw: string | null): DlnTransfer | null {
+  try {
+    const saved = obj(JSON.parse(raw || 'null'))
+    if (!/^0x[\da-f]{64}$/i.test(String(saved.hash)) || !/^0x[\da-f]{64}$/i.test(String(saved.orderId)) || !dlnChains.some(c => c.id === saved.chain)) return null
+    const sourceStatus = saved.sourceStatus === 'reverted' ? 'reverted' : saved.sourceStatus === 'confirmed' ? 'confirmed' : 'pending'
+    return { hash: String(saved.hash), chain: Number(saved.chain), orderId: String(saved.orderId), sourceStatus,
+      status: sourceStatus === 'reverted' ? 'Source transaction reverted. No swap completed.' : 'Saved transfer. Check its delivery status below.' }
+  } catch { return null }
 }

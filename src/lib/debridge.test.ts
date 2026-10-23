@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { assertDlnFresh, dlnAmount, dlnQuery, dlnStatus, dlnTokens, parseDlnQuote, type DlnRequest } from './debridge'
+import { availableDlnRoute, restoreDlnTransfer, assertDlnFresh, dlnAmount, dlnQuery, dlnStatus, dlnTokens, parseDlnQuote, type DlnRequest } from './debridge'
 const account = '0x1111111111111111111111111111111111111111'
 const token = { chainId: 42161, address: account, symbol: 'USDC', name: 'USD Coin', decimals: 6 } as const
 const request: DlnRequest = { from: 42161, to: 999, input: token, output: { ...token, chainId: 999 }, amount: '10', account }
@@ -60,5 +60,31 @@ describe('native deBridge swaps', () => {
     expect(dlnStatus('OrderCancelled')).toContain('not confirmed')
     expect(dlnStatus('ClaimedOrderCancel')).toContain('returned')
     expect(dlnStatus('Unknown')).toContain('not confirmed')
+  })
+})
+
+describe('swap recovery regressions', () => {
+  it('keeps source and destination distinct after a token-list failure', () => {
+    expect(availableDlnRoute([8453, 999], 42161, 8453)).toEqual({ from: 8453, to: 999 })
+    expect(availableDlnRoute([42161, 999], 42161, 8453)).toEqual({ from: 42161, to: 999 })
+    expect(availableDlnRoute([42161, 8453, 999], 42161, 999)).toEqual({ from: 42161, to: 999 })
+    expect(() => availableDlnRoute([42161], 42161, 8453)).toThrow()
+  })
+  it('preserves a reverted source transaction across reloads', () => {
+    const saved = { hash: `0x${'b'.repeat(64)}`, chain: 42161, orderId: `0x${'a'.repeat(64)}`, sourceStatus: 'reverted', status: 'old status' }
+    const restored = restoreDlnTransfer(JSON.stringify(saved))
+    expect(restored?.sourceStatus).toBe('reverted')
+    expect(restored?.status).toContain('reverted')
+    expect(restored?.status).not.toContain('pending')
+    expect(restoreDlnTransfer(JSON.stringify({ ...saved, sourceStatus: undefined }))?.sourceStatus).toBe('pending')
+    expect(restoreDlnTransfer('{broken')).toBeNull()
+    expect(restoreDlnTransfer(JSON.stringify({ ...saved, chain: 123 }))).toBeNull()
+  })
+  it('rejects odd-length calldata rather than passing partial bytes to the wallet', () => {
+    const data = payload(); data.tx.data = '0x123456789'
+    expect(() => parseDlnQuote(data, request)).toThrow('Invalid route transaction')
+  })
+  it('does not display an infinite delivery estimate', () => {
+    expect(parseDlnQuote({ ...payload(), order: { approximateFulfillmentDelay: Infinity } }, request).seconds).toBeNull()
   })
 })

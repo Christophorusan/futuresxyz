@@ -51,3 +51,8 @@ describe('Across transfer review', () => {
     expect(entryDestination({ pathname: '/bridge', search: '', hash: '' })).toBe('/bridge')
   })
 })
+
+it('rejects partial calldata bytes from Across', () => {
+  const data = response(); data.swapTx.data = '0x123456789'
+  expect(() => parseAcrossQuote(data, request, 100000)).toThrow()
+})

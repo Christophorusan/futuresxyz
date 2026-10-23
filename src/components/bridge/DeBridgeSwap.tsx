@@ -4,9 +4,8 @@ import { getAccount, getPublicClient, getWalletClient, switchChain } from 'wagmi
 import { erc20Abi, formatUnits } from 'viem'
 import { BridgeTokenPicker } from './BridgeTokenPicker'
 import { ConnectButton } from '../shared/ConnectButton'
-import { assertDlnFresh, debridgeProxy, dlnChain, dlnChains, dlnGet, dlnNative, dlnStatus, dlnTokens, getDlnQuote, type DlnQuote, type DlnToken } from '../../lib/debridge'
+import { availableDlnRoute, restoreDlnTransfer, type DlnTransfer, assertDlnFresh, debridgeProxy, dlnChain, dlnChains, dlnGet, dlnNative, dlnStatus, dlnTokens, getDlnQuote, type DlnQuote, type DlnToken } from '../../lib/debridge'
 
-type Transfer = { hash: string; chain: number; orderId: string; status: string }
 export function DeBridgeSwap() {
   const config = useConfig(), { address } = useAccount()
   const [from, setFrom] = useState(42161), [to, setTo] = useState(8453)
@@ -15,7 +14,7 @@ export function DeBridgeSwap() {
   const [loading, setLoading] = useState(true), [attempt, setAttempt] = useState(0), [busy, setBusy] = useState(false)
   const [error, setError] = useState(''), [message, setMessage] = useState('')
   const [quote, setQuote] = useState<DlnQuote | null>(null), [needsApproval, setNeedsApproval] = useState(false)
-  const [sent, setSent] = useState<Transfer | null>(null), [now, setNow] = useState(Date.now())
+  const [sent, setSent] = useState<DlnTransfer | null>(null), [now, setNow] = useState(Date.now())
   const generation = useRef(0), lock = useRef(false)
   useEffect(() => { const timer = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(timer) }, [])
   useEffect(() => { generation.current++; setQuote(null); setError(''); setMessage('') }, [from, to, input, output, amount, address])
@@ -32,16 +31,20 @@ export function DeBridgeSwap() {
       if (usable.length < 2) throw new Error('Could not load swap assets. Retry in a moment.')
       if (controller.signal.aborted) return
       setTokens(list); setChains(usable)
-      setFrom(current => usable.includes(current) ? current : usable[0]); setTo(current => usable.includes(current) ? current : usable[1])
+      const route = availableDlnRoute(usable, from, to)
+      setFrom(route.from); setTo(route.to)
     })().catch(e => { if (!controller.signal.aborted) setError(e instanceof Error ? e.message : 'Could not load swaps.') }).finally(() => { if (!controller.signal.aborted) setLoading(false) })
     return () => controller.abort()
   }, [attempt])
   useEffect(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem('oslo-last-debridge-transfer') || 'null')
-      if (saved && /^0x[\da-f]{64}$/i.test(saved.hash) && /^0x[\da-f]{64}$/i.test(saved.orderId) && dlnChains.some(c => c.id === saved.chain)) setSent({ ...saved, status: 'Saved transfer. Check its delivery status below.' })
+      setSent(restoreDlnTransfer(localStorage.getItem('oslo-last-debridge-transfer')))
     } catch { /* Ignore invalid saved history. */ }
   }, [])
+  function updateTransfer(transfer: DlnTransfer) {
+    setSent(transfer)
+    try { localStorage.setItem('oslo-last-debridge-transfer', JSON.stringify(transfer)) } catch { /* Session tracking remains available. */ }
+  }
   const inputTokens = tokens.filter(t => t.chainId === from), outputTokens = tokens.filter(t => t.chainId === to)
   const inToken = inputTokens.find(t => t.address === input) ?? inputTokens.find(t => t.symbol === 'USDC') ?? inputTokens[0]
   const outToken = outputTokens.find(t => t.address === output) ?? outputTokens.find(t => t.symbol === 'USDC') ?? outputTokens[0]
@@ -50,7 +53,7 @@ export function DeBridgeSwap() {
     lock.current = true; setBusy(true); setError(''); setMessage(''); setQuote(null)
     const version = ++generation.current
     try {
-      const result = await getDlnQuote({ from, to, input: inToken, output: outToken, amount, account: address })
+      const result = await getDlnQuote({ from, to, input: inToken, output: outToken, amount, account: debridgeProxy ? address : undefined })
       let approvalRequired = false
       if (result.tx && address && !dlnNative(inToken.address)) {
         const client = getPublicClient(config, { chainId: from })
@@ -59,7 +62,7 @@ export function DeBridgeSwap() {
         approvalRequired = allowance < BigInt(result.amount)
       }
       if (version !== generation.current) return
-      if (address) assertDlnFresh(result, getAccount(config).address)
+      if (result.request.account) assertDlnFresh(result, getAccount(config).address)
       setQuote(result); setNeedsApproval(approvalRequired)
     } catch (e) { if (version === generation.current) setError(e instanceof Error ? e.message.slice(0, 240) : 'Quote unavailable.') }
     finally { lock.current = false; setBusy(false) }
@@ -93,23 +96,22 @@ export function DeBridgeSwap() {
         if (await wallet.getChainId() !== reviewed.request.from) throw new Error('Network changed. Get a new quote.')
         setQuote(null) // A wallet/RPC error does not prove that nothing was broadcast.
         const hash = await wallet.sendTransaction({ to: tx.to, data: tx.data, value: tx.value })
-        const transfer = { hash, chain: reviewed.request.from, orderId, status: 'Submitted on source network. Destination delivery is pending.' }
-        setSent(transfer)
-        try { localStorage.setItem('oslo-last-debridge-transfer', JSON.stringify(transfer)) } catch { /* Session tracking remains available. */ }
+        const transfer: DlnTransfer = { sourceStatus: 'pending', hash, chain: reviewed.request.from, orderId, status: 'Submitted on source network. Destination delivery is pending.' }
+        updateTransfer(transfer)
         const receipt = await client.waitForTransactionReceipt({ hash })
-        setSent({ ...transfer, status: receipt.status === 'success' ? 'Source confirmed. Check destination delivery below.' : 'Source transaction reverted. No swap completed.' })
+        updateTransfer({ ...transfer, sourceStatus: receipt.status === 'success' ? 'confirmed' : 'reverted', status: receipt.status === 'success' ? 'Source confirmed. Check destination delivery below.' : 'Source transaction reverted. No swap completed.' })
       }
     } catch (e) { setError(`${e instanceof Error ? e.message.slice(0, 200) : 'Transaction could not complete.'} Check wallet history before retrying.`) }
     finally { lock.current = false; setBusy(false) }
   }
   async function checkStatus() {
-    if (!sent || lock.current) return
+    if (!sent || sent.sourceStatus === 'reverted' || lock.current) return
     lock.current = true; setBusy(true)
     try {
       const result = await dlnGet(`dln/order/${sent.orderId}/status`) as { orderId?: string; status?: string }
       if (result.orderId?.toLowerCase() !== sent.orderId.toLowerCase()) throw new Error('Order mismatch')
-      setSent({ ...sent, status: dlnStatus(result.status) })
-    } catch { setSent({ ...sent, status: 'Delivery status is not available yet. Source confirmation does not confirm delivery.' }) }
+      updateTransfer({ ...sent, status: dlnStatus(result.status) })
+    } catch { updateTransfer({ ...sent, status: 'Delivery status is not available yet. Source confirmation does not confirm delivery.' }) }
     finally { lock.current = false; setBusy(false) }
   }
   return <section className="bridge-provider-panel oslo-swap">
@@ -134,7 +136,7 @@ export function DeBridgeSwap() {
       <dt>Estimated source gas</dt><dd>{quote.gas ? `${formatUnits(BigInt(quote.gas), 18)} ${dlnChain(quote.request.from).native}` : 'Shown in wallet'}</dd>
       <dt>Estimated delivery</dt><dd>{quote.seconds ? `~${quote.seconds}s after source confirmation` : 'Unavailable'}</dd>
       {quote.priceImpact !== null && <><dt>Estimated value change</dt><dd>{quote.priceImpact.toFixed(2)}%</dd></>}
-      <dt>Receive address</dt><dd>{quote.request.account || 'Connect your wallet to continue'}</dd>
+      <dt>Receive address</dt><dd>{quote.request.account || address || 'Connect your wallet to continue'}</dd>
       <dt>Quote expires</dt><dd>{now >= quote.expiresAt ? 'Expired — refresh quote' : `In ${Math.ceil((quote.expiresAt - now) / 1000)}s`}</dd>
     </dl>
       <p className="bridge-footnote">Routing costs are included in the receive amount. The native protocol fee and gas are additional. Oslo adds no fee.</p>
@@ -144,6 +146,6 @@ export function DeBridgeSwap() {
     </div>}
     {!debridgeProxy && <p className="bridge-footnote">Live quote preview. Swaps in Oslo will activate once our deBridge connection is configured.</p>}
     <details className="oslo-swap-other"><summary>Solana and Hyperliquid trading deposits</summary><p className="bridge-footnote">These routes are not yet available in Oslo’s native form. <a href="https://app.debridge.com/" target="_blank" rel="noopener noreferrer">Continue on deBridge ↗</a></p></details>
-    {sent && <div className="bridge-review"><h2>Last transfer</h2><p role="status">{sent.status}</p><p className="bridge-footnote">Transaction: {sent.hash}<br />Order: {sent.orderId}</p><button disabled={busy} onClick={checkStatus}>Check delivery</button> <a href={`${config.chains.find(c => c.id === sent.chain)?.blockExplorers?.default.url}/tx/${sent.hash}`} target="_blank" rel="noopener noreferrer">Source transaction ↗</a> <a href="https://app.debridge.com/orders" target="_blank" rel="noopener noreferrer">Order history / cancellation ↗</a></div>}
+    {sent && <div className="bridge-review"><h2>Last transfer</h2><p role="status">{sent.status}</p><p className="bridge-footnote">Transaction: {sent.hash}<br />Order: {sent.orderId}</p><button disabled={busy || sent.sourceStatus === 'reverted'} onClick={checkStatus}>Check delivery</button> <a href={`${config.chains.find(c => c.id === sent.chain)?.blockExplorers?.default.url}/tx/${sent.hash}`} target="_blank" rel="noopener noreferrer">Source transaction ↗</a> <a href="https://app.debridge.com/orders" target="_blank" rel="noopener noreferrer">Order history / cancellation ↗</a></div>}
   </section>
 }
