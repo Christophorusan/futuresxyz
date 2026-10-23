@@ -446,8 +446,8 @@ function MarketView({ market, onBack, onOpenMarket }: { market: Market; onBack: 
             <button className="trade-type-btn">Sell</button>
           </div>
           <div className="trade-side-toggle">
-            <button className={`trade-side-btn ${side === 'yes' ? 'active buy' : ''}`} onClick={() => setSide('yes')}>Yes {yesPct}c</button>
-            <button className={`trade-side-btn ${side === 'no' ? 'active sell' : ''}`} onClick={() => setSide('no')}>No {noPct}c</button>
+            <button className={`trade-side-btn buy ${side === 'yes' ? 'active' : ''}`} onClick={() => setSide('yes')}>Yes {yesPct}c</button>
+            <button className={`trade-side-btn sell ${side === 'no' ? 'active' : ''}`} onClick={() => setSide('no')}>No {noPct}c</button>
           </div>
           <div className="pred-amount-section">
             <div className="pred-amount-label">Amount</div>

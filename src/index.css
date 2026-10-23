@@ -3881,3 +3881,13 @@ body {
 :root .app .trade-side-btn.active{box-shadow:inset 0 0 0 2px #fff;font-weight:700}
 :root .app .trade-side-btn:hover,:root .app .trade-submit:not(:disabled):hover{filter:brightness(1.12)}
 :root .app .trade-side-btn:focus-visible{outline:2px solid var(--text-0);outline-offset:3px}
+
+/* Vivid prediction outcomes, scoped to the prediction workspace. */
+.pred-page{--green:#34df9b;--red:#ff637d;--green-bg:#34df9b26;--red-bg:#ff637d26;--buy-action:#34df9b;--sell-action:#ff637d}
+[data-theme="light"] .pred-page{--green:#087c4c;--red:#c02545;--green-bg:#12ba7920;--red-bg:#f0446620}
+:root .app .pred-page .pred-outcome-btn.yes,:root .app .pred-page .trade-side-btn.buy,:root .app .pred-page .trade-submit.buy{background:#34df9b;color:#10241c;border-color:#34df9b}
+:root .app .pred-page .pred-outcome-btn.no,:root .app .pred-page .trade-side-btn.sell,:root .app .pred-page .trade-submit.sell{background:#ff637d;color:#2c1017;border-color:#ff637d}
+.pred-page .featured-bar-yes{background:#34df9b;color:#10241c}.pred-page .featured-bar-no{background:#ff637d;color:#2c1017}
+.pred-page .pred-card-bar{background:#ff637d}.pred-page .pred-card-bar-fill{background:#34df9b}
+.pred-page .pred-outcome-btn{font-weight:700}.pred-page .pred-outcome-btn:hover{opacity:1;filter:brightness(1.08)}
+.pred-page .pred-outcome-btn:focus-visible{outline:2px solid var(--text-0);outline-offset:3px}
