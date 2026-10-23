@@ -1,3 +1,4 @@
+import './AppLogo.css'
 import { useState } from 'react'
 
 /** Protocol artwork stays in its original colors on the neutral app surface. */
