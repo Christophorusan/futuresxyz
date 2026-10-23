@@ -33,19 +33,29 @@
 @media(max-width:1050px){.oslo-side-screen{width:260px;top:105px}.oslo-side-left{left:0}.oslo-side-right{right:0}}
 @media(max-width:700px){.oslo-wallet-demo{width:min(300px,100%);height:630px}.oslo-screen-stage{margin-top:28px;padding-top:8px}.oslo-hero{padding-left:14px;padding-right:14px}}
 
-/* Keep the opening section compact, with copy beside the product on desktop. */
-.oslo-hero{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;column-gap:32px;padding:36px max(32px,calc((100vw - 1320px)/2)) 20px;text-align:left}
-.oslo-hero-copy{max-width:480px;margin:0}
-.oslo-hero h1{font-size:clamp(42px,4.4vw,64px);letter-spacing:-2.8px;margin:18px 0}
-.oslo-hero-copy>p{font-size:16px;line-height:1.6;margin:0 0 22px;max-width:410px}
-.oslo-hero-copy>small{margin-top:12px}
-.oslo-screen-stage{width:100%;height:510px;margin:0;padding:0;max-width:640px}
-.oslo-screen-stage .oslo-wallet-demo{transform:scale(.8);transform-origin:top center}
-.oslo-side-screen{width:230px;top:80px}.oslo-side-left{left:0}.oslo-side-right{right:0}
-.oslo-side-screen .oslo-product-preview{padding:16px}
-.oslo-stage-caption{grid-column:1/-1;text-align:center;margin:10px 0 0}
-@media(max-width:1050px) and (min-width:701px){.oslo-hero{grid-template-columns:1fr 300px;gap:20px;padding:30px}.oslo-side-screen{display:none}.oslo-hero h1{font-size:48px}}
-@media(max-width:700px){.oslo-hero{display:block;padding:30px 18px 18px;text-align:center}.oslo-hero-copy{margin:auto;max-width:420px}.oslo-hero h1{font-size:40px;letter-spacing:-1.8px;margin:14px 0}.oslo-hero-copy>p{font-size:14px;margin:0 auto 18px;max-width:330px}.oslo-hero-copy>small{font-size:10px;margin-top:10px}.oslo-screen-stage{height:415px;margin-top:24px;padding:0}.oslo-screen-stage .oslo-wallet-demo{transform:scale(.65);transform-origin:top center;width:300px;max-width:none}.oslo-stage-caption{font-size:11px;margin:8px 0 0}}
-.oslo-hero .oslo-side-screen{width:280px}
-.oslo-hero .oslo-side-left{transform:perspective(1200px) rotateY(13deg) rotate(-7deg) scale(.72);transform-origin:top left}
-.oslo-hero .oslo-side-right{transform:perspective(1200px) rotateY(-13deg) rotate(7deg) scale(.72);transform-origin:top right}
+/* Centered introduction and overlapping handsets, with Oslo's blue product UI. */
+.oslo-header{max-width:none;background:#050505;color:#fff;padding:20px max(28px,calc((100vw - 1280px)/2));}
+.oslo-header .oslo-button{background:#fff;color:#111}.oslo-header nav a:hover{color:#bbb}
+.oslo-hero{display:block;margin:0;border-radius:0;padding:40px 24px 0;background:#050505;text-align:center;overflow:hidden}
+.oslo-hero-copy{max-width:1050px;margin:auto}
+.oslo-hero h1{font-size:clamp(40px,5.1vw,70px);font-weight:400;line-height:1.1;letter-spacing:-2.8px;margin:10px 0 20px}
+.oslo-hero-copy>p{max-width:650px;font-size:18px;line-height:1.6;margin:0 auto 22px;color:#bcbcbc}
+.oslo-hero-copy>small{font-size:11px;margin-top:12px}
+.oslo-screen-stage{position:relative;display:block;width:100%;max-width:1160px;height:420px;min-height:0;margin:38px auto 0;padding:0;isolation:isolate}
+.oslo-screen-stage .oslo-wallet-demo{position:absolute;left:50%;top:0;z-index:3;width:300px;height:630px;transform:translateX(-50%);border-color:#333b49;outline-color:#657084;box-shadow:0 0 0 3px #141820,0 24px 60px #0008}
+.oslo-hero-phone{position:absolute;width:280px;height:590px;top:48px;padding:18px 12px;border:5px solid #303743;outline:1px solid #596575;border-radius:40px;background:linear-gradient(145deg,#1c2d50,#0c1629);color:#fff;box-shadow:0 0 0 3px #141820,0 24px 50px #0008;text-align:left;overflow:hidden}
+.oslo-hero .oslo-side-screen{display:block;width:280px;top:48px;z-index:2;transform:none}
+.oslo-hero .oslo-side-left{left:calc(50% - 370px);right:auto}
+.oslo-hero .oslo-side-right{right:calc(50% - 370px);left:auto}
+.oslo-side-screen .oslo-product-preview{padding:12px 8px;border:0;border-radius:0;background:none;box-shadow:none}
+.oslo-side-screen .oslo-product-top{gap:8px}.oslo-side-screen .oslo-sample{display:none}
+.oslo-far-left,.oslo-far-right{top:96px;width:250px;z-index:1}
+.oslo-far-left{left:calc(50% - 555px)}.oslo-far-right{right:calc(50% - 555px)}
+.oslo-phone-brand{height:350px;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:66px;font-weight:500;letter-spacing:-4px;background:radial-gradient(ellipse,#4a649b44,transparent 70%)}
+.oslo-phone-brand small{font-size:16px;font-weight:400;letter-spacing:-.3px;line-height:1.5;text-align:center;margin-top:20px;color:#c1cde2}
+.oslo-phone-discover{padding:22px 8px}.oslo-phone-discover>b{font-size:24px;font-weight:500}.oslo-phone-discover>p{font-size:12px;color:#b5c4db;margin:10px 0 22px}
+.oslo-phone-search{padding:12px 10px;border:1px solid #ffffff30;border-radius:9px;font-size:12px;color:#c3d1e7;margin-bottom:22px}
+.oslo-phone-goal{font-size:12px;padding:18px 0;border-bottom:1px solid #ffffff18;display:flex;justify-content:space-between;gap:8px}.oslo-phone-discover>small{display:block;font-size:9px;color:#aebed5;margin-top:20px}
+.oslo-stage-caption{position:relative;background:#050505;z-index:4;margin:0 -24px;padding:15px 20px 20px;font-size:11px;color:#a8a8a8}
+@media(max-width:1050px) and (min-width:701px){.oslo-hero h1{font-size:56px}.oslo-screen-stage{height:390px}.oslo-far-left,.oslo-far-right{opacity:.75}}
+@media(max-width:700px){.oslo-header{padding:18px 22px}.oslo-hero{padding:24px 20px 0}.oslo-hero h1{font-size:42px;letter-spacing:-1.8px;max-width:390px;margin:10px auto 18px}.oslo-hero-copy>p{font-size:15px;max-width:330px;margin:0 auto 20px}.oslo-hero-copy>small{font-size:10px}.oslo-screen-stage{height:350px;margin-top:30px}.oslo-screen-stage .oslo-wallet-demo{width:300px;max-width:none;transform:translateX(-50%) scale(.82);transform-origin:top center}.oslo-hero .oslo-side-screen{display:block;top:45px;transform:scale(.78);transform-origin:top center}.oslo-hero .oslo-side-left{left:calc(50% - 315px)}.oslo-hero .oslo-side-right{right:calc(50% - 315px)}.oslo-far-left,.oslo-far-right{display:none}.oslo-stage-caption{margin:0 -20px;font-size:10px;padding:14px 18px 18px}}
