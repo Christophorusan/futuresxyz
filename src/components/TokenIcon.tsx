@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { tokenIconUrls } from '../lib/tokenIcons'
 
-export function TokenIcon({ symbol, size = 18, logo, fallback = 'letter', preferLogo = false }: { symbol: string; size?: number; logo?:string; fallback?: 'letter' | 'icon'; preferLogo?: boolean }) {
+export function TokenIcon({ symbol, size = 18, logo, fallback = 'icon', preferLogo = false }: { symbol: string; size?: number; logo?:string; fallback?: 'letter' | 'icon'; preferLogo?: boolean }) {
   const sources = tokenIconUrls(symbol, import.meta.env.BASE_URL, logo)
   const urls = preferLogo && logo ? [logo, ...sources.filter(url => url !== logo)] : sources
   return <TokenIconImage key={JSON.stringify(urls)} symbol={symbol} size={size} urls={urls} fallback={fallback} />

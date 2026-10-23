@@ -1,3 +1,4 @@
+import { AssetLabel } from '../components/AssetLabel'
 import { useState } from 'react'
 import { useHyperEvmBalance } from '../hooks/useHyperEvmBalance'
 
@@ -20,11 +21,11 @@ export function StakingPage() {
         <div className="protocol-content">
           <div className="protocol-stats-row">
             <div className="protocol-stat-card">
-              <span className="protocol-stat-label">HYPE Price</span>
+              <span className="protocol-stat-label"><AssetLabel symbol="HYPE" label="HYPE price" /></span>
               <span className="protocol-stat-value">$14.82</span>
             </div>
             <div className="protocol-stat-card">
-              <span className="protocol-stat-label">stHYPE APY</span>
+              <span className="protocol-stat-label"><AssetLabel symbol="stHYPE" label="stHYPE APY" /></span>
               <span className="protocol-stat-value green">4.8%</span>
             </div>
             <div className="protocol-stat-card">
@@ -77,14 +78,14 @@ export function StakingPage() {
             </div>
             <div className="trade-input-wrapper">
               <input type="number" className="trade-input" placeholder="0.00" value={amount} onChange={e => setAmount(e.target.value)} step="any" />
-              <span className="trade-input-unit">{mode === 'stake' ? 'HYPE' : 'stHYPE'}</span>
+              <span className="trade-input-unit"><AssetLabel symbol={mode === 'stake' ? 'HYPE' : 'stHYPE'} /></span>
             </div>
           </div>
 
           <div className="tp-summary">
             <div className="tp-summary-row">
               <span>You receive</span>
-              <span>{amount ? `${(parseFloat(amount) * (mode === 'stake' ? 0.976 : 1.024)).toFixed(4)}` : '0.00'} {mode === 'stake' ? 'stHYPE' : 'HYPE'}</span>
+              <span>{amount ? `${(parseFloat(amount) * (mode === 'stake' ? 0.976 : 1.024)).toFixed(4)}` : '0.00'} <AssetLabel symbol={mode === 'stake' ? 'stHYPE' : 'HYPE'} /></span>
             </div>
             <div className="tp-summary-row">
               <span>Exchange rate</span>

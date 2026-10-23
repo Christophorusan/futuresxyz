@@ -1,3 +1,4 @@
+import { AssetLabel } from '../components/AssetLabel'
 import { useState } from 'react'
 
 const MARKETS = [
@@ -23,9 +24,9 @@ export function OptionsPage() {
     <div className="pred-page">
       <div className="pred-topbar">
         <button className={`pred-topbar-tab ${asset === 'all' ? 'active' : ''}`} onClick={() => setAsset('all')}>All</button>
-        <button className={`pred-topbar-tab ${asset === 'BTC' ? 'active' : ''}`} onClick={() => setAsset('BTC')}>BTC</button>
-        <button className={`pred-topbar-tab ${asset === 'ETH' ? 'active' : ''}`} onClick={() => setAsset('ETH')}>ETH</button>
-        <button className={`pred-topbar-tab ${asset === 'HYPE' ? 'active' : ''}`} onClick={() => setAsset('HYPE')}>HYPE</button>
+        <button className={`pred-topbar-tab ${asset === 'BTC' ? 'active' : ''}`} onClick={() => setAsset('BTC')}><AssetLabel symbol="BTC" /></button>
+        <button className={`pred-topbar-tab ${asset === 'ETH' ? 'active' : ''}`} onClick={() => setAsset('ETH')}><AssetLabel symbol="ETH" /></button>
+        <button className={`pred-topbar-tab ${asset === 'HYPE' ? 'active' : ''}`} onClick={() => setAsset('HYPE')}><AssetLabel symbol="HYPE" /></button>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 2 }}>
           <button className={`pred-topbar-tab ${optionType === 'all' ? 'active' : ''}`} onClick={() => setOptionType('all')}>All</button>
           <button className={`pred-topbar-tab ${optionType === 'Call' ? 'active' : ''}`} onClick={() => setOptionType('Call')}>Calls</button>
@@ -69,7 +70,7 @@ export function OptionsPage() {
               {filtered.map((m, i) => (
                 <a key={i} href="https://app.rysk.finance/" target="_blank" rel="noopener noreferrer"
                   className="protocol-table-row" style={{ gridTemplateColumns: '1fr 1fr 1.2fr 0.8fr 1fr 0.8fr 1fr', textDecoration: 'none' }}>
-                  <span className="protocol-cell-name">{m.asset}</span>
+                  <span className="protocol-cell-name"><AssetLabel symbol={m.asset} size={24} /></span>
                   <span>{m.expiry}</span>
                   <span>{m.strike}</span>
                   <span className={m.type === 'Call' ? 'green' : 'red'}>{m.type}</span>

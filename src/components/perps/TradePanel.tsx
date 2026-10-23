@@ -1,3 +1,4 @@
+import { AssetLabel } from '../AssetLabel'
 import { openInOslo } from '../shared/InAppBrowser'
 import { useState, useCallback } from 'react'
 import { useMarket } from '../../contexts/MarketContext'
@@ -135,7 +136,7 @@ export function TradePanel() {
         <div className="trade-input-group">
           <div className="trade-input-wrapper">
             <input type="number" className="trade-input" placeholder={formatPrice(midPrice)} value={price} onChange={e => setPrice(e.target.value)} step="any" />
-            <span className="trade-input-unit">USDC</span>
+            <span className="trade-input-unit"><AssetLabel symbol="USDC" size={16} /></span>
           </div>
         </div>
       )}
@@ -150,7 +151,7 @@ export function TradePanel() {
               const val = parseFloat(e.target.value) || 0
               if (buyingPower > 0) setSizePct(Math.min(100, Math.round((val / buyingPower) * 100)))
             }} step="any" />
-          <span className="trade-input-unit">USDC ▾</span>
+          <span className="trade-input-unit"><AssetLabel symbol="USDC" size={16} /> ▾</span>
         </div>
         {tokenSize > 0 && (
           <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 4 }}>

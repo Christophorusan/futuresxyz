@@ -1,3 +1,4 @@
+import { AssetLabel } from '../components/AssetLabel'
 import './BridgePage.css'
 import { Link } from 'react-router-dom'
 import { AppDiscovery } from '../components/AppDiscovery'
@@ -253,7 +254,7 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
         <div className="trade-input-group">
           <div className="trade-input-wrapper">
             <input type="number" className="trade-input" placeholder={formatPrice(price.toString())} value={limitPrice} onChange={e => setLimitPrice(e.target.value)} step="any" />
-            <span className="trade-input-unit">USDC</span>
+            <span className="trade-input-unit"><AssetLabel symbol="USDC" size={16} /></span>
           </div>
         </div>
       )}
@@ -267,7 +268,7 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
             const val = parseFloat(e.target.value) || 0
             if (spotBalance > 0) setSizePct(Math.min(100, Math.round((val / spotBalance) * 100)))
           }} step="any" />
-          <span className="trade-input-unit">USDC ▾</span>
+          <span className="trade-input-unit"><AssetLabel symbol="USDC" size={16} /> ▾</span>
         </div>
         {tokenAmount > 0 && (
           <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 4 }}>

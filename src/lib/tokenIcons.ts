@@ -8,7 +8,7 @@ export function tokenIconUrls(symbol: string, base: string, logo?: string): stri
   // HIP-3 namespaces are case-sensitive. Only lowercase k denotes a multiplier.
   const name = symbol.trim()
   const canonical = aliases[name.toUpperCase()] ?? (cached.has(name.toUpperCase()) ? name.toUpperCase() : name)
-  const lendingName = name === 'USD₮0' ? 'USDT0' : lendingLogos.find(logo => logo.toLowerCase() === name.toLowerCase())
+  const lendingName = name === 'USD₮0' ? 'USDT0' : name.toLowerCase() === 'sthype' ? 'wstHYPE' : lendingLogos.find(logo => logo.toLowerCase() === name.toLowerCase())
   const lendingLogo = lendingName ?? (/^PT-kHYPE-/i.test(name) ? 'PT-kHYPE' : /^PT-sUSDe-/i.test(name) ? 'PT-sUSDe' : undefined)
   const names = [...new Set([canonical, ...(canonical.startsWith('k') && /^k[A-Z]/.test(canonical) ? [canonical.slice(1)] : [])])]
   return [...new Set([

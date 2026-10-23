@@ -1,3 +1,4 @@
+import { AssetLabel } from '../AssetLabel'
 import { useRef, useState } from 'react'
 import { usePublicClient, useSwitchChain } from 'wagmi'
 import { getAccount, getWalletClient } from 'wagmi/actions'
@@ -74,7 +75,7 @@ export function SmartAccountTransfer({ owner, smartAccount, market, disabled, on
   return <section className="lending-card"><h3>Move funds to or from your smart account</h3>
     <p>Transfers wallet tokens only. Supplied collateral and outstanding loans are not moved. Leave HYPE for gas when gas is not sponsored.</p>
     <div className="lending-actions"><button disabled={disabled} onClick={() => { setOutgoing(!outgoing); setReview(false) }}>{outgoing ? 'Smart account → connected wallet' : 'Connected wallet → smart account'}</button>
-      <select aria-label="Transfer asset" disabled={disabled} value={native ? 'native' : 'token'} onChange={e => { setNative(e.target.value === 'native'); setAmount(''); setReview(false) }}><option value="native">HYPE</option>{market && <option value="token">{market.symbol}</option>}</select>
+      <AssetLabel symbol={native ? 'HYPE' : market?.symbol || 'HYPE'} size={24} /><select aria-label="Transfer asset" disabled={disabled} value={native ? 'native' : 'token'} onChange={e => { setNative(e.target.value === 'native'); setAmount(''); setReview(false) }}><option value="native">HYPE</option>{market && <option value="token">{market.symbol}</option>}</select>
       <input aria-label="Transfer amount" inputMode="decimal" disabled={disabled} value={amount} placeholder="Amount" onChange={e => { setAmount(e.target.value); setReview(false) }} />
       <button disabled={disabled || !amount || balance.isError || balance.data === undefined} onClick={() => setReview(true)}>Review transfer</button></div>
     <p>Available: {balance.data !== undefined ? `${formatUnits(balance.data, decimals)} ${symbol}` : 'Unavailable'}</p>

@@ -1,3 +1,4 @@
+import { AssetLabel } from '../AssetLabel'
 import { useEffect, useRef, useState } from 'react'
 import { useAccount, useConfig } from 'wagmi'
 import { getAccount, getPublicClient, getWalletClient, switchChain } from 'wagmi/actions'
@@ -117,7 +118,7 @@ export function AcrossSwap() {
     {loading && <p role="status">Loading supported networks and tokens…</p>}
     <fieldset disabled={busy || loading}><legend>Transfer details</legend>
       <div className="bridge-fields"><label>From network<select value={from} onChange={e => { setFrom(Number(e.target.value)); setInput('') }}>{chains.map(id => <option key={id} value={id}>{chainNames[id]}</option>)}</select></label><label>To network<select value={to} onChange={e => { setTo(Number(e.target.value)); setOutput('') }}>{chains.map(id => <option key={id} value={id}>{chainNames[id]}</option>)}</select></label></div>
-      <div className="bridge-fields"><label>Send token<select value={inToken?.address || ''} onChange={e => setInput(e.target.value)}>{inputTokens.map(t => <option key={t.address} value={t.address}>{t.symbol} · {t.name} · {t.address.slice(0, 6)}…</option>)}</select></label><label>Receive token<select value={outToken?.address || ''} onChange={e => setOutput(e.target.value)}>{outputTokens.map(t => <option key={t.address} value={t.address}>{t.symbol} · {t.name} · {t.address.slice(0, 6)}…</option>)}</select></label></div>
+      <div className="bridge-fields"><label>Send token{inToken && <AssetLabel symbol={inToken.symbol} size={24} />}<select value={inToken?.address || ''} onChange={e => setInput(e.target.value)}>{inputTokens.map(t => <option key={t.address} value={t.address}>{t.symbol} · {t.name} · {t.address.slice(0, 6)}…</option>)}</select></label><label>Receive token{outToken && <AssetLabel symbol={outToken.symbol} size={24} />}<select value={outToken?.address || ''} onChange={e => setOutput(e.target.value)}>{outputTokens.map(t => <option key={t.address} value={t.address}>{t.symbol} · {t.name} · {t.address.slice(0, 6)}…</option>)}</select></label></div>
       <label>Amount<input inputMode="decimal" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" /></label>
       <label>Recipient<input value={recipient} onChange={e => setRecipient(e.target.value)} placeholder={address || 'Your connected wallet by default'} /></label>
       <small>Leave blank to receive in your connected wallet. Slippage: 0.5%. Refunds requested on the source network to your sending wallet.</small>
@@ -126,9 +127,9 @@ export function AcrossSwap() {
     {error && <p role="alert" className="bridge-error">{error}</p>}{message && <p role="status" className="bridge-footnote">{message}</p>}
     {quote && <div className="bridge-review"><h2>Review your transfer</h2><dl>
       <dt>Route</dt><dd>{chainNames[quote.request.originChainId]} → {chainNames[quote.request.destinationChainId]}</dd>
-      <dt>You send</dt><dd>{quote.request.amount} {quote.request.inputToken.symbol}</dd>
-      <dt>Expected received</dt><dd>{formatUnits(BigInt(quote.output), quote.request.outputToken.decimals)} {quote.request.outputToken.symbol}</dd>
-      <dt>Minimum received</dt><dd>{formatUnits(BigInt(quote.minimum), quote.request.outputToken.decimals)} {quote.request.outputToken.symbol}</dd>
+      <dt>You send</dt><dd>{quote.request.amount} <AssetLabel symbol={quote.request.inputToken.symbol} /></dd>
+      <dt>Expected received</dt><dd>{formatUnits(BigInt(quote.output), quote.request.outputToken.decimals)} <AssetLabel symbol={quote.request.outputToken.symbol} /></dd>
+      <dt>Minimum received</dt><dd>{formatUnits(BigInt(quote.minimum), quote.request.outputToken.decimals)} <AssetLabel symbol={quote.request.outputToken.symbol} /></dd>
       <dt>Estimated fees</dt><dd>{quote.feesUsd ? `$${quote.feesUsd}` : 'Unavailable'}</dd><dt>Source gas estimate</dt><dd>{quote.gasUsd ? `$${quote.gasUsd}` : 'Shown by your wallet'}</dd>
       <dt>Estimated delivery</dt><dd>{quote.seconds ? `~${quote.seconds} seconds after source confirmation` : 'Unavailable'}</dd>
       <dt>Recipient</dt><dd>{quote.request.recipient}</dd><dt>Source contract</dt><dd>{quote.tx.to}</dd>

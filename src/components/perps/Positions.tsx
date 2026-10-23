@@ -1,3 +1,4 @@
+import { AssetLabel } from '../AssetLabel'
 import { useState, useMemo } from 'react'
 import { useUserState } from '../../hooks/useUserState'
 import { useAccountData } from '../../hooks/useAccountData'
@@ -323,7 +324,7 @@ export function Positions() {
                   return (
                     <div key={order.oid} className="pos-row-full">
                       <span className="pos-time">{new Date(order.timestamp).toLocaleString()}</span>
-                      <span className="pos-name">{order.coin}-PERP</span>
+                      <span className="pos-name"><AssetLabel symbol={order.coin} label={`${order.coin}-PERP`} size={18} /></span>
                       <span>Limit</span>
                       <span className={isBuy ? 'pos-pnl-green' : 'pos-pnl-red'}>
                         {isBuy ? 'Buy' : 'Sell'}
@@ -390,7 +391,7 @@ export function Positions() {
                   const markPx = market ? formatPrice(market.midPrice) : '--'
                   return (
                     <div key={pos.coin} className="pos-row-full">
-                      <span className="pos-name pos-clickable" onClick={() => setSelectedMarket(pos.coin)}>{pos.coin}-PERP</span>
+                      <span className="pos-name pos-clickable" onClick={() => setSelectedMarket(pos.coin)}><AssetLabel symbol={pos.coin} label={`${pos.coin}-PERP`} size={18} /></span>
                       <span className={isLong ? 'pos-pnl-green' : 'pos-pnl-red'}>
                         {isLong ? 'Long' : 'Short'}
                         <span className="pos-leverage">{pos.leverage.value}x</span>
@@ -445,7 +446,7 @@ export function Positions() {
                     const pnlPct = parseFloat(b.pnlPct)
                     return (
                       <div key={b.coin} className="pos-row-full" style={{ gridTemplateColumns: '0.8fr 1.5fr 1.5fr 1fr 1fr' }}>
-                        <span className="pos-name">{b.coin}</span>
+                        <span className="pos-name"><AssetLabel symbol={b.coin} size={18} /></span>
                         <span>{parseFloat(b.total).toLocaleString('en-US', { maximumFractionDigits: 8 })} {b.coin}</span>
                         <span>{parseFloat(b.available).toLocaleString('en-US', { maximumFractionDigits: 8 })} {b.coin}</span>
                         <span>${parseFloat(b.usdValue).toFixed(2)}</span>
@@ -483,7 +484,7 @@ export function Positions() {
                   return (
                     <div key={`${fill.oid}-${i}`} className="pos-row-full" style={{ gridTemplateColumns: 'repeat(7, 1fr)' }}>
                       <span className="pos-time">{new Date(fill.time).toLocaleString()}</span>
-                      <span className="pos-name">{fill.coin}-PERP</span>
+                      <span className="pos-name"><AssetLabel symbol={fill.coin} label={`${fill.coin}-PERP`} size={18} /></span>
                       <span className={isBuy ? 'pos-pnl-green' : 'pos-pnl-red'}>
                         {isBuy ? 'Buy' : 'Sell'}
                       </span>

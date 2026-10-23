@@ -1,3 +1,4 @@
+import { AssetLabel } from '../AssetLabel'
 import { useState, useRef } from 'react'
 import { useAccount, usePublicClient, useSwitchChain } from 'wagmi'
 import { getAccount, getWalletClient } from 'wagmi/actions'
@@ -65,7 +66,7 @@ export function HypeWrap({ account, smart, disabled, onBusy }: { account?: Addre
       setMessage(entry && getActivity().some(e => e.id === entry?.id && e.status === 'pending') ? 'Submitted; confirmation is uncertain. Check activity before resubmitting.' : error instanceof Error && !error.message.includes('http') ? error.message.slice(0, 180) : 'Unable to submit. Check your wallet and gas balance.')
     } finally { lock.current = false; onBusy(false); setReview(false) }
   }
-  return <section className="lending-card"><h3>Prepare HYPE for lending</h3><p>Convert HYPE to WHYPE, the version used for lending, or convert it back. The exchange is 1 for 1. Converting alone does not earn rewards. Keep a little HYPE in your wallet to pay network fees.</p>
+  return <section className="lending-card"><h3><AssetLabel symbol="HYPE" label="Prepare HYPE for lending" size={26} /></h3><p>Convert HYPE to WHYPE, the version used for lending, or convert it back. The exchange is 1 for 1. Converting alone does not earn rewards. Keep a little HYPE in your wallet to pay network fees.</p>
     {balance.data && <p>{formatEther(balance.data.native)} HYPE · {formatEther(balance.data.wrapped)} WHYPE</p>}
     <div className="lending-actions"><button disabled={disabled} onClick={() => { setMode(mode === 'wrap' ? 'unwrap' : 'wrap'); setReview(false) }}>{mode === 'wrap' ? 'Convert HYPE → WHYPE' : 'Convert WHYPE → HYPE'}</button>
       <input aria-label="Wrap amount" inputMode="decimal" placeholder="Amount" value={amount} disabled={disabled} onChange={e => { setAmount(e.target.value); setReview(false) }} />

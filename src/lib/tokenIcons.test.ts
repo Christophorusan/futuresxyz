@@ -9,6 +9,7 @@ describe('Hyperliquid token logos', () => {
     expect(tokenIconUrls('eth', '/')[0]).toBe('/tokens/hyperliquid/ETH.svg')
     expect(tokenIconUrls('USD₮0', '/')[0]).toBe('/tokens/hyperlend/USDT0.svg')
     expect(tokenIconUrls('kHYPE', '/')[0]).toBe('/tokens/hyperlend/kHYPE.svg')
+    expect(tokenIconUrls('stHYPE', '/')[0]).toBe('/tokens/hyperlend/wstHYPE.svg')
     expect(tokenIconUrls('USDe', '/')[0]).toBe('/tokens/hyperlend/USDe.svg')
     expect(tokenIconUrls('ARB', '/')[0]).toBe('/tokens/networks/ARB.png')
   })

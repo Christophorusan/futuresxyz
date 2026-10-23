@@ -1,3 +1,4 @@
+import { AssetLabel } from './AssetLabel'
 import { useRef, useState } from 'react'
 import { useAccount, usePublicClient, useSwitchChain } from 'wagmi'
 import { getAccount, getWalletClient } from 'wagmi/actions'
@@ -106,14 +107,14 @@ export function PaymentForm({ hash, receive }: { hash: string; receive: boolean 
       </details>
       {isSmart && <p>This wallet has its own balance. Add funds on the HyperEVM network before sending. {gasPolicyId ? 'Network fees may be covered for eligible payments.' : 'Keep a little HYPE to pay network fees.'}</p>}
       {account && <p className="evm-address">{isSmart ? 'Smart account' : 'Your wallet'}: {account}</p>}
-      <label className="payment-label">Asset<select disabled={busy} value={asset.symbol} onChange={e => { setAsset(paymentAssets.find(a => a.symbol === e.target.value)!); setAmount(''); setRequestAmount(''); reset() }}>{paymentAssets.map(a => <option key={a.symbol}>{a.symbol}</option>)}</select></label>
+      <label className="payment-label"><AssetLabel symbol={asset.symbol} size={26} /><select disabled={busy} value={asset.symbol} onChange={e => { setAsset(paymentAssets.find(a => a.symbol === e.target.value)!); setAmount(''); setRequestAmount(''); reset() }}>{paymentAssets.map(a => <option key={a.symbol}>{a.symbol}</option>)}</select></label>
       <p>Available: {balance.data ? `${formatUnits(balance.data.balance, balance.data.decimals)} ${asset.symbol}` : address ? 'Loading…' : 'Connect your wallet to view balance'} {balance.isError && <button onClick={() => balance.refetch()}>Balance unavailable · Retry</button>}</p>
       {tab === 'send' ? <>
         {request.data && <p className="lending-notice">Payment request loaded. Verify the full recipient address and amount before paying.</p>}
         <label className="payment-label">Recipient address<input disabled={busy} value={recipient} placeholder="0x…" autoComplete="off" spellCheck={false} onChange={e => { setRecipient(e.target.value.trim()); reset() }} /></label>
         <label className="payment-label">Amount<input disabled={busy} value={amount} inputMode="decimal" placeholder="0.00" onChange={e => { setAmount(e.target.value); reset() }} /></label>
         <button className="payment-primary" disabled={busy || !address || !recipient || !amount} onClick={reviewPayment}>{busy ? 'Working…' : address ? 'Review payment' : 'Connect wallet to send'}</button>
-        {validReview && <div className="lending-review"><h3>Confirm your payment</h3><p className="payment-total">{amount} {asset.symbol}</p><p className="evm-address">From: {account}<br />To: {validReview.to}</p><p>Network: HyperEVM<br />{validReview.fee !== undefined ? `Estimated network fee: ${formatEther(validReview.fee)} HYPE. Your wallet shows the final fee.` : 'The final network fee is calculated when you send. You may need to pay it.'}</p><p>Check the address carefully. This payment cannot be reversed.</p><button disabled={busy} onClick={send}>Confirm in wallet</button><button disabled={busy} onClick={() => setReview(undefined)}>Cancel</button></div>}
+        {validReview && <div className="lending-review"><h3>Confirm your payment</h3><p className="payment-total">{amount} <AssetLabel symbol={asset.symbol} size={26} /></p><p className="evm-address">From: {account}<br />To: {validReview.to}</p><p>Network: HyperEVM<br />{validReview.fee !== undefined ? `Estimated network fee: ${formatEther(validReview.fee)} HYPE. Your wallet shows the final fee.` : 'The final network fee is calculated when you send. You may need to pay it.'}</p><p>Check the address carefully. This payment cannot be reversed.</p><button disabled={busy} onClick={send}>Confirm in wallet</button><button disabled={busy} onClick={() => setReview(undefined)}>Cancel</button></div>}
       </> : <>
         <p>Receive {asset.symbol} on HyperEVM only. This address does not receive funds into your Hyperliquid trading account.</p>
         <label className="payment-label">Requested amount (optional)<input disabled={busy} inputMode="decimal" placeholder="Any amount" value={requestAmount} onChange={e => setRequestAmount(e.target.value)} /></label>

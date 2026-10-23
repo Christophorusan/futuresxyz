@@ -1,3 +1,4 @@
+import { AssetLabel } from '../components/AssetLabel'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -17,7 +18,7 @@ export function ThousandXPerpsPage() {
         <span className="thousandx-number" aria-hidden="true">1000<span>×</span></span>
         <h2>Trade with Papertrade</h2>
         <p>Open the official exchange to select a market, review leverage and manage your positions. Available leverage and execution depend on Papertrade’s current market limits.</p>
-        <fieldset className="thousandx-markets"><legend>Choose your market</legend><div>{markets.map(item => <label key={item.id} className={market.id === item.id ? 'selected' : ''}><input type="radio" name="papertrade-market" value={item.id} checked={market.id === item.id} onChange={() => setMarket(item)} /><span><strong>{item.symbol}</strong><small>{item.name}</small></span></label>)}</div></fieldset>
+        <fieldset className="thousandx-markets"><legend>Choose your market</legend><div>{markets.map(item => <label key={item.id} className={market.id === item.id ? 'selected' : ''}><input type="radio" name="papertrade-market" value={item.id} checked={market.id === item.id} onChange={() => setMarket(item)} /><span><strong><AssetLabel symbol={item.symbol} size={28} /></strong><small>{item.name}</small></span></label>)}</div></fieldset>
         <a className="thousandx-primary" href={exchange} target="_blank" rel="noopener noreferrer">Open {market.symbol} in Papertrade ↗</a>
         <p className="thousandx-caption">exchange.papertrade.xyz · opens in a new tab. Connect your wallet there to trade.</p>
         <div className="thousandx-links">
