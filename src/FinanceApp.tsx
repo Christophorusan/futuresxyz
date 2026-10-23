@@ -133,7 +133,6 @@ function AppContent() {
         <Sidebar />
         <InAppBrowser />
         <nav className="nav">
-          <WalletCornerValue />
           <div className="nav-left">
             <NavLink to="/" className="logo">
               oslo
@@ -148,6 +147,7 @@ function AppContent() {
             <NavLink to="/swap" className="nav-deposit-btn">Deposit</NavLink>
             <ThemeToggle />
             <ConnectButton />
+            <WalletCornerValue />
           </div>
         </nav>
 
