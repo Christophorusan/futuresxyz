@@ -38,7 +38,7 @@ export function WalletPage() {
       <nav className="wallet-portfolio-actions" aria-label="Portfolio actions">
         <Link to="/wallet?action=send"><span aria-hidden="true">↗</span>Send</Link>
         <Link to="/wallet?action=receive"><span aria-hidden="true">↙</span>Receive</Link>
-        <Link to="/spot"><span aria-hidden="true">⇄</span>Swap</Link>
+        <Link to="/swap"><span aria-hidden="true">⇄</span>Swap</Link>
       </nav>
       {!isConnected && <ConnectButton />}
       {!!data?.errors.length&&<details className="wallet-details"><summary>Some networks could not be loaded · Retry by refreshing</summary>{data.errors.map(error=><p key={error}>{error}</p>)}</details>}

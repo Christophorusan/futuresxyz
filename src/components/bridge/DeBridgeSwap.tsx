@@ -1,10 +1,13 @@
+import { acrossGet, acrossProxy, parseTokens } from '../../lib/across'
+import { AcrossSwap } from './AcrossSwap'
+import { getSwapRoutes, type SwapRoute } from '../../lib/swapRouting'
 import { useEffect, useRef, useState } from 'react'
 import { useAccount, useConfig } from 'wagmi'
 import { getAccount, getPublicClient, getWalletClient, switchChain } from 'wagmi/actions'
 import { erc20Abi, formatUnits } from 'viem'
 import { BridgeTokenPicker } from './BridgeTokenPicker'
 import { ConnectButton } from '../shared/ConnectButton'
-import { availableDlnRoute, restoreDlnTransfer, type DlnTransfer, assertDlnFresh, debridgeProxy, dlnChain, dlnChains, dlnGet, dlnNative, dlnStatus, dlnTokens, getDlnQuote, type DlnQuote, type DlnToken } from '../../lib/debridge'
+import { availableDlnRoute, restoreDlnTransfer, type DlnTransfer, assertDlnFresh, debridgeProxy, dlnChain, dlnChains, dlnGet, dlnNative, dlnStatus, dlnTokens, type DlnQuote, type DlnToken } from '../../lib/debridge'
 
 export function DeBridgeSwap() {
   const config = useConfig(), { address } = useAccount()
@@ -15,19 +18,27 @@ export function DeBridgeSwap() {
   const [error, setError] = useState(''), [message, setMessage] = useState('')
   const [quote, setQuote] = useState<DlnQuote | null>(null), [needsApproval, setNeedsApproval] = useState(false)
   const [sent, setSent] = useState<DlnTransfer | null>(null), [now, setNow] = useState(Date.now())
+  const [routes, setRoutes] = useState<SwapRoute[]>([]), [selectedRoute, setSelectedRoute] = useState(0)
+  const [routeBusy, setRouteBusy] = useState(false)
   const generation = useRef(0), lock = useRef(false)
   useEffect(() => { const timer = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(timer) }, [])
-  useEffect(() => { generation.current++; setQuote(null); setError(''); setMessage('') }, [from, to, input, output, amount, address])
+  useEffect(() => { generation.current++; setQuote(null); setRoutes([]); setError(''); setMessage('') }, [from, to, input, output, amount, address])
   useEffect(() => {
     const controller = new AbortController()
     setLoading(true); setError('')
     void (async () => {
-      const supported = await dlnGet('supported-chains', undefined, controller.signal) as { chains?: number[] }
-      if (!Array.isArray(supported.chains)) throw new Error('Networks unavailable.')
-      const available = dlnChains.filter(c => supported.chains!.includes(c.apiId))
-      const results = await Promise.allSettled(available.map(async c => dlnTokens(await dlnGet('token-list', new URLSearchParams({ chainId: String(c.apiId) }), controller.signal), c.id)))
-      const list = results.flatMap(r => r.status === 'fulfilled' ? r.value : [])
-      const usable = available.filter(c => list.some(t => t.chainId === c.id)).map(c => c.id)
+      const sources = await Promise.allSettled([
+        (async () => {
+          const supported = await dlnGet('supported-chains', undefined, controller.signal) as { chains?: number[] }
+          if (!Array.isArray(supported.chains)) throw new Error('Networks unavailable.')
+          const available = dlnChains.filter(c => supported.chains!.includes(c.apiId))
+          const results = await Promise.allSettled(available.map(async c => dlnTokens(await dlnGet('token-list', new URLSearchParams({ chainId: String(c.apiId) }), controller.signal), c.id)))
+          return results.flatMap(r => r.status === 'fulfilled' ? r.value : [])
+        })(),
+        acrossProxy ? acrossGet('tokens', undefined, controller.signal).then(parseTokens) : Promise.resolve([]),
+      ])
+      const list = [...new Map(sources.flatMap(r => r.status === 'fulfilled' ? r.value : []).map(t => [`${t.chainId}:${t.address.toLowerCase()}`, t])).values()]
+      const usable = dlnChains.filter(c => list.some(t => t.chainId === c.id)).map(c => c.id)
       if (usable.length < 2) throw new Error('Could not load swap assets. Retry in a moment.')
       if (controller.signal.aborted) return
       setTokens(list); setChains(usable)
@@ -50,10 +61,15 @@ export function DeBridgeSwap() {
   const outToken = outputTokens.find(t => t.address === output) ?? outputTokens.find(t => t.symbol === 'USDC') ?? outputTokens[0]
   async function requestQuote() {
     if (lock.current || !inToken || !outToken) return
-    lock.current = true; setBusy(true); setError(''); setMessage(''); setQuote(null)
+    lock.current = true; setBusy(true); setError(''); setMessage(''); setQuote(null); setRoutes([])
     const version = ++generation.current
     try {
-      const result = await getDlnQuote({ from, to, input: inToken, output: outToken, amount, account: debridgeProxy ? address : undefined })
+      const available = await getSwapRoutes({ from, to, input: inToken, output: outToken, amount, account: address })
+      if (version !== generation.current) return
+      setRoutes(available); setSelectedRoute(0)
+      const chosen = available[0]
+      if (chosen.provider === 'across') return
+      const result = chosen.quote
       let approvalRequired = false
       if (result.tx && address && !dlnNative(inToken.address)) {
         const client = getPublicClient(config, { chainId: from })
@@ -115,19 +131,21 @@ export function DeBridgeSwap() {
     finally { lock.current = false; setBusy(false) }
   }
   return <section className="bridge-provider-panel oslo-swap">
-    <div className="oslo-swap-title"><h2>Swap</h2><span>Powered by deBridge</span></div>
+    <div className="oslo-swap-title"><h2>Swap</h2><span>Automatic routing</span></div>
     <p className="bridge-description">Move your assets. Keep the same wallet.</p>
     {loading && <p role="status">Loading networks and assets…</p>}
-    <fieldset disabled={busy || loading}><legend>Swap details</legend>
+    <fieldset disabled={busy || routeBusy || loading}><legend>Swap details</legend>
       <div className="bridge-fields"><label>From<select value={from} onChange={e => { setFrom(Number(e.target.value)); setInput('') }}>{chains.map(id => <option key={id} value={id}>{dlnChain(id).name}</option>)}</select></label><label>To<select value={to} onChange={e => { setTo(Number(e.target.value)); setOutput('') }}>{chains.map(id => <option key={id} value={id}>{dlnChain(id).name}</option>)}</select></label></div>
       <div className="oslo-swap-asset"><label>You send<input inputMode="decimal" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" /></label><BridgeTokenPicker label="Send asset" token={inToken} tokens={inputTokens} onChange={setInput} /></div>
-      <div className="oslo-swap-asset"><div><span className="oslo-swap-caption">You receive</span><p className="oslo-swap-output">{quote ? formatUnits(BigInt(quote.output), quote.request.output.decimals) : '—'}</p></div><BridgeTokenPicker label="Receive asset" token={outToken} tokens={outputTokens} onChange={setOutput} /></div>
+      <div className="oslo-swap-asset"><div><span className="oslo-swap-caption">You receive</span><p className="oslo-swap-output">{routes[selectedRoute] ? formatUnits(BigInt(routes[selectedRoute].quote.output), outToken?.decimals ?? 18) : '—'}</p></div><BridgeTokenPicker label="Receive asset" token={outToken} tokens={outputTokens} onChange={setOutput} /></div>
       <small>{to === 999 ? 'Receives in your HyperEVM wallet, not your Hyperliquid trading balance.' : 'Receives in the same wallet on your destination network.'}</small>
     </fieldset>
-    <button className="bridge-primary oslo-swap-action" disabled={busy || loading || !inToken || !outToken || !amount} onClick={requestQuote}>{busy ? 'Please wait…' : quote ? 'Refresh quote' : 'Get quote'}</button>
+    <button className="bridge-primary oslo-swap-action" disabled={busy || routeBusy || loading || !inToken || !outToken || !amount} onClick={requestQuote}>{busy ? 'Please wait…' : quote ? 'Refresh quote' : 'Get quote'}</button>
     {!address && <div className="oslo-swap-connect"><ConnectButton /></div>}
     {error && <p role="alert" className="bridge-error">{error} {!tokens.length && <button onClick={() => setAttempt(n => n + 1)}>Retry</button>}</p>}
     {message && <p role="status" className="bridge-footnote">{message}</p>}
+    {!!routes.length && <p className="bridge-footnote">Route: {routes[selectedRoute].provider === 'across' ? 'Across' : 'deBridge'} · {routes.length} available quote{routes.length === 1 ? '' : 's'}. {routes[selectedRoute].quote.tx ? 'Selected by expected receive amount among executable routes.' : 'Preview only; execution is not enabled.'} Additional gas and protocol fees may differ.</p>}
+    {routes[selectedRoute]?.provider === 'across' && <AcrossSwap key={routes[selectedRoute].quote.expiresAt} preparedQuote={routes[selectedRoute].quote as import('../../lib/across').AcrossQuote} onBusy={setRouteBusy} />}
     {quote && <div className="bridge-review"><h2>Review swap</h2><dl>
       <dt>Route</dt><dd>{dlnChain(quote.request.from).name} → {dlnChain(quote.request.to).name}</dd>
       <dt>You send</dt><dd>{quote.request.amount} {quote.request.input.symbol}</dd>
@@ -144,7 +162,7 @@ export function DeBridgeSwap() {
       {quote.tx && debridgeProxy && <button className="bridge-primary oslo-swap-action" disabled={busy || now >= quote.expiresAt} onClick={execute}>{needsApproval ? `Approve ${quote.request.amount} ${quote.request.input.symbol}` : 'Confirm swap in wallet'}</button>}
       {needsApproval && debridgeProxy && <p className="bridge-footnote">Approval is limited to this amount. After confirmation, refresh your quote and approve the swap separately.</p>}
     </div>}
-    {!debridgeProxy && <p className="bridge-footnote">Live quote preview. Swaps in Oslo will activate once our deBridge connection is configured.</p>}
+    {!debridgeProxy && <p className="bridge-footnote">Live quote preview. deBridge execution is awaiting activation. Across is included automatically when its connection is enabled and your wallet is connected.</p>}
     <details className="oslo-swap-other"><summary>Solana and Hyperliquid trading deposits</summary><p className="bridge-footnote">These routes are not yet available in Oslo’s native form. <a href="https://app.debridge.com/" target="_blank" rel="noopener noreferrer">Continue on deBridge ↗</a></p></details>
     {sent && <div className="bridge-review"><h2>Last transfer</h2><p role="status">{sent.status}</p><p className="bridge-footnote">Transaction: {sent.hash}<br />Order: {sent.orderId}</p><button disabled={busy || sent.sourceStatus === 'reverted'} onClick={checkStatus}>Check delivery</button> <a href={`${config.chains.find(c => c.id === sent.chain)?.blockExplorers?.default.url}/tx/${sent.hash}`} target="_blank" rel="noopener noreferrer">Source transaction ↗</a> <a href="https://app.debridge.com/orders" target="_blank" rel="noopener noreferrer">Order history / cancellation ↗</a></div>}
   </section>

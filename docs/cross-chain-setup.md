@@ -1,6 +1,32 @@
+# Unified swap activation status
+
+Oslo now owns one cross-chain form. Users select networks, tokens and amount without picking a bridge provider. Metadata from configured providers is combined; quotes are requested concurrently, and one provider failing does not discard the other result. Executable quotes rank before previews, then by greatest expected output for the same requested asset. This is **not a guarantee of lowest total cost**: source gas and additional native protocol fees are shown separately. Quotes are not silently changed after review. Changing input or wallet invalidates the quote. Existing provider-specific approval, simulation, expiry and delivery checks remain in place.
+
+## What is ready and what is not
+
+- EVM cross-chain: native Oslo form, deBridge public quote previews, automatic Across inclusion when its backend is configured and a wallet connected. Both native execution paths require the setup below.
+- Hyperliquid Spot: existing native order-book screen under other swap options; it uses HyperCore balances, not EVM wallet balances.
+- Solana: **not yet implemented** in the unified native form. Solana keys/signatures are distinct from the connected EVM account. Do not infer a Solana address from an Ethereum address or silently send funds to an unrelated recipient.
+- Same-chain EVM swaps: not implemented by this cross-chain adapter; it rejects identical source/destination networks.
+
+## Native Solana implementation plan
+
+Use Jupiter Swap v2 for Solana → Solana and deBridge/Across only for routes their live APIs explicitly support. Jupiter's current `/order` endpoint supports public quote previews without an API key; production requests should use a private server-side `JUPITER_API_KEY`.
+
+1. Add a Solana Wallet Standard connection alongside the current EVM connection (including Phantom when installed). Keep the active Solana account synchronized with wallet account/disconnect events. Show which address receives an asset.
+2. Deploy a restricted Jupiter proxy on the same backend host. Allow only token discovery, GET `/swap/v2/order`, and POST `/swap/v2/execute`; pin upstream hosts, authenticate with `x-api-key`, limit origins/body sizes/rates, and never accept arbitrary upstream URLs or added affiliate fees.
+3. Request `/order` with inputMint, outputMint, exact integer amount and connected Solana taker. Validate mint/amount/recipient consistency, expiration and fee/slippage disclosures; decode and inspect the returned transaction, fee payer and signers before asking the wallet to sign. Never sign server-side for the user.
+4. Send the user-signed transaction with its request ID to `/execute`; distinguish submission from confirmation and destination delivery. An ambiguous timeout requires status lookup before retrying.
+5. Add Solana-aware provider adapters for cross-chain routes, using the provider's Solana chain identifier and base58 addresses (not the current EVM-only validators). Require the connected destination account for EVM ↔ Solana routes. Do not reuse EVM approval or transaction code.
+6. Test rejected signatures, account changes, expired quotes, insufficient SOL, mismatched mints/recipients, failed simulations and duplicate submissions. Perform user-controlled small transfers before activation.
+
+Backend keys and host are not supplied yet. No native Solana execution is enabled or claimed. The current Jupiter link is explicitly external. Official reference: https://developers.jup.ag/docs/swap.
+
+---
+
 # Cross-chain swaps in Oslo
 
-The `/bridge` page is linked from Swap and Deposit. Hyperliquid spot trading remains at `/spot` and is linked from the bridge page.
+The `/swap` page combines Swap and Bridge. Sidebar Swap, Wallet Swap and Deposit open it. `/bridge` redirects to `/swap`. Hyperliquid order-book trading remains at `/spot`, linked under other swap options.
 
 ## deBridge: Oslo interface, DLN backend
 
@@ -22,7 +48,7 @@ Quotes expire 30 seconds from request start. Input amount remains exact (`prepen
 
 ## Across: activation required
 
-The native quote, exact-amount approval, swap and delivery-status flow is implemented, but stays disabled until `VITE_ACROSS_PROXY_URL` is configured. Until then, the Across tab links to the official app. GitHub Pages cannot host the required backend.
+The native quote, exact-amount approval, swap and delivery-status flow is implemented, but stays disabled until `VITE_ACROSS_PROXY_URL` is configured. Until then, Across is excluded from automatic route requests. GitHub Pages cannot host the required backend.
 
 1. Obtain an Across API key and a two-byte hexadecimal integrator ID through [Across](https://docs.across.to/api-reference).
 2. Deploy `server/across-proxy.mjs` on a Node.js 22+ service with HTTPS. No additional server dependencies are needed. Start command: `node server/across-proxy.mjs`.

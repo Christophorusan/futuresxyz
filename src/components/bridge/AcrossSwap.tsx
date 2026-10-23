@@ -7,7 +7,7 @@ import { acrossGet, acrossProxy, assertFresh, bridgeChains, getAcrossQuote, inpu
 import { ConnectButton } from '../shared/ConnectButton'
 
 const chainNames: Record<number, string> = { 1: 'Ethereum', 10: 'Optimism', 8453: 'Base', 42161: 'Arbitrum', 999: 'HyperEVM' }
-export function AcrossSwap() {
+export function AcrossSwap({ preparedQuote, onBusy }: { preparedQuote?: AcrossQuote; onBusy?: (busy: boolean) => void } = {}) {
   const { address } = useAccount()
   const config = useConfig()
   const [tokens, setTokens] = useState<BridgeToken[]>([])
@@ -26,7 +26,28 @@ export function AcrossSwap() {
   useEffect(() => {
     generation.current++; setQuote(null); setError(''); setMessage('')
   }, [from, to, input, output, amount, recipient, address])
+  useEffect(() => { onBusy?.(busy); return () => onBusy?.(false) }, [busy, onBusy])
   useEffect(() => {
+    if (!preparedQuote) return
+    let active = true
+    setLoading(false); setBusy(true)
+    void (async () => {
+      assertFresh(preparedQuote, getAccount(config).address)
+      let approvalRequired = false
+      if (preparedQuote.approval) {
+        const client = getPublicClient(config, { chainId: preparedQuote.tx.chainId })
+        if (!client) throw new Error('Network unavailable.')
+        const allowance = await client.readContract({ address: preparedQuote.approval.token, abi: erc20Abi, functionName: 'allowance', args: [preparedQuote.request.depositor, preparedQuote.approval.spender] })
+        approvalRequired = allowance < preparedQuote.approval.amount
+      }
+      if (!preparedQuote.simulationSuccess && !approvalRequired) throw new Error('Route simulation failed. Check your balance and refresh the quote.')
+      assertFresh(preparedQuote, getAccount(config).address)
+      if (active) { setQuote(preparedQuote); setNeedsApproval(approvalRequired) }
+    })().catch(e => { if(active) setError(e instanceof Error ? e.message : 'Route unavailable.') }).finally(() => { if(active) setBusy(false) })
+    return () => { active = false }
+  }, [preparedQuote, config])
+  useEffect(() => {
+    if (preparedQuote) { setLoading(false); return }
     if (!acrossProxy) { setLoading(false); return }
     const controller = new AbortController()
     Promise.all([acrossGet('tokens', undefined, controller.signal), acrossGet('chains', undefined, controller.signal)]).then(([t, c]) => {
@@ -114,7 +135,7 @@ export function AcrossSwap() {
     finally { lock.current = false; setBusy(false) }
   }
   if (!acrossProxy) return <section className="bridge-provider-panel"><h2>Across</h2><p>Across swaps inside Oslo are not enabled yet. You can use the official Across app in the meantime.</p><a className="bridge-primary" href="https://app.across.to/bridge-and-swap?from=42161&to=8453&inputToken=USDC&outputToken=USDC" target="_blank" rel="noopener noreferrer">Continue on Across ↗</a><p className="bridge-footnote">Opens Across with Arbitrum → Base selected. Connect and review the current route there.</p></section>
-  return <section className="bridge-provider-panel"><p className="bridge-description">Choose what to send and where to receive it. Across finds the route; your wallet approves each step.</p>
+  return <section className="bridge-provider-panel">{!preparedQuote && <><p className="bridge-description">Choose what to send and where to receive it. Across finds the route; your wallet approves each step.</p>
     {loading && <p role="status">Loading supported networks and tokens…</p>}
     <fieldset disabled={busy || loading}><legend>Transfer details</legend>
       <div className="bridge-fields"><label>From network<select value={from} onChange={e => { setFrom(Number(e.target.value)); setInput('') }}>{chains.map(id => <option key={id} value={id}>{chainNames[id]}</option>)}</select></label><label>To network<select value={to} onChange={e => { setTo(Number(e.target.value)); setOutput('') }}>{chains.map(id => <option key={id} value={id}>{chainNames[id]}</option>)}</select></label></div>
@@ -123,7 +144,7 @@ export function AcrossSwap() {
       <label>Recipient<input value={recipient} onChange={e => setRecipient(e.target.value)} placeholder={address || 'Your connected wallet by default'} /></label>
       <small>Leave blank to receive in your connected wallet. Slippage: 0.5%. Refunds requested on the source network to your sending wallet.</small>
     </fieldset>
-    {!address ? <ConnectButton /> : <button className="bridge-primary" disabled={busy || loading || !inToken || !outToken} onClick={requestQuote}>{busy ? 'Please wait…' : 'Get quote'}</button>}
+    {!address ? <ConnectButton /> : <button className="bridge-primary" disabled={busy || loading || !inToken || !outToken} onClick={requestQuote}>{busy ? 'Please wait…' : 'Get quote'}</button>}</>}
     {error && <p role="alert" className="bridge-error">{error}</p>}{message && <p role="status" className="bridge-footnote">{message}</p>}
     {quote && <div className="bridge-review"><h2>Review your transfer</h2><dl>
       <dt>Route</dt><dd>{chainNames[quote.request.originChainId]} → {chainNames[quote.request.destinationChainId]}</dd>

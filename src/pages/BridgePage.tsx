@@ -1,15 +1,10 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { DeBridgeSwap } from '../components/bridge/DeBridgeSwap'
-import { AcrossSwap } from '../components/bridge/AcrossSwap'
 import './BridgePage.css'
 
 export function BridgePage() {
-  const [provider, setProvider] = useState<'debridge' | 'across'>('debridge')
-  return <main className="bridge-page"><header><div><h1>Bridge</h1><p>Move assets across networks.</p></div><Link to="/spot">Swap on Hyperliquid →</Link></header>
-    <nav className="bridge-provider-tabs" aria-label="Cross-chain provider"><button aria-pressed={provider === 'debridge'} onClick={() => setProvider('debridge')}>deBridge</button><button aria-pressed={provider === 'across'} onClick={() => setProvider('across')}>Across</button></nav>
-    <div hidden={provider !== 'debridge'}><DeBridgeSwap /></div>
-    <div hidden={provider !== 'across'}><AcrossSwap /></div>
-    <p className="bridge-bottom-note">Available routes depend on the provider, token and amount. For Hyperliquid trading deposits, choose a route that explicitly supports the trading account—not just HyperEVM. <a href="https://app.hyperunit.xyz/deposit" target="_blank" rel="noopener noreferrer">Hyperliquid deposit options ↗</a></p>
+  return <main className="bridge-page"><header><div><h1>Swap</h1><p>Choose your assets. Move between networks in one place.</p></div></header>
+    <DeBridgeSwap />
+    <details className="bridge-bottom-note"><summary>Other swap options</summary><p><Link to="/spot">Hyperliquid Spot ↗</Link> — trade your Hyperliquid balance.</p><p>Same-chain Solana swaps and Solana cross-chain signing are not available inside Oslo yet. <a href="https://jup.ag/" target="_blank" rel="noopener noreferrer">Open Jupiter ↗</a></p><p>HyperEVM receipt is separate from a Hyperliquid trading deposit. <a href="https://app.hyperunit.xyz/deposit" target="_blank" rel="noopener noreferrer">Trading deposit options ↗</a></p></details>
   </main>
 }

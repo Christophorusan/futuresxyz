@@ -8,6 +8,7 @@ describe('Oslo entry', () => {
   })
   it('preserves payment requests and bookmarked markets after entering', () => {
     expect(entryDestination({ pathname: '/payments', search: '?mode=receive&amount=20', hash: '#request' })).toBe('/payments?mode=receive&amount=20#request')
+    expect(entryDestination({ pathname: '/swap', search: '', hash: '' })).toBe('/swap')
     expect(entryDestination({ pathname: '/perps', search: '?market=ETH', hash: '' })).toBe('/perps?market=ETH')
   })
   it('does not crash without browser storage', () => {
