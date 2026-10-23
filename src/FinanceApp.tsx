@@ -1,3 +1,4 @@
+import { SearchIcon } from './components/shared/SearchIcon'
 import { InAppBrowser } from './components/shared/InAppBrowser'
 import { useState, useRef, useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom'
@@ -129,7 +130,7 @@ function AppContent() {
             </div>
           </div>
           <div className="nav-right">
-            <NavLink to="/discover" className={({ isActive }) => `nav-deposit-btn nav-discover-btn${isActive ? ' active' : ''}`}>Discover</NavLink>
+            <NavLink to="/discover" aria-label="Search apps" title="Search apps" className={({ isActive }) => `nav-deposit-btn nav-discover-btn${isActive ? ' active' : ''}`}><SearchIcon /></NavLink>
             <NavLink to="/bridge" className="nav-deposit-btn">Deposit</NavLink>
             <ThemeToggle />
             <ConnectButton />
