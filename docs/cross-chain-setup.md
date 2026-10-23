@@ -1,4 +1,4 @@
-# Unified swap activation status
+# Cross-chain bridge activation status
 
 Oslo now owns one cross-chain form. Users select networks, tokens and amount without picking a bridge provider. Metadata from configured providers is combined; quotes are requested concurrently, and one provider failing does not discard the other result. Executable quotes rank before previews, then by greatest expected output for the same requested asset. This is **not a guarantee of lowest total cost**: source gas and additional native protocol fees are shown separately. Quotes are not silently changed after review. Changing input or wallet invalidates the quote. Existing provider-specific approval, simulation, expiry and delivery checks remain in place.
 
@@ -26,7 +26,7 @@ Backend keys and host are not supplied yet. No native Solana execution is enable
 
 # Cross-chain swaps in Oslo
 
-The `/swap` page combines Swap and Bridge. Sidebar Swap, Wallet Swap and Deposit open it. `/bridge` redirects to `/swap`. Hyperliquid order-book trading remains at `/spot`, linked under other swap options.
+Swap and Bridge are separate again. Sidebar Swap and Wallet Swap open Hyperliquid Spot at `/spot`; `/swap` redirects there. Sidebar Bridge and Deposit open cross-chain transfers at `/bridge`. Bridge retains automatic deBridge/Across quote routing.
 
 ## deBridge: Oslo interface, DLN backend
 
