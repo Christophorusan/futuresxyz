@@ -8,7 +8,7 @@ function usePortfolioState() {
   const accounts = address ? [normalizeAccount(address)] : []
   const query = useUnifiedPortfolio(accounts)
   const assets = query.data?.assets ?? []
-  const incomplete = query.isError || !!query.data?.errors.length
+  const incomplete = query.isError || !!query.data?.errors.length || !!query.data?.tokenWarnings.length
   const unpriced = assets.filter(a => a.value === null).length
   const total = portfolioValue(accounts.length > 0, query.data?.assets, incomplete)
   return { ...query, accounts, assets, incomplete, unpriced, total }

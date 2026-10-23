@@ -15,24 +15,35 @@ export function validAccount(value:string) {
 }
 export const normalizeAccount=(value:string)=>isAddress(value)?value.toLowerCase():value
 export interface Holding { id:string; symbol:string; name:string; network:string; account:string; balance:string; price:number|null; value:number|null; logo?:string }
-interface Token { tokenAddress:string|null; tokenBalance:string; tokenMetadata?:{ decimals?:number; symbol?:string; name?:string; logo?:string }; tokenPrices?:{currency:string;value:string}[]; error?:unknown }
+export interface Token { tokenAddress:string|null; tokenBalance:string; tokenMetadata?:{ decimals?:number; symbol?:string; name?:string; logo?:string }; tokenPrices?:{currency:string;value:string}[]; error?:unknown }
 export function parseToken(token:Token, network:string, account:string):Holding|null {
+  if (typeof token.tokenBalance !== 'string' || !/^(0x[0-9a-f]+|[0-9]+)$/i.test(token.tokenBalance)) throw new Error('Token balance unavailable')
   const raw=BigInt(token.tokenBalance)
   if(raw===0n) return null
   const decimals=token.tokenMetadata?.decimals
   if(!Number.isInteger(decimals)||decimals!<0||decimals!>255) throw new Error('Token metadata unavailable')
   const balance=formatUnits(raw,decimals!)
-  const quoted=token.tokenPrices?.find(p=>p.currency==='usd')?.value
+  const quoted=Array.isArray(token.tokenPrices)?token.tokenPrices.find(p=>p?.currency==='usd')?.value:undefined
   const number=quoted===undefined?NaN:Number(quoted)
   const price=Number.isFinite(number)&&number>=0?number:null
   const value=price===null?null:Number(balance)*price
   if(value!==null&&!Number.isFinite(value)) throw new Error('Invalid valuation')
-  return {id:`${network}:${account}:${token.tokenAddress??'native'}`,symbol:token.tokenMetadata?.symbol??'Token',name:token.tokenMetadata?.name??token.tokenAddress??'Native asset',network,account,balance,price,value,logo:token.tokenMetadata?.logo?.startsWith('https://')?token.tokenMetadata.logo:undefined}
+  return {id:`${network}:${account}:${token.tokenAddress??'native'}`,symbol:token.tokenMetadata?.symbol??'Token',name:token.tokenMetadata?.name??token.tokenAddress??'Native asset',network,account,balance,price,value,logo:typeof token.tokenMetadata?.logo==='string'&&token.tokenMetadata.logo.startsWith('https://')?token.tokenMetadata.logo:undefined}
+}
+export async function recoverPortfolioToken(token: Token, network: string, account: string, readDecimals: (address: string) => Promise<number>): Promise<Holding | null> {
+  try { return parseToken(token, network, account) } catch (error) {
+    const decimals = token.tokenMetadata?.decimals
+    // Repair missing precision only. Never guess decimals for an ERC-20.
+    if (Number.isInteger(decimals) && decimals! >= 0 && decimals! <= 255) throw error
+    const recovered = token.tokenAddress === null && network !== 'solana-mainnet' ? 18 :
+      typeof token.tokenAddress === 'string' && isAddress(token.tokenAddress) ? await readDecimals(token.tokenAddress) : undefined
+    return parseToken({ ...token, tokenMetadata: { ...token.tokenMetadata, decimals: recovered } }, network, account)
+  }
 }
 export function useUnifiedPortfolio(accounts:string[]) {
   const {info}=useHyperliquid()
-  return useQuery({queryKey:['unified-portfolio-v2',accounts],enabled:accounts.length>0,refetchInterval:60000,queryFn:async()=>{
-    const assets:Holding[]=[], errors:string[]=[]
+  return useQuery({queryKey:['unified-portfolio-v3',accounts],enabled:accounts.length>0,refetchInterval:60000,queryFn:async()=>{
+    const assets:Holding[]=[], errors:string[]=[], tokenWarnings:string[]=[]
     await Promise.all(accounts.map(async account=>{
       const chains=isAddress(account)?Object.keys(networks).filter(n=>n!=='solana-mainnet'):['solana-mainnet']
       await Promise.all(chains.map(async network=>{
@@ -45,7 +56,22 @@ export function useUnifiedPortfolio(accounts:string[]) {
             if(!response.ok) throw new Error('Network request failed')
             const body=await response.json()
             if(!Array.isArray(body.data?.tokens)) throw new Error('Invalid response')
-            for(const token of body.data.tokens) { try { const asset=parseToken(token,network,account); if(asset)assets.push(asset) } catch { errors.push(`${networks[network as keyof typeof networks]}: a token could not be read`) } }
+            for(let offset=0;offset<body.data.tokens.length;offset+=4) {
+              await Promise.all(body.data.tokens.slice(offset,offset+4).map(async (token: Token)=>{
+              try {
+                const asset=await recoverPortfolioToken(token,network,account,async address=>{
+                  const rpc=await fetch(`https://${network}.g.alchemy.com/v2/${encodeURIComponent(alchemyApiKey)}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_call',params:[{to:address,data:'0x313ce567'},'latest']}),signal:AbortSignal.timeout(8000)})
+                  if(!rpc.ok)throw new Error('Metadata unavailable')
+                  const result=await rpc.json()
+                  if(typeof result.result!=='string'||!/^0x[0-9a-f]{64}$/i.test(result.result))throw new Error('Invalid token decimals')
+                  const decimals=Number(BigInt(result.result))
+                  if(!Number.isInteger(decimals)||decimals<0||decimals>255)throw new Error('Invalid token decimals')
+                  return decimals
+                })
+                if(asset)assets.push(asset)
+              } catch { tokenWarnings.push(`${networks[network as keyof typeof networks]}: ${typeof token?.tokenAddress==='string'?token.tokenAddress:'native token'} could not be valued`) }
+              }))
+            }
             if(body.error) errors.push(`${networks[network as keyof typeof networks]}: incomplete network response`)
             pageKey=body.data.pageKey??body.pageKey
             if(pageKey){if(seen.has(pageKey)||seen.size>=100)throw new Error('Incomplete pagination');seen.add(pageKey)}
@@ -73,6 +99,6 @@ export function useUnifiedPortfolio(accounts:string[]) {
         } catch {errors.push(`HyperCore: account data incomplete (${account.slice(0,6)}…)`)}
       }
     }))
-    return {assets:[...new Map(assets.map(a=>[a.id,a])).values()].sort((a,b)=>(b.value??0)-(a.value??0)),errors:[...new Set(errors)]}
+    return {assets:[...new Map(assets.map(a=>[a.id,a])).values()].sort((a,b)=>(b.value??0)-(a.value??0)),errors:[...new Set(errors)],tokenWarnings:[...new Set(tokenWarnings)]}
   }})
 }

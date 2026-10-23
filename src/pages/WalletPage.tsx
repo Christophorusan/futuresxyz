@@ -33,7 +33,7 @@ export function WalletPage() {
     <header className="payment-hero"><div><h1>Wallet</h1><p>One wallet. Your holdings across supported networks.</p></div></header>
     <div className="wallet-workspace"><div className="wallet-main-column">
     <section className="lending-card wallet-summary">
-      <div className="wallet-overview-top"><div><span className="wallet-total-label">{incomplete && total !== null ? 'Partial balance' : unpriced ? 'Priced holdings value' : 'Total balance'}</span><strong className="wallet-total">{total === null ? '—' : money(total)} <small>USD</small></strong><p>{!accounts.length ? 'Connect your wallet to see your holdings.' : isLoading ? 'Loading your holdings…' : incomplete ? total !== null ? 'Showing available holdings. Some networks could not load.' : 'Balances could not load. Please retry.' : `${holdings.length} assets in your wallet${unpriced ? ` · ${unpriced} unpriced tokens excluded` : ''}`}</p></div>
+      <div className="wallet-overview-top"><div><span className="wallet-total-label">{incomplete && total !== null ? 'Partial balance' : unpriced ? 'Priced holdings value' : 'Total balance'}</span><strong className="wallet-total">{total === null ? '—' : money(total)} <small>USD</small></strong><p>{!accounts.length ? 'Connect your wallet to see your holdings.' : isLoading ? 'Loading your holdings…' : incomplete ? total !== null ? 'Showing available holdings. Some balances or token details are unavailable.' : 'Balances could not load. Please retry.' : `${holdings.length} assets in your wallet${unpriced ? ` · ${unpriced} unpriced tokens excluded` : ''}`}</p></div>
 </div>
       <nav className="wallet-portfolio-actions" aria-label="Portfolio actions">
         <Link to="/wallet?action=send"><span aria-hidden="true">↗</span>Send</Link>
@@ -42,6 +42,7 @@ export function WalletPage() {
       </nav>
       {!isConnected && <ConnectButton />}
       {incomplete && <button className="wallet-retry" disabled={isFetching} onClick={() => void refetch()}>{isFetching ? 'Refreshing…' : 'Retry balances'}</button>}
+      {!!data?.tokenWarnings.length && <details className="wallet-details"><summary>{data.tokenWarnings.length} tokens need balance or metadata details</summary><p>These tokens are excluded from the value until their details can be loaded.</p>{data.tokenWarnings.map(warning=><p key={warning}>{warning}</p>)}</details>}
       {!!data?.errors.length&&<details className="wallet-details"><summary>Some networks could not be loaded</summary>{data.errors.map(error=><p key={error}>{error}</p>)}</details>}
     </section>
     <section className="wallet-content-card">
