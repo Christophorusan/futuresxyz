@@ -1,3 +1,4 @@
+import { LendingTokenIcon } from '../components/LendingTokenIcon'
 import { AppDiscovery } from '../components/AppDiscovery'
 import { useState } from 'react'
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi'
@@ -57,7 +58,7 @@ export function LendingPage() {
       {query.isPending && <p role="status">Loading lending options…</p>}
       <div className="lending-table-scroll"><table className="lending-table"><thead><tr><th>Asset</th><th>Yearly earning rate</th><th>Yearly borrowing rate</th><th>Total deposited</th><th>Borrowed</th><th>Status</th></tr></thead><tbody>
         {markets.map(m => <tr key={m.asset} className={m.asset === market?.asset ? 'selected' : ''}>
-          <td><button disabled={busy} onClick={() => setSelected(m.asset)}>{m.symbol}</button></td>
+          <td><button className="lending-token-label" disabled={busy} onClick={() => setSelected(m.asset)}><LendingTokenIcon symbol={m.symbol} size={26} /><span>{m.symbol}</span></button></td>
           <td className="green">{rateToApy(m.supplyRate).toFixed(2)}%</td><td>{rateToApy(m.borrowRate).toFixed(2)}%</td>
           <td>{Number(formatUnits(m.supply, m.decimals)).toLocaleString(undefined, { maximumFractionDigits: 2 })} {m.symbol}</td>
           <td>{Number(formatUnits(m.debt, m.decimals)).toLocaleString(undefined, { maximumFractionDigits: 2 })} {m.symbol}</td>

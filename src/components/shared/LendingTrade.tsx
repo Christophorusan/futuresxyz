@@ -1,3 +1,4 @@
+import { LendingTokenIcon } from '../LendingTokenIcon'
 import { useState, useRef } from 'react'
 import { useAccount, usePublicClient, useSwitchChain } from 'wagmi'
 import { getAccount, getWalletClient } from 'wagmi/actions'
@@ -96,7 +97,7 @@ export function LendingTrade({ market, account, smart, disabled, onBusy }: { mar
   }
   const p = position.data
   return <section className="lending-card lending-trade">
-    <h2>{market.symbol}</h2><p>{protocols[market.protocol].name} · {smart ? 'Smart account' : 'Connected wallet'} {short}</p>
+    <h2 className="lending-token-label"><LendingTokenIcon symbol={market.symbol} size={30} /><span>{market.symbol}</span></h2><p>{protocols[market.protocol].name} · {smart ? 'Smart account' : 'Connected wallet'} {short}</p>
     {market.symbol.toUpperCase().includes('WHYPE') && <p>To lend HYPE, first convert it to WHYPE using the converter below. You get 1 WHYPE for each HYPE.</p>}
     <div className="lending-actions">{(['supply', 'withdraw', 'borrow', 'repay'] as const).map(a => <button disabled={busy || disabled} className={action === a ? 'active' : ''} key={a} onClick={() => { setAction(a); setReview(undefined); setMessage('') }}>{a}</button>)}</div>
     <label>Amount<input aria-label="Lending amount" inputMode="decimal" value={amount} disabled={busy || disabled} onChange={e => { setAmount(e.target.value); setReview(undefined) }} placeholder="0.00" /></label>

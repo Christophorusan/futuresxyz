@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import { tokenIconUrls } from '../lib/tokenIcons'
 
-export function TokenIcon({ symbol, size = 18, logo }: { symbol: string; size?: number; logo?:string }) {
-  const urls = tokenIconUrls(symbol, import.meta.env.BASE_URL, logo)
-  return <TokenIconImage key={JSON.stringify(urls)} symbol={symbol} size={size} urls={urls} />
+export function TokenIcon({ symbol, size = 18, logo, fallback = 'letter', preferLogo = false }: { symbol: string; size?: number; logo?:string; fallback?: 'letter' | 'icon'; preferLogo?: boolean }) {
+  const sources = tokenIconUrls(symbol, import.meta.env.BASE_URL, logo)
+  const urls = preferLogo && logo ? [logo, ...sources.filter(url => url !== logo)] : sources
+  return <TokenIconImage key={JSON.stringify(urls)} symbol={symbol} size={size} urls={urls} fallback={fallback} />
 }
 
-function TokenIconImage({ symbol, size, urls }: { symbol: string; size: number; urls: string[] }) {
+function TokenIconImage({ symbol, size, urls, fallback }: { symbol: string; size: number; urls: string[]; fallback: 'letter' | 'icon' }) {
   const [tryIndex, setTryIndex] = useState(0)
   const clean = symbol.split(':').pop() || symbol
 
   if (tryIndex >= urls.length) {
+    if (fallback === 'icon') return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" role="img" aria-label={`${clean} logo unavailable`} style={{ flexShrink: 0, color: 'var(--text-2)' }}><circle cx="12" cy="12" r="10" /><path d="m12 6 5 6-5 6-5-6Z" /></svg>
+
     const colors: Record<string, string> = {
       B: '#f7931a', E: '#627eea', S: '#9945ff', H: '#00d4aa',
       X: '#00aae4', D: '#c2a633', A: '#0033ad', L: '#2a5ada',

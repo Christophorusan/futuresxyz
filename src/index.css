@@ -3929,3 +3929,5 @@ body {
 .nav-discover-btn{display:inline-flex;align-items:center;justify-content:center;min-width:36px;min-height:32px;padding:6px 8px}.nav-discover-btn svg{flex-shrink:0}
 
 .nav-discover-btn{gap:7px;padding:6px 12px}
+
+.lending-token-label{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;vertical-align:middle}.lending-token-label .token-icon{display:block}
