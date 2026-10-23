@@ -26,7 +26,7 @@ function SpotChart({ coin, theme }: { coin: string; theme: 'dark' | 'light' }) {
     if (!containerRef.current) return
     const isDark = theme === 'dark'
     const chart = createChart(containerRef.current, {
-      layout: { background: { color: 'transparent' }, textColor: isDark ? '#5c5e69' : '#9ca3af', fontFamily: "'Inter', sans-serif", fontSize: 11 },
+      layout: { background: { color: 'transparent' }, textColor: isDark ? '#a4a4a0' : '#656560', fontFamily: "'Inter', sans-serif", fontSize: 11 },
       grid: { vertLines: { color: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.04)' }, horzLines: { color: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.04)' } },
       rightPriceScale: { borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)', scaleMargins: { top: 0.1, bottom: 0.25 } },
       timeScale: { borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)', timeVisible: true },

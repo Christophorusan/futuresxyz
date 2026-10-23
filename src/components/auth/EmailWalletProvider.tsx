@@ -22,7 +22,7 @@ function Session({ children }: { children: ReactNode }) {
 export default function EmailWalletProvider({ children, queryClient }: { children: ReactNode; queryClient: QueryClient }) {
   return <PrivyProvider appId={privyAppId} config={{
     loginMethods: xLoginEnabled ? ['email', 'twitter'] : ['email'],
-    appearance: { theme: 'dark', accentColor: '#4c80f1', walletChainType: 'ethereum-only' },
+    appearance: { theme: 'dark', accentColor: '#c9c9c5', walletChainType: 'ethereum-only' },
     defaultChain: hyperEVM,
     supportedChains: [hyperEVM, arbitrum, mainnet, base, optimism],
     embeddedWallets: { ethereum: { createOnLogin: 'users-without-wallets' } },
