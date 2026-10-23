@@ -144,3 +144,5 @@
 .wallet-portfolio-home .wallet-assets-note,.wallet-portfolio-home .wallet-history-note,.wallet-portfolio-home .wallet-coin-cell small,.wallet-portfolio-home .wallet-portfolio-table th{color:var(--text-2)!important}
 
 .wallet-portfolio-home{max-width:1200px!important}
+
+.wallet-portfolio-actions{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}.wallet-portfolio-actions a{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:10px 20px;border:1px solid var(--border-hover);border-radius:10px;background:var(--blue-bg);color:var(--text-0);font-size:13px;text-decoration:none}.wallet-portfolio-actions a>span{font-size:20px;color:var(--blue-hover)}.wallet-portfolio-actions a:hover{background:var(--blue);color:#fff}.wallet-portfolio-actions a:hover>span{color:inherit}.wallet-portfolio-actions a:focus-visible{outline:2px solid var(--blue-hover);outline-offset:3px}@media(max-width:600px){.wallet-portfolio-actions a{flex:1;padding:10px 12px}}

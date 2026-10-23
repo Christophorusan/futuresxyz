@@ -130,7 +130,7 @@ function AppContent() {
             </div>
           </div>
           <div className="nav-right">
-            <NavLink to="/discover" aria-label="Search apps" title="Search apps" className={({ isActive }) => `nav-deposit-btn nav-discover-btn${isActive ? ' active' : ''}`}><SearchIcon /></NavLink>
+            <NavLink to="/discover" aria-label="Search apps" title="Search apps" className={({ isActive }) => `nav-deposit-btn nav-discover-btn${isActive ? ' active' : ''}`}><SearchIcon /><span>Discover</span></NavLink>
             <NavLink to="/bridge" className="nav-deposit-btn">Deposit</NavLink>
             <ThemeToggle />
             <ConnectButton />

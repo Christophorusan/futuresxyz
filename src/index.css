@@ -3927,3 +3927,5 @@ body {
 .nav-discover-btn{border-color:var(--blue);background:var(--blue-bg);color:var(--blue-hover);white-space:nowrap}.nav-discover-btn:hover,.nav-discover-btn.active{background:var(--blue);color:#fff}.nav-discover-btn:focus-visible{outline:2px solid var(--blue-hover);outline-offset:3px}
 
 .nav-discover-btn{display:inline-flex;align-items:center;justify-content:center;min-width:36px;min-height:32px;padding:6px 8px}.nav-discover-btn svg{flex-shrink:0}
+
+.nav-discover-btn{gap:7px;padding:6px 12px}

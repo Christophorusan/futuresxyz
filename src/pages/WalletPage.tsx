@@ -8,7 +8,7 @@ import './WalletPage.css'
 import { TokenIcon } from '../components/TokenIcon'
 import { AlchemyConnection } from '../components/shared/AlchemyConnection'
 import { AlchemyHistory } from '../components/shared/AlchemyHistory'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAccount } from 'wagmi'
 import { ConnectButton } from '../components/shared/ConnectButton'
 import { EvmActivity } from '../components/shared/EvmActivity'
@@ -52,6 +52,11 @@ export function WalletPage() {
       <div className="wallet-summary-heading"><h2>All wallets <span>{accounts.length}</span></h2><button onClick={() => { if (walletsRef.current) { walletsRef.current.open = true; walletsRef.current.querySelector('input')?.focus() } }}>＋ Add wallet</button></div>
       <div className="wallet-overview-top"><div><span className="wallet-total-label">{unpriced ? 'Priced holdings value' : 'Estimated portfolio value'}</span><strong className="wallet-total">{total === null ? '—' : money(total)} <small>USD</small></strong><p>{!accounts.length ? 'Connect a wallet or add a public address.' : isLoading ? 'Loading your holdings…' : incomplete ? 'Some balances or prices are unavailable.' : `${holdings.length} assets in your wallet${unpriced ? ` · ${unpriced} unpriced tokens excluded` : ''}`}</p></div>
 </div>
+      <nav className="wallet-portfolio-actions" aria-label="Portfolio actions">
+        <Link to="/wallet?action=send"><span aria-hidden="true">↗</span>Send</Link>
+        <Link to="/wallet?action=receive"><span aria-hidden="true">↙</span>Receive</Link>
+        <Link to="/bridge"><span aria-hidden="true">⇄</span>Swap</Link>
+      </nav>
       {!isConnected && <ConnectButton />}
       <WalletHistory address={accounts.length?`multi-priced-usd-v2:${accounts.join('|')}`:undefined} value={total} status={isLoading ? 'Loading your balances…' : incomplete ? 'Some networks could not load. Chart recording resumes when they recover.' : undefined} />
       <details ref={walletsRef} className="wallet-details"><summary>Wallets and networks · {accounts.length} accounts</summary><p>Track Ethereum, Base, Arbitrum, Optimism, Polygon, HyperEVM, HyperCore and Solana together.</p><form onSubmit={e=>{e.preventDefault();addAccount()}} className="wallet-account-form"><input aria-label="Public wallet address" placeholder="Paste your wallet address" value={accountInput} onChange={e=>setAccountInput(e.target.value)} /><button type="submit">Add wallet</button></form>{accountError&&<p role="alert">{accountError}</p>}{tracked.map(a=><p key={a}><code>{a}</code> <button onClick={()=>saveAccounts(tracked.filter(v=>v!==a))}>Remove</button></p>)}<small>You can view added wallets here. To send or receive, use your connected wallet on the HyperEVM network.</small></details>
