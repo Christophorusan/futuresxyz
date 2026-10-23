@@ -1,5 +1,4 @@
 import { WalletTrading } from '../components/WalletTrading'
-import { WalletSearch } from '../components/WalletSearch'
 import { visibleHoldings } from '../lib/visibleHoldings'
 import { MarketWatchlist } from '../components/MarketWatchlist'
 import { useEffect, useRef, useState, lazy, Suspense } from 'react'
@@ -9,7 +8,7 @@ import './WalletPage.css'
 import { TokenIcon } from '../components/TokenIcon'
 import { AlchemyConnection } from '../components/shared/AlchemyConnection'
 import { AlchemyHistory } from '../components/shared/AlchemyHistory'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useAccount } from 'wagmi'
 import { ConnectButton } from '../components/shared/ConnectButton'
 import { EvmActivity } from '../components/shared/EvmActivity'
@@ -71,10 +70,7 @@ export function WalletPage() {
     {section === 'Activity' && <div className="wallet-activity-panel"><h2>Activity</h2><p>Transfers and transactions for your connected wallet.</p><AlchemyConnection /><EvmActivity /><AlchemyHistory address={address} /></div>}
     </section>
     </div>
-    <aside className="wallet-action-column" aria-label="Wallet actions">
-      <section className="lending-card wallet-move-card"><span className="wallet-side-label">Your next move</span><h2>Put your crypto to work.</h2><p>Send, swap, or explore lending from one place.</p><Link className="wallet-swap-link" to="/spot"><span>⇄</span><div><strong>Swap tokens</strong><small>Open the swap interface</small></div><span>↗</span></Link><div className="wallet-quick-actions"><Link to="/wallet?action=send"><span aria-hidden="true">↗</span>Send</Link><Link to="/wallet?action=receive"><span aria-hidden="true">↙</span>Receive</Link></div><p className="wallet-action-note">Send and receive on HyperEVM using your connected wallet.</p><Link className="wallet-lend-link" to="/lending">Explore lending <span>→</span></Link></section>
-      <WalletSearch />
-    </aside></div>
+    </div>
     <dialog ref={dialogRef} className="wallet-dialog wallet-payment-dialog" aria-labelledby="wallet-payment-title" onCancel={closePayment} onClose={() => { if (paymentMode) closePayment() }}>
       <header><div><h2 id="wallet-payment-title">{paymentMode === 'receive' ? 'Receive' : 'Send'}</h2><small>HyperEVM</small></div><button className="wallet-close" aria-label="Close" onClick={closePayment}>×</button></header>
       {paymentMode && <Suspense fallback={<p role="status">Loading…</p>}><PaymentForm key={`${paymentMode}-${location.hash}`} hash={location.hash} receive={paymentMode === 'receive'} /></Suspense>}
