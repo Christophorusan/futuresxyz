@@ -27,6 +27,7 @@ jobs:
           ALCHEMY_BROWSER_API_KEY: ${{ secrets.ALCHEMY_BROWSER_API_KEY }}
       - run: npm run build
         env:
+          VITE_DEBRIDGE_PROXY_URL: ${{ vars.DEBRIDGE_PROXY_URL }}
           VITE_ACROSS_PROXY_URL: ${{ vars.ACROSS_PROXY_URL }}
           VITE_PRIVY_APP_ID: ${{ vars.PRIVY_APP_ID }}
           VITE_PRIVY_X_ENABLED: ${{ vars.PRIVY_X_ENABLED }}

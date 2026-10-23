@@ -2,11 +2,23 @@
 
 The `/bridge` page is linked from Swap and Deposit. Hyperliquid spot trading remains at `/spot` and is linked from the bridge page.
 
-## deBridge: embedded integration
+## deBridge: Oslo interface, DLN backend
 
-Oslo loads the official deBridge widget from `https://app.debridge.com/assets/scripts/widget.js`. No Oslo API key is needed. The widget supplies available networks, assets, quotes, transaction review and transfer status. The initial selection is Arbitrum → Ethereum; users choose their destination in the widget. Availability depends on the provider and route.
+The embedded provider widget has been removed. Oslo owns the asset/network selection, amount entry, quote review, exact token approval, wallet submission, and delivery-status UI. DLN supplies live tokens, quotes, and transaction calldata. No widget script or iframe is loaded.
 
-An already connected Oslo EVM wallet is passed to the widget. Solana wallets connect inside the widget. Users still approve wallet prompts. This is a provider-controlled embedded interface, not automatic background bridging or automatic price comparison between providers. HyperEVM balances are separate from Hyperliquid trading balances; a trading deposit must explicitly target the trading account.
+Without a backend URL, the form offers live read-only quotes through the public API. **Submission is disabled until the authenticated backend is configured.** deBridge permits public development requests but requires an API key for commercial integrations.
+
+1. Request a commercial API key through the [official authentication page](https://docs.debridge.com/dln-details/integration-guidelines/order-creation/authentication).
+2. Deploy `server/debridge-proxy.mjs` to a Node.js 22+ HTTPS service. Start command: `node server/debridge-proxy.mjs`.
+3. Set private server environment `DEBRIDGE_API_KEY`, `ALLOWED_ORIGINS=https://christophorusan.github.io`, and `HOST=0.0.0.0`. `PORT` defaults to `8788`; use the hosting platform's assigned port when needed. Never put the key in a `VITE_` variable. Disable upstream URL logging because DLN's documented authentication uses an `accesstoken` query parameter.
+4. Set the repository Actions variable `DEBRIDGE_PROXY_URL` to that service's HTTPS base URL and rerun the Pages deployment. The workflow supplies `VITE_DEBRIDGE_PROXY_URL` to the frontend.
+5. For local development use `VITE_DEBRIDGE_PROXY_URL=http://127.0.0.1:8788`, allow the exact Vite origin on the backend, and restart Vite.
+
+The proxy accepts only supported network/token lists, exact-input quotes and order-status requests. It blocks caller-supplied fees, authentication overrides and arbitrary endpoints. Cancellation authorities, recipient and refund beneficiary must all match the sending wallet. Credentials never reach the client. CORS is not authentication; apply hosting quotas and edge rate limits. The built-in limit is 60 requests/minute per socket IP.
+
+Native routes cover Ethereum, Arbitrum, Base, Optimism and HyperEVM, filtered by live provider availability. HyperEVM uses DLN internal ID `100000022` and wallet chain ID `999`; these are deliberately distinct. HyperEVM receipt is **not** a Hyperliquid trading deposit. Solana signing and direct HyperCore deposits are not yet implemented in this native form; a labeled external link retains access to the official provider app for those routes.
+
+Quotes expire 30 seconds from request start. Input amount remains exact (`prependOperatingExpenses=false`); routing costs reduce the receive amount. The protocol's native fixed fee and source gas are displayed separately. ERC-20 approval is exact, requires a separate confirmation, and is followed by a fresh quote. The native flow checks known DLN source/router addresses, token/chain/amount/precision consistency, native fee totals, wallet identity and expiry. It simulates before sending. Transaction calldata remains provider-supplied and is not independently fully decoded. Last-transfer hash and order ID are saved locally; source confirmation and destination fulfillment are reported separately. Cancellation links open the provider's order management interface.
 
 ## Across: activation required
 
@@ -43,6 +55,6 @@ The server exposes only GET `/chains`, `/tokens`, `/quote`, and `/status`, valid
 
 `npm test` covers amount precision, malformed/mismatched quotes, exact approvals, expiration, wallet changes, token/network filtering, proxy query restrictions, origin/method checks and private upstream authorization. `npm run build` checks the production bundle.
 
-The deBridge widget was visually verified without connecting a wallet. Across tests use fixtures and a mock upstream server. Before enabling Across for users, verify the configured live token/quote/status endpoints and perform a user-controlled small transfer for each route you intend to support. No real transfer was made by the coding agent.
+The native deBridge form was tested with read-only live quotes and no connected wallet. Both provider test suites use fixtures and mock upstream servers. No live approval, swap, or cancellation has been executed. Before enabling Across for users, verify the configured live token/quote/status endpoints and perform a user-controlled small transfer for each route you intend to support. No real transfer was made by the coding agent.
 
-References: [deBridge widget](https://docs.debridge.com/dln-details/widget/deBridge-widget), [Across API](https://docs.across.to/api-reference).
+References: [deBridge API](https://docs.debridge.com/dln-details/integration-guidelines/order-creation/creating-order/creating-order), [Across API](https://docs.across.to/api-reference).
