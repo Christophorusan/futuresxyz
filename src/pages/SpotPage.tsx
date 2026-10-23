@@ -1,3 +1,5 @@
+import './BridgePage.css'
+import { Link } from 'react-router-dom'
 import { AppDiscovery } from '../components/AppDiscovery'
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { useHyperliquid } from '../contexts/HyperliquidContext'
@@ -333,7 +335,7 @@ export function SpotPage() {
   }
 
   return (
-    <div className="finance-product-page"><div className="perps-page"><div className="perps-discover-bar"><strong>Hyperliquid · Spot trading</strong><span>Swap directly in Oslo</span></div>
+    <div className="finance-product-page"><div className="bridge-spot-link"><Link to="/bridge">⇄ Swap across networks with deBridge or Across →</Link></div><div className="perps-page"><div className="perps-discover-bar"><strong>Hyperliquid · Spot trading</strong><span>Swap directly in Oslo</span></div>
       <TickerBar />
       {/* Market header */}
       <div className="market-header">

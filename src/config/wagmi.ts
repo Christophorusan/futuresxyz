@@ -1,5 +1,5 @@
 import { http, createConfig } from 'wagmi'
-import { mainnet, arbitrum } from 'wagmi/chains'
+import { mainnet, arbitrum, base, optimism } from 'wagmi/chains'
 import { defineChain } from 'viem'
 import { alchemyTransport } from './alchemy'
 import { injected, walletConnect } from 'wagmi/connectors'
@@ -30,7 +30,7 @@ export const walletConnectProjectId = import.meta.env.VITE_WALLETCONNECT_PROJECT
 const appUrl = new URL(import.meta.env.BASE_URL, typeof window === 'undefined' ? 'https://christophorusan.github.io' : window.location.origin).href
 
 export const config = createConfig({
-  chains: [arbitrum, mainnet, hyperEVM, hyperliquidL1],
+  chains: [arbitrum, mainnet, base, optimism, hyperEVM, hyperliquidL1],
   multiInjectedProviderDiscovery: !import.meta.env.VITE_PRIVY_APP_ID?.trim(),
   connectors: import.meta.env.VITE_PRIVY_APP_ID?.trim() ? [] : [
     injected(),
@@ -39,6 +39,8 @@ export const config = createConfig({
     })] : []),
   ],
   transports: {
+    [base.id]: alchemyTransport('base-mainnet', 'https://mainnet.base.org'),
+    [optimism.id]: alchemyTransport('opt-mainnet', 'https://mainnet.optimism.io'),
     [arbitrum.id]: alchemyTransport('arb-mainnet', 'https://arb1.arbitrum.io/rpc'),
     [mainnet.id]: alchemyTransport('eth-mainnet', 'https://ethereum-rpc.publicnode.com'),
     [hyperEVM.id]: alchemyTransport('hyperliquid-mainnet', 'https://rpc.hyperliquid.xyz/evm'),

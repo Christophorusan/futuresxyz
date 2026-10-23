@@ -1,5 +1,5 @@
 const entryKey = 'oslo:entered'
-const appPaths = new Set(['/lending/aave', '/lending/morpho', '/lending/kamino', '/discover', '/wallet', '/payments', '/perps', '/1000x-perps', '/spot', '/predictions', '/lending', '/options', '/staking', '/portfolio', '/docs'])
+const appPaths = new Set(['/lending/aave', '/lending/morpho', '/lending/kamino', '/discover', '/bridge', '/wallet', '/payments', '/perps', '/1000x-perps', '/spot', '/predictions', '/lending', '/options', '/staking', '/portfolio', '/docs'])
 
 export function entryDestination(location: { pathname: string; search: string; hash: string }) {
   return appPaths.has(location.pathname) ? location.pathname + location.search + location.hash : '/wallet'

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { PrivyProvider, usePrivy, useWallets } from '@privy-io/react-auth'
 import { WagmiProvider, useSetActiveWallet } from '@privy-io/wagmi'
 import { QueryClientProvider, type QueryClient } from '@tanstack/react-query'
-import { arbitrum, mainnet } from 'wagmi/chains'
+import { arbitrum, mainnet, base, optimism } from 'wagmi/chains'
 import { config, hyperEVM } from '../../config/wagmi'
 import { EmailWalletContext, privyAppId, xLoginEnabled } from '../../contexts/EmailWalletContext'
 
@@ -24,7 +24,7 @@ export default function EmailWalletProvider({ children, queryClient }: { childre
     loginMethods: xLoginEnabled ? ['email', 'twitter'] : ['email'],
     appearance: { theme: 'dark', accentColor: '#4c80f1', walletChainType: 'ethereum-only' },
     defaultChain: hyperEVM,
-    supportedChains: [hyperEVM, arbitrum, mainnet],
+    supportedChains: [hyperEVM, arbitrum, mainnet, base, optimism],
     embeddedWallets: { ethereum: { createOnLogin: 'users-without-wallets' } },
   }}><QueryClientProvider client={queryClient}><WagmiProvider config={config}><Session>{children}</Session></WagmiProvider></QueryClientProvider></PrivyProvider>
 }

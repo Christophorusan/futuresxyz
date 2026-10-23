@@ -16,6 +16,7 @@ const ThousandXPerpsPage = lazy(() => import('./pages/ThousandXPerpsPage').then(
 const DiscoverPage = lazy(() => import('./pages/DiscoverPage').then(m => ({ default: m.DiscoverPage })))
 const WalletPage = lazy(() => import('./pages/WalletPage').then(m => ({ default: m.WalletPage })))
 const PerpsPage = lazy(() => import('./pages/PerpsPage').then(m => ({ default: m.PerpsPage })))
+const BridgePage = lazy(() => import('./pages/BridgePage').then(m => ({ default: m.BridgePage })))
 const SpotPage = lazy(() => import('./pages/SpotPage').then(m => ({ default: m.SpotPage })))
 const DocsPage = lazy(() => import('./pages/DocsPage').then(m => ({ default: m.DocsPage })))
 const PredictionsPage = lazy(() => import('./pages/PredictionsPage').then(m => ({ default: m.PredictionsPage })))
@@ -66,7 +67,7 @@ function NavMore() {
       </button>
       {open && (
         <div className="nav-more-dropdown">
-          {[['/spot', 'Swap'], ['/staking', 'Staking'], ['/predictions', 'Predictions'], ['/options', 'Options'], ['/1000x-perps', '1000x Perps']].map(([to, label]) => <NavLink key={to} to={to} className="nav-more-item" onClick={() => setOpen(false)}>{label}</NavLink>)}
+          {[['/bridge', 'Swap'], ['/staking', 'Staking'], ['/predictions', 'Predictions'], ['/options', 'Options'], ['/1000x-perps', '1000x Perps']].map(([to, label]) => <NavLink key={to} to={to} className="nav-more-item" onClick={() => setOpen(false)}>{label}</NavLink>)}
 
           <NavLink to="/docs" className="nav-more-item" onClick={() => setOpen(false)}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M18 18h-8M18 10h-8"/></svg>
@@ -86,7 +87,7 @@ const sidebarItems = [
   ['/wallet', 'Wallet', 'M3 7h18v14H3z M3 7V4h15v3 M16 12h5v5h-5z'],
   ['/lending', 'Lending', 'M4 20h16 M7 16v-5 M12 16V7 M17 16V3'],
   ['/perps', 'Trade', 'M3 17 8 12l4 3 9-11 M15 4h6v6'],
-  ['/spot', 'Swap', 'M4 7h16l-4-4 M20 17H4l4 4'],
+  ['/bridge', 'Swap', 'M4 7h16l-4-4 M20 17H4l4 4'],
   ['/predictions', 'Prediction markets', 'M4 20h16 M6 16V9 M12 16V4 M18 16v-5'],
 ]
 
@@ -129,7 +130,7 @@ function AppContent() {
           </div>
           <div className="nav-right">
             <NavLink to="/discover" className={({ isActive }) => `nav-deposit-btn nav-discover-btn${isActive ? ' active' : ''}`}>Discover</NavLink>
-            <a href="https://app.hyperunit.xyz/deposit" target="_blank" rel="noopener noreferrer" className="nav-deposit-btn">Deposit</a>
+            <NavLink to="/bridge" className="nav-deposit-btn">Deposit</NavLink>
             <ThemeToggle />
             <ConnectButton />
           </div>
@@ -139,6 +140,7 @@ function AppContent() {
         <Routes>
           <Route path="/perps" element={<PerpsPage />} />
           <Route path="/1000x-perps" element={<ThousandXPerpsPage />} />
+          <Route path="/bridge" element={<BridgePage />} />
           <Route path="/spot" element={<SpotPage />} />
           <Route path="/predictions" element={<PredictionsPage />} />
           <Route path="/wallet" element={<WalletPage />} />
