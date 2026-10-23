@@ -29,6 +29,15 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
     <header className="oslo-header"><a href="#" className="oslo-wordmark" aria-label="Oslo home">oslo.</a><nav aria-label="Main navigation"><a href="#possibilities">The wallet</a><a href="#discover">Discover DeFi</a><a href="#community">Our principles</a></nav>{enter}</header>
     <main id="oslo-main">
       <section className="oslo-hero">
+        <svg className="oslo-hero-linework" viewBox="0 0 1440 780" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+          <g fill="none" stroke="currentColor" strokeWidth="1">
+            <path d="M0 100H180Q270 100 270 190V310Q270 400 180 400H0M0 124H156Q246 124 246 214V286Q246 376 156 376H0"/>
+            <path d="M1440 100H1260Q1170 100 1170 190V310Q1170 400 1260 400H1440M1440 124H1284Q1194 124 1194 214V286Q1194 376 1284 376H1440"/>
+            <path d="M0 570H240Q330 570 330 660V780M1440 570H1200Q1110 570 1110 660V780M48 0V780M1392 0V780"/>
+            <circle cx="48" cy="100" r="5"/><circle cx="1392" cy="100" r="5"/>
+            <path d="M36 480h24m-12-12v24M1380 480h24m-12-12v24"/>
+          </g>
+        </svg>
         <div className="oslo-hero-copy"><h1>Making finance accessible.</h1><p>Hold. Trade. Borrow. Earn. Explore crypto and tokenized stock markets from one place.</p>{enter}<small>Explore freely. Connect when you’re ready.</small></div>
         <div className="oslo-screen-stage" aria-label="Illustrative Oslo interfaces with sample data">
           <div className="oslo-hero-phone oslo-far-left" aria-hidden="true"><div className="oslo-phone-status"><span>9:41</span><i /><span>••• ▰</span></div><div className="oslo-phone-brand">oslo.<small>Open finance.<br />Your decisions.</small></div></div>
