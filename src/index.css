@@ -3894,3 +3894,12 @@ body {
 .pred-page .pred-outcome-btn:focus-visible{outline:2px solid var(--text-0);outline-offset:3px}
 
 .integration-preview-notice{flex:0 0 auto;width:100%;padding:12px 20px;background:var(--bg-2);border-bottom:1px solid var(--border);color:var(--text-1);font-size:12px;line-height:1.6}
+
+/* Persistent portfolio value, shared with the Wallet page. */
+.wallet-corner-value{display:inline-flex;align-items:center;gap:9px;color:var(--text-0);text-decoration:none;white-space:nowrap;min-width:0;padding:8px 10px;border-radius:8px;font-size:14px;margin-right:auto}
+.wallet-corner-value strong{font-weight:500;font-variant-numeric:tabular-nums}
+.wallet-corner-label,.wallet-corner-value>span:last-child{color:var(--text-2);font-size:12px}
+.wallet-corner-value:hover{background:var(--bg-3)}
+.wallet-corner-value:focus-visible{outline:2px solid var(--text-1);outline-offset:2px}
+@media(max-width:800px){.nav>.wallet-corner-value{grid-column:1;grid-row:1;justify-self:start;margin-left:48px;font-size:12px;gap:5px;padding:7px 4px}.wallet-corner-label{display:none}}
+@media(max-width:800px){.nav>.wallet-corner-value{grid-column:1 / -1;grid-row:2;margin-left:0;padding:4px 0 8px}.nav .nav-tabs{grid-row:3}.wallet-corner-label{display:inline}}

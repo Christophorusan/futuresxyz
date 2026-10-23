@@ -1,8 +1,9 @@
+import { useWalletPortfolio } from '../contexts/WalletPortfolioContext'
 import { WalletTrading } from '../components/WalletTrading'
 import { visibleHoldings } from '../lib/visibleHoldings'
 import { MarketWatchlist } from '../components/MarketWatchlist'
 import { useEffect, useRef, useState, lazy, Suspense } from 'react'
-import { useUnifiedPortfolio, validAccount, normalizeAccount, networks } from '../hooks/useUnifiedPortfolio'
+import { validAccount, normalizeAccount, networks } from '../hooks/useUnifiedPortfolio'
 import { WalletHistory } from '../components/WalletHistory'
 import './WalletPage.css'
 import { TokenIcon } from '../components/TokenIcon'
@@ -27,22 +28,17 @@ export function WalletPage() {
   }, [paymentMode])
   const closePayment = () => navigate('/wallet', { replace: true })
   const { address, isConnected } = useAccount()
-  const [tracked,setTracked]=useState<string[]>(()=>{try {const saved=JSON.parse(localStorage.getItem('oslo-tracked-accounts')??'[]');return Array.isArray(saved)?saved.filter((a):a is string=>typeof a==='string'&&validAccount(a)):[]}catch{return []}})
+
   const [section, setSection] = useState<'Tokens' | 'Trading' | 'Activity' | 'Watchlist'>('Tokens')
   const [network, setNetwork] = useState('all')
   const [assetSearch, setAssetSearch] = useState('')
   const walletsRef = useRef<HTMLDetailsElement>(null)
   const [accountInput,setAccountInput]=useState('')
   const [accountError,setAccountError]=useState('')
-  const accounts=[...new Set([...(address?[normalizeAccount(address)]:[]),...tracked.map(normalizeAccount)])].sort()
-  const {data,isLoading,isError}=useUnifiedPortfolio(accounts)
-  const assets=data?.assets??[]
+  const { accounts, tracked, saveAccounts: persistAccounts, data, isLoading, isError, assets, incomplete, unpriced, total } = useWalletPortfolio()
   const holdings=visibleHoldings(assets)
   const filteredHoldings = holdings.filter(asset => (network === 'all' || asset.network === network) && `${asset.name} ${asset.symbol}`.toLowerCase().includes(assetSearch.toLowerCase().trim()))
-  const incomplete=isError||!!data?.errors.length
-  const unpriced=assets.filter(a=>a.value===null).length
-  const total=accounts.length&&!isLoading&&data&&!incomplete?assets.reduce((sum,a)=>sum+(a.value??0),0):null
-  const saveAccounts=(next:string[])=>{setTracked(next);try{localStorage.setItem('oslo-tracked-accounts',JSON.stringify(next))}catch{setAccountError('Saved for this session only.')}}
+  const saveAccounts=(next:string[])=>{if(!persistAccounts(next))setAccountError('Saved for this session only.')}
   const addAccount=()=>{const value=accountInput.trim();if(!validAccount(value)){setAccountError('Enter a valid Ethereum or Solana wallet address.');return}saveAccounts([...new Set([...tracked,normalizeAccount(value)])]);setAccountInput('');setAccountError('')}
   const money = (value: number) => value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   return <main className="lending-page payments-page mobile-wallet-page oslo-wallet-home wallet-portfolio-home">

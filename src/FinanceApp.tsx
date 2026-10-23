@@ -1,3 +1,4 @@
+import { WalletPortfolioProvider, useWalletPortfolio } from './contexts/WalletPortfolioContext'
 import { SearchIcon } from './components/shared/SearchIcon'
 import { InAppBrowser } from './components/shared/InAppBrowser'
 import { useState, useRef, useEffect, lazy, Suspense } from 'react'
@@ -117,6 +118,14 @@ function LegacyPaymentRedirect() {
   return <Navigate to={`/wallet?action=${action}${location.hash}`} replace />
 }
 
+function WalletCornerValue() {
+  const { total, accounts, isLoading, incomplete, unpriced } = useWalletPortfolio()
+  const label = !accounts.length ? 'Connect or add a wallet to see its value' : isLoading ? 'Loading wallet value' : incomplete ? 'Wallet value unavailable: some networks could not load' : unpriced ? 'Priced holdings value; unpriced tokens excluded' : 'Total wallet value'
+  return <NavLink to="/wallet" className="wallet-corner-value" title={label} aria-label={`${label}${total !== null ? `: ${total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}` : ''}. Open wallet`}>
+    <span className="wallet-corner-label">Wallet</span><strong>{total === null ? '—' : total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</strong><span aria-hidden="true">↗</span>
+  </NavLink>
+}
+
 function AppContent() {
   useSoundNotifications()
 
@@ -125,6 +134,7 @@ function AppContent() {
         <Sidebar />
         <InAppBrowser />
         <nav className="nav">
+          <WalletCornerValue />
           <div className="nav-left">
             <NavLink to="/" className="logo">
               oslo
@@ -169,7 +179,7 @@ function AppContent() {
 }
 
 function App() {
-  const content = <HyperliquidProvider><MarketProvider><ThemeProvider><ToastProvider><AppContent /></ToastProvider></ThemeProvider></MarketProvider></HyperliquidProvider>
+  const content = <HyperliquidProvider><MarketProvider><ThemeProvider><ToastProvider><WalletPortfolioProvider><AppContent /></WalletPortfolioProvider></ToastProvider></ThemeProvider></MarketProvider></HyperliquidProvider>
   if (privyAppId) return <Suspense fallback={<div className="oslo-loading" role="status">Loading wallet sign-in…</div>}><EmailWalletProvider queryClient={queryClient}>{content}</EmailWalletProvider></Suspense>
   return <WagmiProvider config={config}><QueryClientProvider client={queryClient}>{content}</QueryClientProvider></WagmiProvider>
 }
