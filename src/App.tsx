@@ -10,7 +10,8 @@ function Entry() {
   const location = useLocation()
   const navigate = useNavigate()
   const [entered, setEntered] = useState(hasEntered)
-  const landing = !entered || location.pathname === '/'
+  const previewOnly = new URLSearchParams(location.search).get('preview') === 'embed'
+  const landing = (!entered && !previewOnly) || location.pathname === '/'
   function enter() {
     rememberEntry()
     setEntered(true)
