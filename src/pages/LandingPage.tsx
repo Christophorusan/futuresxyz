@@ -38,7 +38,7 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
             <path d="M36 480h24m-12-12v24M1380 480h24m-12-12v24"/>
           </g>
         </svg>
-        <div className="oslo-hero-copy"><h1>Making finance accessible.</h1><p>Hold. Trade. Borrow. Earn. Explore crypto and tokenized stock markets from one place.</p>{enter}<small>Explore freely. Connect when you’re ready.</small></div>
+        <div className="oslo-hero-copy"><h1>Making finance accessible.</h1><p>Send and receive. Lend and borrow against eligible assets. Trade crypto and tokenized markets—all through one wallet, with every decision yours.</p>{enter}<small>Explore freely. Connect when you’re ready.</small></div>
         <div className="oslo-screen-stage" aria-label="Illustrative Oslo interfaces with sample data">
           <div className="oslo-hero-phone oslo-far-left" aria-hidden="true"><div className="oslo-phone-status"><span>9:41</span><i /><span>••• ▰</span></div><div className="oslo-phone-brand">oslo.<small>Open finance.<br />Your decisions.</small></div></div>
           <div className="oslo-side-screen oslo-side-left oslo-hero-phone"><div className="oslo-phone-status" aria-hidden="true"><span>9:41</span><i /><span>••• ▰</span></div><ProductPreview selected={1}/></div>          <div className="oslo-wallet-demo" data-theme="dark">
@@ -60,7 +60,7 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
 <div className="oslo-side-screen oslo-side-right oslo-hero-phone"><div className="oslo-phone-status" aria-hidden="true"><span>9:41</span><i /><span>••• ▰</span></div><ProductPreview selected={2}/></div>
           <div className="oslo-hero-phone oslo-far-right" aria-label="Illustrative Discover screen"><div className="oslo-phone-status" aria-hidden="true"><span>9:41</span><i /><span>••• ▰</span></div><div className="oslo-phone-discover"><b>Discover</b><p>Find your next move.</p><div className="oslo-phone-search">⌕ Search DeFi apps</div>{['Trade crypto & stock markets', 'Borrow against assets', 'Explore ways to earn'].map((goal)=><div className="oslo-phone-goal" key={goal}>{goal}<span>↗</span></div>)}<small>Illustrative preview</small></div></div>
         </div>
-        <p className="oslo-stage-caption">One familiar interface. More possibilities. · Illustrative screens</p>
+        <p className="oslo-stage-caption">A self-custody DeFi wallet for sending, receiving, lending, and borrowing. · Illustrative screens</p>
       </section>
       <nav className="oslo-section-nav" aria-label="On this page"><a href="#possibilities">Overview</a><a href="#discover">Discover</a><a href="#community">Ownership</a><a href="#networks">Networks</a><a href="#questions">Questions</a></nav>
       <section className="oslo-overview" id="possibilities"><div className="oslo-section-heading"><span className="oslo-eyebrow">Less scattered. More connected.</span><h2>Your financial world.<br /><span>In one place.</span></h2><p>Put your assets to work, with a clear view of what each market supports.</p></div>
