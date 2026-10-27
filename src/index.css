@@ -18,7 +18,7 @@
   --text-0:var(--neutral-text); --text-1:#d4d4d1; --text-2:#a4a4a0; --text-3:#858580;
   --blue:#c9c9c5; --blue-hover:#ededeb; --blue-bg:#ffffff0d;
   --action-bg:var(--neutral-action); --action-fg:#202020;
-  --semantic-fg:#181818; --green:#39b887; --green-bg:#39b88714; --red:#ee7078; --red-bg:#ee707814;
+  --semantic-fg:#181818; --green:#35b984; --green-bg:#35b98418; --red:#e76b74; --red-bg:#e76b7418;
   --font:'Inter',system-ui,-apple-system,sans-serif;
   --radius:12px; --radius-sm:8px; --radius-xs:6px; --shadow:0 8px 28px #0003;
   color-scheme:dark;
