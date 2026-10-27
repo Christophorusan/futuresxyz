@@ -122,3 +122,26 @@
 .oslo-landing .oslo-principles article:nth-child(1)>span{background:#e4e9fb;color:#4c60b4}
 .oslo-landing .oslo-principles article:nth-child(2)>span{background:#e0efe7;color:#246c4c}
 .oslo-landing .oslo-principles article:nth-child(3)>span{background:#eee4f7;color:#8050a5}
+
+/* Oslo uses calm neutral surfaces with market-inspired outcome cues. */
+.oslo-landing {
+  --market-yes: #39b887;
+  --market-no: #ee7078;
+  --market-yes-soft: #39b88718;
+  --market-no-soft: #ee707818;
+}
+.oslo-landing .oslo-demo-actions>span:nth-child(1),
+.oslo-landing .oslo-product-tools>span:nth-child(1) { color: var(--feature-send); background: #a7b7ff14; }
+.oslo-landing .oslo-demo-actions>span:nth-child(2),
+.oslo-landing .oslo-product-tools>span:nth-child(2) { color: var(--market-yes); background: var(--market-yes-soft); }
+.oslo-landing .oslo-demo-actions>span:nth-child(3),
+.oslo-landing .oslo-product-tools>span:nth-child(3) { color: var(--feature-swap); background: #d2b0ff14; }
+.oslo-landing .oslo-demo-actions>span:nth-child(4) { color: var(--market-yes); background: var(--market-yes-soft); }
+.oslo-landing .oslo-product-preview .oslo-positive,
+.oslo-landing .oslo-demo-balance>p { color: var(--market-yes); }
+.oslo-landing .oslo-preview-trade>span { background: var(--market-yes-soft); color: var(--market-yes); }
+.oslo-landing .oslo-preview-trade>span+span { background: var(--market-no-soft); color: var(--market-no); }
+.oslo-finance-actions article:nth-child(1) { --feature-dot: #6b7280; }
+.oslo-finance-actions article:nth-child(2) { --feature-dot: #6b7280; }
+.oslo-finance-actions article:nth-child(3) { --feature-dot: var(--market-no); }
+.oslo-finance-actions article:nth-child(4) { --feature-dot: var(--market-yes); }
