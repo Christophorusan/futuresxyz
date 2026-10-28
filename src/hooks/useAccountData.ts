@@ -39,6 +39,7 @@ export function useAccountData() {
   const [openOrders, setOpenOrders] = useState<OpenOrder[]>([])
   const [fills, setFills] = useState<Fill[]>([])
   const [loading, setLoading] = useState(false)
+  const [dataAddress, setDataAddress] = useState<string | undefined>(undefined)
   const infoRef = useRef(info)
   const addressRef = useRef(address)
   const requestIdRef = useRef(0)
@@ -50,6 +51,7 @@ export function useAccountData() {
     const addr = addressRef.current
     const requestId = ++requestIdRef.current
     if (!addr) {
+      setDataAddress(undefined)
       setSpotBalances([])
       setOpenOrders([])
       setFills([])
@@ -94,12 +96,14 @@ export function useAccountData() {
 
       setOpenOrders(orders as OpenOrder[])
       setFills((userFills as Fill[]).slice(0, 50))
+      setDataAddress(addr)
     } catch (e) {
       console.error('Failed to fetch account data:', e)
       if (requestId === requestIdRef.current && addressRef.current?.toLowerCase() === addr.toLowerCase()) {
         setSpotBalances([])
         setOpenOrders([])
         setFills([])
+        setDataAddress(addr)
       }
     } finally {
       if (requestId === requestIdRef.current) setLoading(false)
@@ -109,6 +113,7 @@ export function useAccountData() {
   useEffect(() => {
     if (!isConnected) {
       requestIdRef.current++
+      setDataAddress(undefined)
       setSpotBalances([])
       setOpenOrders([])
       setFills([])
@@ -123,5 +128,12 @@ export function useAccountData() {
     }
   }, [isConnected, address, fetchAll])
 
-  return { spotBalances, openOrders, fills, loading, refetch: fetchAll }
+  const accountMatches = !!address && dataAddress?.toLowerCase() === address.toLowerCase()
+  return {
+    spotBalances: accountMatches ? spotBalances : [],
+    openOrders: accountMatches ? openOrders : [],
+    fills: accountMatches ? fills : [],
+    loading,
+    refetch: fetchAll,
+  }
 }
