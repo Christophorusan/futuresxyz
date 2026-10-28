@@ -39,18 +39,23 @@ export function useAccountData() {
   const [openOrders, setOpenOrders] = useState<OpenOrder[]>([])
   const [fills, setFills] = useState<Fill[]>([])
   const [loading, setLoading] = useState(false)
+  const [dataAddress, setDataAddress] = useState<string | undefined>(undefined)
   const infoRef = useRef(info)
   const addressRef = useRef(address)
+  const requestIdRef = useRef(0)
 
   infoRef.current = info
   addressRef.current = address
 
   const fetchAll = useCallback(async () => {
     const addr = addressRef.current
+    const requestId = ++requestIdRef.current
     if (!addr) {
+      setDataAddress(undefined)
       setSpotBalances([])
       setOpenOrders([])
       setFills([])
+      setLoading(false)
       return
     }
 
@@ -62,6 +67,7 @@ export function useAccountData() {
         infoRef.current.userFills({ user: addr }).catch(() => []),
       ])
 
+      if (requestId !== requestIdRef.current || addressRef.current?.toLowerCase() !== addr.toLowerCase()) return
       if (spotState?.balances) {
         const balances: SpotBalance[] = spotState.balances
           .filter((b: { total: string }) => parseFloat(b.total) > 0)
@@ -83,28 +89,51 @@ export function useAccountData() {
             }
           })
         setSpotBalances(balances)
+      } else {
+        // Never leave the previous account's balances visible when this read fails.
+        setSpotBalances([])
       }
 
       setOpenOrders(orders as OpenOrder[])
       setFills((userFills as Fill[]).slice(0, 50))
+      setDataAddress(addr)
     } catch (e) {
       console.error('Failed to fetch account data:', e)
+      if (requestId === requestIdRef.current && addressRef.current?.toLowerCase() === addr.toLowerCase()) {
+        setSpotBalances([])
+        setOpenOrders([])
+        setFills([])
+        setDataAddress(addr)
+      }
     } finally {
-      setLoading(false)
+      if (requestId === requestIdRef.current) setLoading(false)
     }
   }, []) // No deps — uses refs
 
   useEffect(() => {
     if (!isConnected) {
+      requestIdRef.current++
+      setDataAddress(undefined)
       setSpotBalances([])
       setOpenOrders([])
       setFills([])
+      setLoading(false)
       return
     }
     fetchAll()
     const interval = setInterval(fetchAll, 30000)
-    return () => clearInterval(interval)
+    return () => {
+      requestIdRef.current++
+      clearInterval(interval)
+    }
   }, [isConnected, address, fetchAll])
 
-  return { spotBalances, openOrders, fills, loading, refetch: fetchAll }
+  const accountMatches = !!address && dataAddress?.toLowerCase() === address.toLowerCase()
+  return {
+    spotBalances: accountMatches ? spotBalances : [],
+    openOrders: accountMatches ? openOrders : [],
+    fills: accountMatches ? fills : [],
+    loading,
+    refetch: fetchAll,
+  }
 }

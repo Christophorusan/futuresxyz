@@ -53,13 +53,17 @@ function genTraders(id: number, volNum: number): number {
 }
 
 // Days remaining helper for urgency
+const MONTH_INDEX: Record<string, number> = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 }
+
+function endDateSortValue(endDate: string): number {
+  const [month, rawDay] = endDate.split(' ')
+  return (MONTH_INDEX[month] ?? 0) * 32 + (parseInt(rawDay) || 31)
+}
+
 function daysUntil(endDate: string): number {
-  const months: Record<string, number> = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 }
-  const parts = endDate.split(' ')
-  const month = months[parts[0]] ?? 0
-  const day = parseInt(parts[1]) || 31
-  const target = new Date(2026, month, day)
+  const [month, rawDay] = endDate.split(' ')
   const now = new Date()
+  const target = new Date(2026, MONTH_INDEX[month] ?? 0, parseInt(rawDay) || 31)
   return Math.max(0, Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
 }
 
@@ -580,13 +584,14 @@ export function PredictionsPage() {
       : EVENTS.filter(e => e.category === category)
 
     // Search filter
-    if (search) list = list.filter(e => e.title.toLowerCase().includes(search.toLowerCase()))
+    const query = search.trim().toLowerCase()
+    if (query) list = list.filter(e => e.title.toLowerCase().includes(query))
 
     // Sort
     switch (sort) {
       case 'volume': list.sort((a, b) => b.volNum - a.volNum); break
       case 'newest': list.sort((a, b) => b.id - a.id); break
-      case 'ending': list.sort((a, b) => a.endDate.localeCompare(b.endDate)); break
+      case 'ending': list.sort((a, b) => endDateSortValue(a.endDate) - endDateSortValue(b.endDate)); break
       case 'probability': list.sort((a, b) => Math.abs(b.yesPrice - 0.5) - Math.abs(a.yesPrice - 0.5)); break
     }
     return list

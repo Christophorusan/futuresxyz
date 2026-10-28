@@ -2307,9 +2307,9 @@ body {
 /* Spot selector dropdown */
 .spot-selector { position: relative; }
 .spot-dropdown {
-  position: fixed; top: 80px; left: 20px; z-index: 1000;
+  position: absolute; top: calc(100% + 8px); left: 0; z-index: 1000;
   background: #151515; border: 1px solid var(--border);
-  border-radius: var(--radius-sm); width: 420px; max-height: 500px;
+  border-radius: var(--radius-sm); width: min(420px, calc(100vw - 40px)); max-height: 500px;
   display: flex; flex-direction: column; box-shadow: 0 16px 64px rgba(0,0,0,0.6);
 
 }
@@ -2324,14 +2324,14 @@ body {
 }
 .spot-dd-search::placeholder { color: var(--text-3); }
 .spot-dd-header {
-  display: grid; grid-template-columns: 2fr 1.2fr 0.8fr 1fr;
+  display: grid; grid-template-columns: 20px minmax(120px, 2fr) minmax(70px, 1.2fr) minmax(55px, .8fr) minmax(65px, 1fr);
   padding: 6px 12px; font-size: 11px; color: var(--text-3);
   font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px;
   border-bottom: 1px solid var(--border);
 }
 .spot-dd-list { flex: 1; overflow-y: auto; max-height: 340px; }
 .spot-dd-item {
-  display: grid; grid-template-columns: 2fr 1.2fr 0.8fr 1fr;
+  display: grid; grid-template-columns: 20px minmax(120px, 2fr) minmax(70px, 1.2fr) minmax(55px, .8fr) minmax(65px, 1fr);
   padding: 8px 12px; border: none; background: none; width: 100%;
   cursor: pointer; font-family: var(--font); font-size: 13px;
   text-align: left; border-bottom: 1px solid var(--border);
@@ -2339,9 +2339,16 @@ body {
 }
 .spot-dd-item:hover { background: var(--bg-2); }
 .spot-dd-item.active { background: var(--blue-bg); }
+.spot-dd-empty { color:var(--text-3); font-size:12px; margin:0; padding:18px 12px; text-align:center; }
 .spot-dd-name { font-weight: 600; color: var(--text-0); }
 .spot-dd-price { color: var(--text-1); font-family: 'Inter', monospace; font-size: 12px; }
 .spot-dd-vol { color: var(--text-2); font-size: 12px; text-align: right; }
+@media (max-width: 420px) {
+  .spot-dd-header, .spot-dd-item { grid-template-columns: 16px minmax(76px, 1.2fr) minmax(52px, 1fr) minmax(42px, .7fr) minmax(48px, .9fr); }
+  .spot-dd-header { padding-inline: 8px; font-size: 9px; }
+  .spot-dd-item { padding-inline: 8px; font-size: 11px; }
+  .spot-dd-price, .spot-dd-vol { font-size: 10px; }
+}
 
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
