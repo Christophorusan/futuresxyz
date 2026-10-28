@@ -8,12 +8,12 @@ import { TokenIcon } from '../TokenIcon'
 type SortField = 'name' | 'price' | 'change' | 'volume' | 'oi'
 type SortDir = 'asc' | 'desc'
 
-const MAIN_TABS = ['All', 'Perps', 'Spot', 'Crypto', 'Tradfi', 'HIP-3', 'Trending', 'Pre-launch'] as const
+const MAIN_TABS = ['All', 'Crypto', 'Tradfi', 'HIP-3', 'Trending'] as const
 type MainTab = typeof MAIN_TABS[number]
 
 // Categorize markets by name
-const TRADFI = new Set(['SPX', 'PAXG'])
-const MEMES = new Set(['DOGE', 'SHIB', 'PEPE', 'BONK', 'FLOKI', 'WIF', 'PNUT', 'MOODENG', 'FARTCOIN', 'POPCAT', 'BRETT', 'MEW', 'MYRO', 'NEIRO', 'GOAT', 'CHILLGUY', 'TRUMP', 'MELANIA', 'BOME', 'kBONK', 'kDOGS', 'kFLOKI', 'kLUNC', 'kNEIRO', 'kPEPE', 'kSHIB', 'LOOM', 'HPOS', 'TURBO', 'MON', 'DOOD', 'PURR'])
+const TRADFI = new Set(['SPX', 'PAXG', 'XYZ:SP500'])
+const isTradfiMarket = (name: string) => TRADFI.has(name.toUpperCase())
 // Future use for sub-tab filtering
 // const AI_TOKENS = new Set(['AI', 'AI16Z', 'AIXBT', 'FET', 'RENDER', 'RNDR', 'GRIFFAIN', 'VIRTUAL', 'ZEREBRO', 'GRASS', 'IO', 'TAO', 'HYPER', 'KAITO'])
 // const DEFI = new Set(['AAVE', 'UNI', 'COMP', 'CRV', 'MKR', 'DYDX', 'GMX', 'SNX', 'LDO', 'PENDLE', 'MORPHO', 'EIGEN', 'ENA', 'ONDO', 'USUAL', 'RESOLV', 'ETHFI', 'STG', 'SUSHI', 'JUP', 'INIT'])
@@ -88,20 +88,21 @@ export function MarketSelector() {
   const filtered = useMemo(() => {
     let list = [...markets]
 
-    // Search filter
-    if (search) {
-      list = list.filter(m => m.name.toLowerCase().includes(search.toLowerCase()))
+    // Search names with or without the display quote suffix.
+    const query = search.trim().toLowerCase()
+    if (query) {
+      list = list.filter(m => [m.name, `${m.name}-USDC`].some(value => value.toLowerCase().includes(query)))
     }
 
-    // Tab filter
+    // This picker contains perpetual markets only; HIP-3 markets use a DEX namespace.
     if (mainTab === 'Crypto') {
-      list = list.filter(m => !TRADFI.has(m.name))
+      list = list.filter(m => !m.name.includes(':') && !isTradfiMarket(m.name))
     } else if (mainTab === 'Tradfi') {
-      list = list.filter(m => TRADFI.has(m.name))
+      list = list.filter(m => isTradfiMarket(m.name))
     } else if (mainTab === 'Trending') {
       list = list.filter(m => Math.abs(m.change24h) > 3)
     } else if (mainTab === 'HIP-3') {
-      list = list.filter(m => MEMES.has(m.name))
+      list = list.filter(m => m.name.includes(':'))
     }
 
     // Sort: favorites first, then by field
@@ -115,7 +116,8 @@ export function MarketSelector() {
         case 'name': cmp = a.name.localeCompare(b.name); break
         case 'price': cmp = parseFloat(a.midPrice) - parseFloat(b.midPrice); break
         case 'change': cmp = a.change24h - b.change24h; break
-        case 'volume': cmp = parseFloat(a.volume24h) - parseFloat(b.volume24h); break
+        case 'volume': cmp = (parseFloat(a.volume24h) || 0) - (parseFloat(b.volume24h) || 0); break
+        case 'oi': cmp = (parseFloat(a.openInterest) || 0) * (parseFloat(a.midPrice) || 0) - (parseFloat(b.openInterest) || 0) * (parseFloat(b.midPrice) || 0); break
         default: break
       }
       return sortDir === 'asc' ? cmp : -cmp
@@ -217,9 +219,7 @@ export function MarketSelector() {
             {/* Keyboard Shortcuts Footer */}
             <div className="mkt-shortcuts">
               <span><kbd>⌘K</kbd> Open</span>
-              <span><kbd>↕</kbd> Navigate</span>
-              <span><kbd>Enter</kbd> Select</span>
-              <span><kbd>⌘S</kbd> Favorite</span>
+              <span>Click a market to select</span>
               <span><kbd>Esc</kbd> Close</span>
             </div>
           </div>
