@@ -2343,6 +2343,12 @@ body {
 .spot-dd-name { font-weight: 600; color: var(--text-0); }
 .spot-dd-price { color: var(--text-1); font-family: 'Inter', monospace; font-size: 12px; }
 .spot-dd-vol { color: var(--text-2); font-size: 12px; text-align: right; }
+@media (max-width: 420px) {
+  .spot-dd-header, .spot-dd-item { grid-template-columns: 16px minmax(76px, 1.2fr) minmax(52px, 1fr) minmax(42px, .7fr) minmax(48px, .9fr); }
+  .spot-dd-header { padding-inline: 8px; font-size: 9px; }
+  .spot-dd-item { padding-inline: 8px; font-size: 11px; }
+  .spot-dd-price, .spot-dd-vol { font-size: 10px; }
+}
 
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
