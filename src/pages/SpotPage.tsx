@@ -97,9 +97,15 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
   }, [open])
   const PINNED = new Set(['BTC', 'ETH', 'SOL', 'HYPE'])
   const filtered = useMemo(() => {
-    const matched = markets.filter(m => m.baseToken.toLowerCase().includes(search.toLowerCase()) || m.pairName.toLowerCase().includes(search.toLowerCase()))
-    const pinned = matched.filter(m => PINNED.has(m.baseToken)).sort((a, b) => parseFloat(b.volume24h) - parseFloat(a.volume24h))
-    const rest = matched.filter(m => !PINNED.has(m.baseToken)).sort((a, b) => parseFloat(b.volume24h) - parseFloat(a.volume24h))
+    const query = search.trim().toLowerCase()
+    const matched = markets.filter(m =>
+      !query || [m.baseToken, m.quoteToken, m.pairName, m.name]
+        .some(value => value.toLowerCase().includes(query)),
+    )
+    const byVolume = (a: SpotMarket, b: SpotMarket) =>
+      (Number.parseFloat(b.volume24h) || 0) - (Number.parseFloat(a.volume24h) || 0)
+    const pinned = matched.filter(m => PINNED.has(m.baseToken)).sort(byVolume)
+    const rest = matched.filter(m => !PINNED.has(m.baseToken)).sort(byVolume)
     return [...pinned, ...rest]
   }, [markets, search])
 
@@ -112,8 +118,9 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
       </button>
       {open && (
         <div className="spot-dropdown">
-          <input className="spot-dd-search" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} autoFocus />
+          <input className="spot-dd-search" aria-label="Search spot markets" placeholder="Search token, pair, or market ID" value={search} onChange={e => setSearch(e.target.value)} autoFocus />
           <div className="spot-dd-header">
+            <span aria-hidden="true"></span>
             <span>Pair</span>
             <span>Price</span>
             <span>24h</span>
@@ -134,6 +141,7 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
               )
             })}
           </div>
+          {!filtered.length && <p className="spot-dd-empty" role="status">{markets.length ? 'No spot markets match your search.' : 'Spot markets are loading.'}</p>}
         </div>
       )}
     </div>
