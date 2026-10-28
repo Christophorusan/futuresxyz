@@ -150,7 +150,7 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
 
 // ── Spot Trade Panel ──
 function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
-  const { isConnected, exchange, agentApproved, approving, approveAgent, switchToArbitrum } = useHyperliquid()
+  const { isConnected, chainId, exchange, agentApproved, approving, approveAgent, switchToArbitrum } = useHyperliquid()
   const { state, refetch, error: balanceError } = useUserState()
   const [side, setSide] = useState<'buy' | 'sell'>('buy')
   const [orderType, setOrderType] = useState<'market' | 'limit'>('market')
@@ -314,8 +314,8 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
       {!isConnected ? (
         <div className="connect-prompt">Connect wallet to trade</div>
       ) : !agentApproved ? (
-        <button className="trade-submit transfer" onClick={async () => { switchToArbitrum(); setTimeout(approveAgent, 1500) }} disabled={approving}>
-          {approving ? 'Setting up...' : 'Enable Trading'}
+        <button className="trade-submit transfer" onClick={() => { if (chainId !== 42161) switchToArbitrum(); else void approveAgent() }} disabled={approving}>
+          {approving ? 'Setting up...' : chainId !== 42161 ? 'Switch to Arbitrum' : 'Enable Trading'}
         </button>
       ) : (
         <button className={`trade-submit ${side}`} disabled={placing || !state || !Number.isFinite(tokenAmount) || tokenAmount <= 0 || market?.quoteToken !== 'USDC'} onClick={handleSpotOrder}>
