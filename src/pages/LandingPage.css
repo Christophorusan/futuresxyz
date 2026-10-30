@@ -122,3 +122,38 @@
 .oslo-landing .oslo-principles article:nth-child(1)>span{background:#e4e9fb;color:#4c60b4}
 .oslo-landing .oslo-principles article:nth-child(2)>span{background:#e0efe7;color:#246c4c}
 .oslo-landing .oslo-principles article:nth-child(3)>span{background:#eee4f7;color:#8050a5}
+
+/* Clear, quiet hero hierarchy inspired by Scandinavian and Swiss editorial design. */
+.oslo-landing{scroll-behavior:smooth;background:#f7f7f4;color:#181917}
+.oslo-hero{background:#111210}
+.oslo-hero-kicker{display:inline-flex;align-items:center;gap:10px;margin:0 auto 20px;padding:8px 12px;border:1px solid #ffffff24;border-radius:999px;color:#d4d5d0;font-size:10px;line-height:1;text-transform:uppercase;letter-spacing:.16em}
+.oslo-hero-kicker i{width:7px;height:7px;border-radius:50%;background:#74c49d;box-shadow:0 0 0 4px #74c49d20}
+.oslo-hero h1{max-width:920px;margin:0 auto 20px;font-size:clamp(48px,7vw,92px);font-weight:400;letter-spacing:-.065em;line-height:.99}
+.oslo-hero-copy>p{max-width:560px;font-size:16px;color:#c0c1bc}
+.oslo-hero .oslo-button{background:#f1f1ec;color:#171815;border-radius:999px;padding:15px 22px;gap:38px;font-weight:600}
+.oslo-hero .oslo-button:hover{background:#fff;transform:translateY(-1px)}
+.oslo-header nav a,.oslo-section-nav a{transition:color .18s ease}
+.oslo-header nav a:hover,.oslo-section-nav a:hover{color:#5a8d71}
+.oslo-header nav a:focus-visible,.oslo-section-nav a:focus-visible{outline:2px solid #669d7c;outline-offset:6px;border-radius:2px}
+.oslo-section-nav{border-color:#e5e5df;background:#f7f7f4f2}
+.oslo-landing .oslo-product-grid article,.oslo-landing .oslo-principles article,.oslo-landing .oslo-closing,.oslo-finance-actions article{background:#f0f0ec}
+.oslo-landing .oslo-product-grid article{border-color:#e2e2dc}
+.oslo-landing .oslo-principles article>span{background:#e7eee9;color:#42775c}
+.oslo-finance-actions article:nth-child(1){--feature-dot:#7891b9}
+.oslo-finance-actions article:nth-child(2){--feature-dot:#8a7baa}
+.oslo-finance-actions article:nth-child(3){--feature-dot:#c49c61}
+.oslo-finance-actions article:nth-child(4){--feature-dot:#5c9a78}
+.oslo-landing .oslo-demo-actions>span:nth-child(1),.oslo-landing .oslo-product-tools>span:nth-child(1){color:#9bb5ea;background:#9bb5ea14}
+.oslo-landing .oslo-demo-actions>span:nth-child(2),.oslo-landing .oslo-product-tools>span:nth-child(2){color:#82cbb0;background:#82cbb014}
+.oslo-landing .oslo-demo-actions>span:nth-child(3),.oslo-landing .oslo-product-tools>span:nth-child(3){color:#bca3df;background:#bca3df14}
+.oslo-landing .oslo-demo-actions>span:nth-child(4){color:#85c9a0;background:#85c9a014}
+.oslo-landing .oslo-preview-review{background:#a6b9e6;color:#171b24}
+.oslo-product-grid article,.oslo-principles article,.oslo-finance-actions article{transition:background-color .2s ease,border-color .2s ease}
+@media(max-width:700px){
+ .oslo-header{flex-wrap:wrap;row-gap:10px}
+ .oslo-header nav{display:flex;order:3;flex:0 0 100%;width:100%;justify-content:flex-start;gap:24px;overflow-x:auto;white-space:nowrap;padding:9px 0 3px;scrollbar-width:none}
+ .oslo-header nav::-webkit-scrollbar{display:none}
+ .oslo-header nav a{font-size:12px;padding:6px 0}
+ .oslo-hero-kicker{margin-bottom:17px;font-size:9px;letter-spacing:.13em}
+ .oslo-hero h1{line-height:1.02;letter-spacing:-.055em}
+}
