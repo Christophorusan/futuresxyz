@@ -38,7 +38,7 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
             <path d="M36 480h24m-12-12v24M1380 480h24m-12-12v24"/>
           </g>
         </svg>
-        <div className="oslo-hero-copy"><h1>Making finance accessible.</h1><p>Hold. Trade. Borrow. Earn. Explore crypto and tokenized stock markets from one place.</p>{enter}<small>Explore freely. Connect when you’re ready.</small></div>
+        <div className="oslo-hero-copy"><span className="oslo-hero-kicker"><i aria-hidden="true" />Open finance, on your terms</span><h1>Making finance accessible.</h1><p>Hold. Trade. Borrow. Earn. Explore crypto and tokenized stock markets from one place.</p>{enter}<small>Explore freely. Connect when you’re ready.</small></div>
         <div className="oslo-screen-stage" aria-label="Illustrative Oslo interfaces with sample data">
           <div className="oslo-hero-phone oslo-far-left" aria-hidden="true"><div className="oslo-phone-status"><span>9:41</span><i /><span>••• ▰</span></div><div className="oslo-phone-brand">oslo.<small>Open finance.<br />Your decisions.</small></div></div>
           <div className="oslo-side-screen oslo-side-left oslo-hero-phone"><div className="oslo-phone-status" aria-hidden="true"><span>9:41</span><i /><span>••• ▰</span></div><ProductPreview selected={1}/></div>          <div className="oslo-wallet-demo" data-theme="dark">
