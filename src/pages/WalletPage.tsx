@@ -32,7 +32,7 @@ export function WalletPage() {
   return <main className="lending-page payments-page mobile-wallet-page oslo-wallet-home wallet-portfolio-home wallet-simple">
     <header className="payment-hero"><div><h1>Wallet</h1><p>One wallet. Your holdings across supported networks.</p></div></header>
     <div className="wallet-workspace"><div className="wallet-main-column">
-    <section className="lending-card wallet-summary">
+    <section className={`lending-card wallet-summary${!isConnected ? ' wallet-disconnected' : ''}`}>
       <div className="wallet-overview-top"><div><span className="wallet-total-label">{incomplete && total !== null ? 'Partial balance' : unpriced ? 'Priced holdings value' : 'Total balance'}</span><strong className="wallet-total">{total === null ? '—' : money(total)} <small>USD</small></strong><p>{!accounts.length ? 'Connect your wallet to see your holdings.' : isLoading ? 'Loading your holdings…' : incomplete ? total !== null ? 'Showing available holdings. Some balances or token details are unavailable.' : 'Balances could not load. Please retry.' : `${holdings.length} assets in your wallet${unpriced ? ` · ${unpriced} unpriced tokens excluded` : ''}`}</p></div>
 </div>
       <nav className="wallet-portfolio-actions" aria-label="Portfolio actions">
