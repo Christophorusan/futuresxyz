@@ -123,6 +123,75 @@
 .oslo-landing .oslo-principles article:nth-child(2)>span{background:#e0efe7;color:#246c4c}
 .oslo-landing .oslo-principles article:nth-child(3)>span{background:#eee4f7;color:#8050a5}
 
+/* StageShow still: mirror the live Oslo workspace, cropped below the useful UI. */
+.oslo-screen-stage{display:block;position:relative;width:min(100%,1160px);max-width:1160px;height:610px;min-height:0;margin:38px auto 0;padding:0;overflow:hidden;isolation:isolate}
+.oslo-app-preview{position:relative;display:grid;width:100%;height:690px;grid-template-columns:104px minmax(0,1fr);grid-template-rows:64px auto;background:#151515;color:#f1f1ef;text-align:left;font-family:var(--font),Inter,system-ui,sans-serif;line-height:1.45;overflow:hidden}
+.oslo-app-sidebar{grid-column:1;grid-row:1 / 3;display:flex;flex-direction:column;min-height:0;padding:16px 10px 12px;border-right:1px solid #ffffff14;background:#111}
+.oslo-app-brand{margin:0 0 12px;text-align:center;font-size:26px;font-weight:650;letter-spacing:-1.8px;line-height:1.2}
+.oslo-app-sidebar nav{display:flex;flex-direction:column;gap:2px;min-height:0;overflow:hidden}
+.oslo-app-nav-item{display:flex;flex:0 0 49px;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid transparent;border-radius:10px;color:#a4a4a0;font-size:10px;font-weight:500;line-height:1.15;text-align:center}
+.oslo-app-nav-item svg{width:18px;height:18px;flex:none}
+.oslo-app-nav-item.is-active{border-color:#ffffff20;background:#292929;color:#f1f1ef}
+.oslo-app-sidebar-foot{margin-top:auto;padding-top:8px;color:#777;font-size:7px;letter-spacing:1px;line-height:1.8;text-align:center}
+.oslo-app-topbar{grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0;padding:0 18px;border-bottom:1px solid #ffffff12;background:#151515}
+.oslo-app-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;white-space:nowrap;font-size:11px;color:#eee}
+.oslo-app-toolbar>span{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:0 10px;border:1px solid #ffffff18;border-radius:7px;background:#1d1d1d}
+.oslo-app-toolbar .oslo-app-toolbar-theme{width:32px;padding:0;border-radius:50%;font-size:15px}
+.oslo-app-toolbar .oslo-app-connect{min-width:112px;background:#f1f1ef;color:#171717;border-color:#f1f1ef;font-weight:600}
+.oslo-app-toolbar .oslo-app-corner-value{border-color:transparent;background:transparent;color:#aaa}
+.oslo-app-mobile-brand,.oslo-app-mobile-tabs,.oslo-app-mobile-bottom{display:none}
+.oslo-app-content{grid-column:2;grid-row:2;width:min(690px,calc(100% - 40px));margin:49px auto 0}
+.oslo-app-page-heading{margin-bottom:24px}
+.oslo-app-page-heading>b{display:block;font-size:27px;font-weight:600;letter-spacing:-.6px;line-height:1.2}
+.oslo-app-page-heading>p{margin:10px 0 0;color:#a4a4a0;font-size:13px}
+.oslo-app-balance-card,.oslo-app-holdings{border:1px solid #ffffff14;border-radius:12px;background:#20201e}
+.oslo-app-balance-card{min-height:198px;padding:30px 24px 20px;text-align:center}
+.oslo-app-balance-card>span{display:block;color:#aaa;font-size:12px}
+.oslo-app-balance-card>strong{display:block;margin:18px 0 8px;font-size:38px;font-weight:500;letter-spacing:-1px;line-height:1}
+.oslo-app-balance-card>strong small{font-size:13px;font-weight:400;letter-spacing:0;color:#a4a4a0}
+.oslo-app-balance-card>p{margin:0;color:#a4a4a0;font-size:12px}
+.oslo-app-actions{display:flex;justify-content:center;gap:30px;margin-top:26px;color:#c7c7c3;font-size:12px}
+.oslo-app-holdings{margin-top:16px;padding:20px 22px 16px}
+.oslo-app-holdings>header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.oslo-app-holdings>header b{font-size:15px;font-weight:600}
+.oslo-app-holdings>header p{margin:5px 0 0;color:#a4a4a0;font-size:11px}
+.oslo-app-holdings>header>span{padding:7px 10px;border:1px solid #ffffff20;border-radius:99px;color:#bdbdb8;font-size:10px}
+.oslo-app-filters{display:flex;gap:8px;margin-top:18px}
+.oslo-app-filters>span{display:flex;align-items:center;min-height:34px;padding:0 11px;border:1px solid #ffffff18;border-radius:7px;color:#898984;font-size:10px}
+.oslo-app-filters>span:first-child{flex:1}
+.oslo-app-empty{display:grid;min-height:66px;place-items:center;color:#a4a4a0;font-size:12px}
+.oslo-app-about{padding-top:12px;border-top:1px solid #ffffff12;color:#aaa;font-size:11px}
+.oslo-stage-caption{position:relative;margin:10px auto 0;padding:0;background:transparent;text-align:center}
+@media(max-width:700px){
+  .oslo-screen-stage{width:100%;height:540px;margin-top:28px;padding:0}
+  .oslo-app-preview{display:block;width:358px;height:660px;max-width:none;margin:0 auto}
+  .oslo-app-sidebar{display:none}
+  .oslo-app-topbar{position:absolute;inset:0 0 auto;height:52px;justify-content:space-between;padding:0 14px}
+  .oslo-app-mobile-brand{display:block;font-size:23px;font-weight:650;letter-spacing:-1.5px}
+  .oslo-app-toolbar{gap:0}
+  .oslo-app-toolbar>span:not(.oslo-app-connect){display:none}
+  .oslo-app-toolbar .oslo-app-connect{min-height:34px;min-width:105px;font-size:11px}
+  .oslo-app-mobile-tabs{position:absolute;top:52px;left:0;right:0;display:flex;height:38px;align-items:stretch;gap:22px;padding:0 16px;border-bottom:1px solid #ffffff14;color:#a4a4a0;font-size:11px}
+  .oslo-app-mobile-tabs>span{display:flex;align-items:center;white-space:nowrap}
+  .oslo-app-mobile-tabs .is-active{border-bottom:2px solid #eee;color:#f1f1ef}
+  .oslo-app-content{position:absolute;top:108px;left:14px;right:14px;width:auto;margin:0}
+  .oslo-app-page-heading{margin-bottom:16px}
+  .oslo-app-page-heading>b{font-size:21px}
+  .oslo-app-page-heading>p{margin-top:6px;font-size:11px}
+  .oslo-app-balance-card{min-height:174px;padding:20px 14px 14px}
+  .oslo-app-balance-card>strong{margin:14px 0 7px;font-size:34px}
+  .oslo-app-balance-card>p{font-size:11px}
+  .oslo-app-actions{gap:22px;margin-top:22px;font-size:11px}
+  .oslo-app-holdings{margin-top:12px;padding:16px 14px 12px}
+  .oslo-app-holdings>header b{font-size:14px}
+  .oslo-app-holdings>header p{font-size:10px}
+  .oslo-app-filters{margin-top:14px}
+  .oslo-app-filters>span{font-size:10px}
+  .oslo-app-empty{min-height:56px;font-size:11px}
+  .oslo-app-about{font-size:10px}
+  .oslo-stage-caption{font-size:10px;margin-top:10px;padding:0 6px}
+}
+
 
 /* Give the wallet a single, readable desktop dashboard instead of a stack of phones. */
 .oslo-screen-stage{width:min(100%,1040px);height:auto;margin:42px auto 0;padding:0}
