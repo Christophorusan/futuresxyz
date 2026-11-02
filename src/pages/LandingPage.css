@@ -122,3 +122,47 @@
 .oslo-landing .oslo-principles article:nth-child(1)>span{background:#e4e9fb;color:#4c60b4}
 .oslo-landing .oslo-principles article:nth-child(2)>span{background:#e0efe7;color:#246c4c}
 .oslo-landing .oslo-principles article:nth-child(3)>span{background:#eee4f7;color:#8050a5}
+
+
+/* Give the wallet a single, readable desktop dashboard instead of a stack of phones. */
+.oslo-screen-stage{width:min(100%,1040px);height:auto;margin:42px auto 0;padding:0}
+.oslo-screen-stage .oslo-wallet-demo{position:relative;inset:auto;left:auto;top:auto;transform:none;width:100%;height:auto;min-height:450px;padding:22px 26px;border:1px solid #ffffff24;outline:0;border-radius:20px;box-shadow:0 30px 90px #0008;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto 1fr auto;grid-template-areas:"head head" "summary assets" "foot nav";gap:0 36px;text-align:left}
+.oslo-screen-stage .oslo-phone-status{display:none}
+.oslo-screen-stage .oslo-demo-head{grid-area:head;padding-bottom:17px;margin:0;border-bottom:1px solid #ffffff20}
+.oslo-screen-stage .oslo-demo-head>b{font-size:26px}
+.oslo-screen-stage .oslo-demo-head>span:nth-child(2){margin-left:0;font-size:13px}
+.oslo-screen-stage .oslo-dashboard-note{margin-left:auto;color:#aaa;font-size:11px}
+.oslo-screen-stage .oslo-demo-avatar{margin-left:4px;width:34px;height:34px}
+.oslo-screen-stage .oslo-demo-summary{grid-area:summary;align-self:stretch;margin-top:22px;padding:0;border:0;background:transparent;display:flex;flex-direction:column}
+.oslo-screen-stage .oslo-demo-balance>span{font-size:12px}
+.oslo-screen-stage .oslo-demo-balance>strong{font-size:36px;margin:10px 0}
+.oslo-screen-stage .oslo-demo-balance>p{font-size:12px;margin-bottom:18px}
+.oslo-screen-stage .oslo-demo-actions{max-width:360px;gap:10px}
+.oslo-screen-stage .oslo-demo-actions>span{padding:10px 4px;border:1px solid #ffffff14;font-size:16px}
+.oslo-screen-stage .oslo-demo-actions small{font-size:10px}
+.oslo-screen-stage .oslo-demo-chart-title{font-size:11px;margin-top:25px}
+.oslo-screen-stage .oslo-demo-chart{height:108px;margin-top:12px}
+.oslo-screen-stage .oslo-demo-assets{grid-area:assets;align-self:start;margin:22px 0 0;padding:0}
+.oslo-screen-stage .oslo-demo-assets>div:first-child{font-size:12px;padding:0 0 12px}
+.oslo-screen-stage .oslo-demo-assets>div{padding:15px 0;gap:12px}
+.oslo-screen-stage .oslo-demo-assets b{font-size:13px}
+.oslo-screen-stage .oslo-demo-assets small{font-size:10px}
+.oslo-screen-stage .oslo-demo-foot{grid-area:foot;align-self:end;text-align:left;margin:18px 0 0;font-size:10px}
+.oslo-screen-stage .oslo-demo-nav{grid-area:nav;align-self:end;justify-content:flex-end;gap:22px;margin:18px 0 0;padding-top:14px;font-size:13px}
+.oslo-screen-stage .oslo-demo-nav small{font-size:9px}
+.oslo-stage-caption{background:transparent;margin:10px auto 0;padding:0;text-align:center}
+@media(max-width:700px){
+  .oslo-screen-stage{margin-top:28px;padding:0}
+  .oslo-screen-stage .oslo-wallet-demo{width:100%;min-height:0;padding:18px 16px;border-radius:16px;grid-template-columns:1fr;grid-template-rows:auto auto auto auto;grid-template-areas:"head" "summary" "assets" "foot";gap:0}
+  .oslo-screen-stage .oslo-demo-head{padding-bottom:13px}
+  .oslo-screen-stage .oslo-dashboard-note{font-size:10px}
+  .oslo-screen-stage .oslo-demo-summary{margin-top:17px}
+  .oslo-screen-stage .oslo-demo-balance>strong{font-size:30px}
+  .oslo-screen-stage .oslo-demo-chart-title{margin-top:19px}
+  .oslo-screen-stage .oslo-demo-chart{height:80px}
+  .oslo-screen-stage .oslo-demo-assets{margin-top:16px}
+  .oslo-screen-stage .oslo-demo-assets>div{padding:11px 0}
+  .oslo-screen-stage .oslo-demo-foot{margin-top:14px;text-align:center}
+  .oslo-screen-stage .oslo-demo-nav{display:none}
+  .oslo-stage-caption{font-size:10px;margin-top:12px;padding:0}
+}
