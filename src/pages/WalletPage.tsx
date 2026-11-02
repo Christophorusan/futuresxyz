@@ -6,7 +6,6 @@ import './WalletPage.css'
 import { TokenNetworkIcon } from '../components/TokenNetworkIcon'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAccount } from 'wagmi'
-import { ConnectButton } from '../components/shared/ConnectButton'
 
 const PaymentForm = lazy(() => import('../components/PaymentForm').then(m => ({ default: m.PaymentForm })))
 
@@ -40,7 +39,6 @@ export function WalletPage() {
         <Link to="/wallet?action=receive"><span aria-hidden="true">↙</span>Receive</Link>
         <Link to="/spot"><span aria-hidden="true">⇄</span>Swap</Link>
       </nav>
-      {!isConnected && <ConnectButton />}
       {incomplete && <button className="wallet-retry" disabled={isFetching} onClick={() => void refetch()}>{isFetching ? 'Refreshing…' : 'Retry balances'}</button>}
       {!!data?.tokenWarnings.length && <details className="wallet-details"><summary>{data.tokenWarnings.length} tokens need balance or metadata details</summary><p>These tokens are excluded from the value until their details can be loaded.</p>{data.tokenWarnings.map(warning=><p key={warning}>{warning}</p>)}</details>}
       {!!data?.errors.length&&<details className="wallet-details"><summary>Some networks could not be loaded</summary>{data.errors.map(error=><p key={error}>{error}</p>)}</details>}
