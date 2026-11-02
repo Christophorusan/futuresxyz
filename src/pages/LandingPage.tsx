@@ -39,12 +39,9 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
           </g>
         </svg>
         <div className="oslo-hero-copy"><h1>Making finance accessible.</h1><p>Hold. Trade. Borrow. Earn. Explore crypto and tokenized stock markets from one place.</p>{enter}<small>Explore freely. Connect when you’re ready.</small></div>
-        <div className="oslo-screen-stage" aria-label="Illustrative Oslo interfaces with sample data">
-          <div className="oslo-hero-phone oslo-far-left" aria-hidden="true"><div className="oslo-phone-status"><span>9:41</span><i /><span>••• ▰</span></div><div className="oslo-phone-brand">oslo.<small>Open finance.<br />Your decisions.</small></div></div>
-          <div className="oslo-side-screen oslo-side-left oslo-hero-phone"><div className="oslo-phone-status" aria-hidden="true"><span>9:41</span><i /><span>••• ▰</span></div><ProductPreview selected={1}/></div>          <div className="oslo-wallet-demo" data-theme="dark">
-            <div className="oslo-phone-status" aria-hidden="true"><span>9:41</span><i /><span>••• ▰</span></div>
-            <div className="oslo-demo-head"><b>oslo</b><span>Wallet</span><span className="oslo-demo-avatar">O</span></div>
-
+        <div className="oslo-screen-stage" aria-label="Illustrative Oslo wallet dashboard with sample data">
+          <div className="oslo-wallet-demo" data-theme="dark">
+            <div className="oslo-demo-head"><b>oslo.</b><span>Wallet</span><span className="oslo-dashboard-note">Illustrative sample</span><span className="oslo-demo-avatar">O</span></div>
             <div className="oslo-demo-summary">
               <div className="oslo-demo-balance"><span>Estimated portfolio value</span><strong>$39,003.00 <small>USD</small></strong><p>+$284.32 (2.33%) <span>today</span></p></div>
               <div className="oslo-demo-actions"><span>↗<small>Send</small></span><span>↙<small>Receive</small></span><span>⇄<small>Swap</small></span><span>＋<small>Lend</small></span></div>
@@ -52,15 +49,11 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
               <svg className="oslo-demo-chart" viewBox="0 0 270 90" role="img" aria-label="Illustrative portfolio balance chart"><defs><linearGradient id="oslo-preview-chart" x1="0" y1="0" x2="0" y2="1"><stop stopColor="var(--feature-earn)" stopOpacity=".35"/><stop offset="1" stopColor="var(--feature-earn)" stopOpacity="0"/></linearGradient></defs><path d="M0 70L12 66 22 71 34 58 43 62 56 50 66 57 78 45 90 51 102 37 115 46 126 40 137 49 149 31 159 37 170 25 181 30 193 18 204 25 216 15 228 19 239 9 250 14 270 5V90H0Z" fill="url(#oslo-preview-chart)"/><path d="M0 70L12 66 22 71 34 58 43 62 56 50 66 57 78 45 90 51 102 37 115 46 126 40 137 49 149 31 159 37 170 25 181 30 193 18 204 25 216 15 228 19 239 9 250 14 270 5" fill="none" stroke="var(--feature-earn)" strokeWidth="2"/></svg>
             </div>
             <div className="oslo-demo-assets"><div><span>Holdings</span><span>All networks</span></div>{[['ETH','Ethereum','4.68 ETH','$11,700.00'],['SOL','Solana','39 SOL','$7,800.00'],['HYPE','HyperCore','156 HYPE','$15,600.00'],['USDC','Ethereum','3,903 USDC','$3,903.00']].map(([name, detail, balance, value]) => <div key={name}><TokenIcon symbol={name} size={25} /><span><b>{name}</b><small>{detail}</small></span><span className="oslo-demo-asset-value"><b>{value}</b><small>{balance}</small></span></div>)}</div>
-
-            <div className="oslo-demo-foot">Illustrative preview · Sample balances</div>
+            <div className="oslo-demo-foot">Sample balances · No wallet connected</div>
             <div className="oslo-demo-nav"><b>◈<small>Wallet</small></b><span>⇄<small>Swap</small></span><span>≋<small>Perps</small></span><span>＋<small>Lend</small></span></div>
-
           </div>
-<div className="oslo-side-screen oslo-side-right oslo-hero-phone"><div className="oslo-phone-status" aria-hidden="true"><span>9:41</span><i /><span>••• ▰</span></div><ProductPreview selected={2}/></div>
-          <div className="oslo-hero-phone oslo-far-right" aria-label="Illustrative Discover screen"><div className="oslo-phone-status" aria-hidden="true"><span>9:41</span><i /><span>••• ▰</span></div><div className="oslo-phone-discover"><b>Discover</b><p>Find your next move.</p><div className="oslo-phone-search">⌕ Search DeFi apps</div>{['Trade crypto & stock markets', 'Borrow against assets', 'Explore ways to earn'].map((goal)=><div className="oslo-phone-goal" key={goal}>{goal}<span>↗</span></div>)}<small>Illustrative preview</small></div></div>
         </div>
-        <p className="oslo-stage-caption">One familiar interface. More possibilities. · Illustrative screens</p>
+        <p className="oslo-stage-caption">One clear view of your assets. · Illustrative sample balances</p>
       </section>
       <nav className="oslo-section-nav" aria-label="On this page"><a href="#possibilities">Overview</a><a href="#discover">Discover</a><a href="#community">Ownership</a><a href="#networks">Networks</a><a href="#questions">Questions</a></nav>
       <section className="oslo-overview" id="possibilities"><div className="oslo-section-heading"><span className="oslo-eyebrow">Less scattered. More connected.</span><h2>Your financial world.<br /><span>In one place.</span></h2><p>Put your assets to work, with a clear view of what each market supports.</p></div>
