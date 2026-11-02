@@ -9,6 +9,7 @@ interface HyperliquidContextValue {
   info: InfoClient
   exchange: ReturnType<typeof useAgentWallet>['exchange']
   isConnected: boolean
+  chainId: number | undefined
   address: string | undefined
   agentApproved: boolean
   approving: boolean
@@ -36,6 +37,7 @@ export function HyperliquidProvider({ children }: { children: ReactNode }) {
       info,
       exchange: agent.agentApproved ? agent.exchange : null,
       isConnected: agent.isConnected,
+      chainId,
       address: agent.address,
       agentApproved: agent.agentApproved,
       approving: agent.approving,

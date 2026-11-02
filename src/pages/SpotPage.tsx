@@ -97,9 +97,15 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
   }, [open])
   const PINNED = new Set(['BTC', 'ETH', 'SOL', 'HYPE'])
   const filtered = useMemo(() => {
-    const matched = markets.filter(m => m.baseToken.toLowerCase().includes(search.toLowerCase()) || m.pairName.toLowerCase().includes(search.toLowerCase()))
-    const pinned = matched.filter(m => PINNED.has(m.baseToken)).sort((a, b) => parseFloat(b.volume24h) - parseFloat(a.volume24h))
-    const rest = matched.filter(m => !PINNED.has(m.baseToken)).sort((a, b) => parseFloat(b.volume24h) - parseFloat(a.volume24h))
+    const query = search.trim().toLowerCase()
+    const matched = markets.filter(m =>
+      !query || [m.baseToken, m.quoteToken, m.pairName, m.name]
+        .some(value => value.toLowerCase().includes(query)),
+    )
+    const byVolume = (a: SpotMarket, b: SpotMarket) =>
+      (Number.parseFloat(b.volume24h) || 0) - (Number.parseFloat(a.volume24h) || 0)
+    const pinned = matched.filter(m => PINNED.has(m.baseToken)).sort(byVolume)
+    const rest = matched.filter(m => !PINNED.has(m.baseToken)).sort(byVolume)
     return [...pinned, ...rest]
   }, [markets, search])
 
@@ -112,8 +118,9 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
       </button>
       {open && (
         <div className="spot-dropdown">
-          <input className="spot-dd-search" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} autoFocus />
+          <input className="spot-dd-search" aria-label="Search spot markets" placeholder="Search token, pair, or market ID" value={search} onChange={e => setSearch(e.target.value)} autoFocus />
           <div className="spot-dd-header">
+            <span aria-hidden="true"></span>
             <span>Pair</span>
             <span>Price</span>
             <span>24h</span>
@@ -125,7 +132,7 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
               const volStr = vol >= 1e6 ? `$${(vol / 1e6).toFixed(1)}M` : vol >= 1e3 ? `$${(vol / 1e3).toFixed(0)}K` : `$${vol.toFixed(0)}`
               return (
                 <button key={m.name} className={`spot-dd-item ${m.pairName === selected ? 'active' : ''}`} onClick={() => { onSelect(m.pairName); setOpen(false); setSearch('') }}>
-                  <TokenIcon symbol={m.name} size={16} />
+                  <TokenIcon symbol={m.baseToken} size={16} />
                   <span className="spot-dd-name">{m.pairName}</span>
                   <span className="spot-dd-price">${formatPrice(m.markPx)}</span>
                   <span className={m.change24h >= 0 ? 'green' : 'red'}>{m.change24h >= 0 ? '+' : ''}{m.change24h.toFixed(1)}%</span>
@@ -134,6 +141,7 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
               )
             })}
           </div>
+          {!filtered.length && <p className="spot-dd-empty" role="status">{markets.length ? 'No spot markets match your search.' : 'Spot markets are loading.'}</p>}
         </div>
       )}
     </div>
@@ -142,7 +150,7 @@ function SpotSelector({ markets, selected, onSelect }: { markets: SpotMarket[]; 
 
 // ── Spot Trade Panel ──
 function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
-  const { isConnected, exchange, agentApproved, approving, approveAgent, switchToArbitrum } = useHyperliquid()
+  const { isConnected, chainId, exchange, agentApproved, approving, approveAgent, switchToArbitrum } = useHyperliquid()
   const { state, refetch, error: balanceError } = useUserState()
   const [side, setSide] = useState<'buy' | 'sell'>('buy')
   const [orderType, setOrderType] = useState<'market' | 'limit'>('market')
@@ -306,8 +314,8 @@ function SpotTradePanel({ market }: { market: SpotMarket | undefined }) {
       {!isConnected ? (
         <div className="connect-prompt">Connect wallet to trade</div>
       ) : !agentApproved ? (
-        <button className="trade-submit transfer" onClick={async () => { switchToArbitrum(); setTimeout(approveAgent, 1500) }} disabled={approving}>
-          {approving ? 'Setting up...' : 'Enable Trading'}
+        <button className="trade-submit transfer" onClick={() => { if (chainId !== 42161) switchToArbitrum(); else void approveAgent() }} disabled={approving}>
+          {approving ? 'Setting up...' : chainId !== 42161 ? 'Switch to Arbitrum' : 'Enable Trading'}
         </button>
       ) : (
         <button className={`trade-submit ${side}`} disabled={placing || !state || !Number.isFinite(tokenAmount) || tokenAmount <= 0 || market?.quoteToken !== 'USDC'} onClick={handleSpotOrder}>

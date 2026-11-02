@@ -1,6 +1,6 @@
 import { AssetLabel } from '../AssetLabel'
 import { openInOslo } from '../shared/InAppBrowser'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useMarket } from '../../contexts/MarketContext'
 import { useHyperliquid } from '../../contexts/HyperliquidContext'
 import { useMarketMeta } from '../../hooks/useMarketMeta'
@@ -17,7 +17,7 @@ export function TradePanel() {
   const { markets } = useMarketMeta()
   const { state } = useUserState()
   const { placeOrder, placing, error, clearError } = usePlaceOrder()
-  const { isConnected, agentApproved, approving, approveAgent, approvalError, switchToArbitrum, exchange } = useHyperliquid()
+  const { isConnected, chainId, agentApproved, approving, approveAgent, approvalError, switchToArbitrum, exchange } = useHyperliquid()
 
   const [side, setSide] = useState<OrderSide>('buy')
   const [orderType, setOrderType] = useState<OrderType>('market')
@@ -44,6 +44,11 @@ export function TradePanel() {
   const midPrice = market ? parseFloat(market.midPrice) : 0
   const maxLev = market?.maxLeverage ?? 50
   const coin = selectedMarket.replace('-PERP', '')
+
+  useEffect(() => {
+    if (leverage > maxLev) setLeverage(maxLev)
+    if (levInput && Number(levInput) > maxLev) setLevInput(String(maxLev))
+  }, [leverage, levInput, maxLev])
 
   const available = state ? parseFloat(state.totalBalance) : 0
   const buyingPower = available * leverage
@@ -207,8 +212,8 @@ export function TradePanel() {
       {!isConnected ? (
         <div className="connect-prompt">Connect wallet to trade</div>
       ) : !agentApproved ? (
-        <button className="trade-submit transfer" onClick={async () => { switchToArbitrum(); setTimeout(approveAgent, 2000) }} disabled={approving}>
-          {approving ? 'Approving...' : 'Enable Trading (one-time)'}
+        <button className="trade-submit transfer" onClick={() => { if (chainId !== 42161) switchToArbitrum(); else void approveAgent() }} disabled={approving}>
+          {approving ? 'Approving...' : chainId !== 42161 ? 'Switch to Arbitrum' : 'Enable Trading (one-time)'}
         </button>
       ) : !exchange ? (
         <div className="trade-error">Wallet signer unavailable. Switch to Arbitrum.</div>
